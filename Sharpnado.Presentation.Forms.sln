@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Forms", "Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj", "{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Forms.Droid", "Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj", "{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Forms.iOS", "Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Forms.iOS.csproj", "{E71F3053-056C-4381-9638-048ED73BDFF6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharpnado.Infrastructure", "Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj", "{12598875-3E4F-4859-80C1-A76229E9303A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E71F3053-056C-4381-9638-048ED73BDFF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E71F3053-056C-4381-9638-048ED73BDFF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E71F3053-056C-4381-9638-048ED73BDFF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E71F3053-056C-4381-9638-048ED73BDFF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12598875-3E4F-4859-80C1-A76229E9303A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12598875-3E4F-4859-80C1-A76229E9303A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12598875-3E4F-4859-80C1-A76229E9303A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12598875-3E4F-4859-80C1-A76229E9303A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {340B55C9-6E96-411A-8AB4-12C8D3EBCD7B}
+	EndGlobalSection
+EndGlobal
