@@ -9,12 +9,14 @@ using Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(AndroidHorizontalListViewRenderer))]
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
+    [Preserve]
     public partial class AndroidHorizontalListViewRenderer : ViewRenderer<HorizontalListView, RecyclerView>
     {
         private bool _isCurrentIndexUpdateBackfire;
@@ -88,8 +90,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             SetNativeControl(recyclerView);
 
-            var snapHelper = new StartSnapHelper();
-            snapHelper.AttachToRecyclerView(Control);
+            if (Element.SnapStyle != SnapStyle.None)
+            {
+                var snapHelper = Element.SnapStyle == SnapStyle.Start ? new StartSnapHelper() : new LinearSnapHelper();
+                snapHelper.AttachToRecyclerView(Control);
+            }
 
             Control.HorizontalScrollBarEnabled = false;
 
@@ -98,7 +103,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 UpdateItemsSource();
             }
 
-            if (Element.ViewCacheSize != 10)
+            if (LinearLayoutManager != null)
             {
                 Control.AddOnScrollListener(new OnControlScrollChangedListener(this, horizontalList));
                 Control.ViewTreeObserver.PreDraw += OnPreDraw;
@@ -135,12 +140,17 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void ProcessDisableScroll()
         {
+            if (LinearLayoutManager == null)
+            {
+                return;
+            }
+
             LinearLayoutManager.CanScroll = !Element.DisableScroll;
         }
 
         private void ScrollToCurrentItem()
         {
-            if (!_isLandscape)
+            if (LinearLayoutManager == null || !_isLandscape)
             {
                 return;
             }

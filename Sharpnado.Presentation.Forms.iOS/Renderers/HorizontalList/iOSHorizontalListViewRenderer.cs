@@ -2,22 +2,16 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
-
-using ClassLibrary1.Renderers.HorizontalList;
-
 using CoreGraphics;
-
 using Foundation;
-
+using Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
-
 using UIKit;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(iOSHorizontalListViewRenderer))]
-namespace ClassLibrary1.Renderers.HorizontalList
+namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public partial class iOSHorizontalListViewRenderer : ViewRenderer<HorizontalListView, UICollectionView>
     {
@@ -126,7 +120,7 @@ namespace ClassLibrary1.Renderers.HorizontalList
                     MinimumInteritemSpacing = Element.ItemSpacing * 2,
                     MinimumLineSpacing = Element.ItemSpacing * 2,
                 }
-                : new SnappingCollectionViewLayout
+                : new SnappingCollectionViewLayout(Element.SnapStyle)
                 {
                     ScrollDirection = UICollectionViewScrollDirection.Horizontal,
                     ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),

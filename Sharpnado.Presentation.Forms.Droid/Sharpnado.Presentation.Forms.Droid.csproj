@@ -46,8 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Effects\AndroidListViewStyleEffect.cs" />
+    <Compile Include="Effects\AndroidTapCommandEffect.cs" />
+    <Compile Include="Effects\TintableImageEffect.cs" />
+    <Compile Include="Effects\ViewOverlayCollector.cs" />
+    <Compile Include="Effects\ViewStyleEffect.cs" />
     <Compile Include="Helpers\JniWeakReference.cs" />
     <Compile Include="Helpers\PlatformHelper.cs" />
+    <Compile Include="Renderers\AndroidMaterialFrameRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.DragAnDropItemTouchHelperCallback.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.OnControlScrollChangedListener.cs" />

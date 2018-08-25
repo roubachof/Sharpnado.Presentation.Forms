@@ -1,10 +1,8 @@
 ﻿using System.Collections;
-
 using Sharpnado.Presentation.Forms.RenderedViews;
-
 using UIKit;
 
-namespace ClassLibrary1.Renderers.HorizontalList
+namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public partial class iOSHorizontalListViewRenderer
     {

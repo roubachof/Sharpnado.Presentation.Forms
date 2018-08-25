@@ -1,15 +1,26 @@
 ﻿using System;
-
 using CoreGraphics;
-
+using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
 
-namespace ClassLibrary1.Renderers.HorizontalList
+namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public class SnappingCollectionViewLayout : UICollectionViewFlowLayout
     {
+        private readonly SnapStyle _snapStyle;
+
+        public SnappingCollectionViewLayout(SnapStyle snapStyle)
+        {
+            _snapStyle = snapStyle;
+        }
+
         public override CGPoint TargetContentOffset(CGPoint proposedContentOffset, CGPoint scrollingVelocity)
         {
+            if (_snapStyle == SnapStyle.None)
+            {
+                return base.TargetContentOffset(proposedContentOffset, scrollingVelocity);
+            }
+
             nfloat offsetAdjustment = nfloat.MaxValue;
             nfloat horizontalOffset = proposedContentOffset.X + CollectionView.ContentInset.Left;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ClassLibrary1.Renderers.HorizontalList
+namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public class UIViewCellHolderQueue
     {

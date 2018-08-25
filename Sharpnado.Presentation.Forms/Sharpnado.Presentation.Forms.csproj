@@ -16,4 +16,14 @@
     <Folder Include="RenderedViews\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CustomViews\TaskLoaderView.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

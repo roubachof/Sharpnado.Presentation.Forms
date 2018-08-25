@@ -12,6 +12,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         Grid,
     }
 
+    public enum SnapStyle
+    {
+        None = 0,
+        Start,
+        Center,
+    }
+
     public class DraggableViewCell : ViewCell
     {
         public static readonly BindableProperty IsDragAndDroppingProperty = BindableProperty.Create(
@@ -110,6 +117,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         }
 
         public HorizontalListViewLayout ListLayout { get; set; } = HorizontalListViewLayout.Linear;
+
+        public SnapStyle SnapStyle { get; set; } = SnapStyle.None;
 
         public int GridColumnCount { get; set; } = 0;
 

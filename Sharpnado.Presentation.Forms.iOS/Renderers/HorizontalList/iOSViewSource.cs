@@ -2,17 +2,13 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
-
 using Foundation;
-
 using Sharpnado.Presentation.Forms.RenderedViews;
-
 using UIKit;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
-namespace ClassLibrary1.Renderers.HorizontalList
+namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public class ViewCellHolder
     {
