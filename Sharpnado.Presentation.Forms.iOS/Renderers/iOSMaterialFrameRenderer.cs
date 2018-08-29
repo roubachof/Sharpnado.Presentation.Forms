@@ -1,6 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using CoreAnimation;
 using CoreGraphics;
+using Foundation;
+using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.iOS.Renderers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
@@ -13,27 +17,66 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
     /// <summary>
     /// Renderer to update all frames with better shadows matching material design standards.
     /// </summary>
+    [Preserve]
     public class iOSMaterialFrameRenderer : FrameRenderer
     {
+        private bool _isDisposed;
+
         private MaterialFrame MaterialFrame => (MaterialFrame)Element;
+
+        public static void Initialize()
+        {
+        }
+
+        public static void AddShadow(CALayer layer, float elevation)
+        {
+            layer.ShadowColor = UIColor.Black.CGColor;
+            layer.ShadowRadius = Math.Abs(elevation);
+            layer.ShadowOffset = new CGSize(0, elevation);
+            layer.ShadowOpacity = 0.24f;
+            layer.ShadowPath = UIBezierPath.FromRect(layer.Bounds).CGPath;
+            layer.MasksToBounds = false;
+        }
 
         public override void Draw(CGRect rect)
         {
             base.Draw(rect);
 
-            float elevation = MaterialFrame.Elevation;
+            float elevation = MaterialFrame.Elevation / 2f;
             if (elevation == 0)
             {
                 return;
             }
 
             // Update shadow to match better material design standards of elevation
-            Layer.ShadowColor = UIColor.Black.CGColor;
-            Layer.ShadowRadius = Math.Abs(elevation);
-            Layer.ShadowOffset = new CGSize(0, elevation);
-            Layer.ShadowOpacity = 0.24f;
-            Layer.ShadowPath = UIBezierPath.FromRect(Layer.Bounds).CGPath;
-            Layer.MasksToBounds = false;
+            AddShadow(Layer, elevation);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            _isDisposed = true;
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<Frame> e)
+        {
+            base.OnElementChanged(e);
+
+            if (e.NewElement != null)
+            {
+                NotifyTask.Create(async () =>
+                {
+                    await Task.Delay(100);
+                    if (Element == null || _isDisposed)
+                    {
+                        return;
+                    }
+
+                    SetNeedsDisplay();
+                    LayoutIfNeeded();
+                });
+            }
         }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -50,6 +93,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
         {
             System.Diagnostics.Debug.WriteLine($">>>>> UpdateElevation( elevation: {MaterialFrame.Elevation} )");
             SetNeedsDisplay();
+            LayoutIfNeeded();
         }
     }
 }

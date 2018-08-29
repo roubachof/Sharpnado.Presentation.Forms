@@ -31,6 +31,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
 
         private object _longParameter;
 
+        public static void Initialize()
+        {
+        }
+
         protected override void OnAttached()
         {
             _view = Control ?? Container;

@@ -14,6 +14,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             typeof(MaterialFrame),
             defaultValue: 2);
 
+        public MaterialFrame()
+        {
+            HasShadow = false;
+            CornerRadius = 0;
+        }
+
         public int Elevation
         {
             get => (int)GetValue(ElevationProperty);

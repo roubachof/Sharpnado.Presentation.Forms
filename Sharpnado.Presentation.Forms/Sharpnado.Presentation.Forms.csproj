@@ -26,4 +26,16 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="CustomViews\Tabs\BottomTabItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="CustomViews\Tabs\UnderlinedTabItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="CustomViews\TaskLoaderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+
 </Project>

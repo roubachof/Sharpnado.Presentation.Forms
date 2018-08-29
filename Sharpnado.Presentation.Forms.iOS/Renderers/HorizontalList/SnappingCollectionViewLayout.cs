@@ -16,7 +16,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         public override CGPoint TargetContentOffset(CGPoint proposedContentOffset, CGPoint scrollingVelocity)
         {
-            if (_snapStyle == SnapStyle.None)
+            if (_snapStyle != SnapStyle.Start)
             {
                 return base.TargetContentOffset(proposedContentOffset, scrollingVelocity);
             }

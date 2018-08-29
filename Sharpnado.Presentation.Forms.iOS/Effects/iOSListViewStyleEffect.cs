@@ -1,4 +1,5 @@
-﻿using Sharpnado.Presentation.Forms.Effects;
+﻿using Foundation;
+using Sharpnado.Presentation.Forms.Effects;
 using Sharpnado.Presentation.Forms.iOS.Effects;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
@@ -7,6 +8,7 @@ using Xamarin.Forms.Platform.iOS;
 
 namespace Sharpnado.Presentation.Forms.iOS.Effects
 {
+    [Preserve]
     public class iOSListViewStyleEffect : PlatformEffect
     {
         protected override void OnAttached()

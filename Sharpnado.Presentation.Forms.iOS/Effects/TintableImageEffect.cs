@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Foundation;
 using Sharpnado.Presentation.Forms.Effects;
 using Sharpnado.Presentation.Forms.iOS.Effects;
 using UIKit;
@@ -10,8 +11,13 @@ using Xamarin.Forms.Platform.iOS;
 
 namespace Sharpnado.Presentation.Forms.iOS.Effects
 {
+    [Preserve]
     public class iOSTintableImageEffect : PlatformEffect
     {
+        public static void Initialize()
+        {
+        }
+
         protected override void OnElementPropertyChanged(System.ComponentModel.PropertyChangedEventArgs args)
         {
             base.OnElementPropertyChanged(args);

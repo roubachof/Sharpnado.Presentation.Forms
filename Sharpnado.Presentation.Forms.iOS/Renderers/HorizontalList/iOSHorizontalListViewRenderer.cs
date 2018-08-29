@@ -13,6 +13,7 @@ using Xamarin.Forms.Platform.iOS;
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(iOSHorizontalListViewRenderer))]
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
+    [Preserve]
     public partial class iOSHorizontalListViewRenderer : ViewRenderer<HorizontalListView, UICollectionView>
     {
         private IEnumerable _itemsSource;
@@ -21,6 +22,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private bool _isCurrentIndexUpdateBackfire;
         private bool _isInternalScroll;
         private bool _isMovedBackfire;
+
+        public static void Initialize()
+        {
+        }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -128,7 +133,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     MinimumLineSpacing = 0,
                 };
 
-            var rect = new CGRect(0, 0, 100, 100);
+            var rect = new CGRect(0, 0, Element.ItemWidth, Element.ItemHeight);
             var collectionView =
                 new UICollectionView(rect, layout) { DecelerationRate = UIScrollView.DecelerationRateFast };
             SetNativeControl(collectionView);
@@ -136,6 +141,12 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             Control.ShowsHorizontalScrollIndicator = false;
 
             UpdateItemsSource();
+
+            if (Element.SnapStyle == SnapStyle.Center)
+            {
+                Control.DraggingEnded += OnDraggingEnded;
+                Control.DecelerationEnded += OnDecelerationEnded;
+            }
 
             Control.Scrolled += OnStartScrolling;
             Control.ScrollAnimationEnded += OnStopScrolling;
@@ -148,6 +159,39 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             ScrollToCurrentItem();
             ProcessDisableScroll();
+        }
+
+        private void SnapToCenter()
+        {
+            var collectionRect = new CGRect
+            {
+                X = Control.ContentOffset.X,
+                Y = Control.ContentOffset.Y,
+                Size = new CGSize(Control.Frame.Width, Control.Frame.Height),
+            };
+
+            var collectionViewCenter = new CGPoint(collectionRect.GetMidX(), collectionRect.GetMidY());
+
+            var indexPath = Control.IndexPathForItemAtPoint(collectionViewCenter);
+            if (indexPath == null)
+            {
+                return;
+            }
+
+            Control.ScrollToItem(indexPath, UICollectionViewScrollPosition.CenteredHorizontally, true);
+        }
+
+        private void OnDecelerationEnded(object sender, EventArgs e)
+        {
+            SnapToCenter();
+        }
+
+        private void OnDraggingEnded(object sender, DraggingEventArgs e)
+        {
+            if (!e.Decelerate)
+            {
+                SnapToCenter();
+            }
         }
 
         private void OnStartScrolling(object sender, EventArgs e)

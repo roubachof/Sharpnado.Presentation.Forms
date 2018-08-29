@@ -50,6 +50,24 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             typeof(HorizontalListView),
             default(DataTemplate));
 
+        public static readonly BindableProperty ItemHeightProperty = BindableProperty.Create(
+            nameof(ItemHeight),
+            typeof(int),
+            typeof(HorizontalListView),
+            defaultValue: 100);
+
+        public static readonly BindableProperty ItemWidthProperty = BindableProperty.Create(
+            nameof(ItemWidth),
+            typeof(int),
+            typeof(HorizontalListView),
+            defaultValue: 100);
+
+        public static readonly BindableProperty ItemSpacingProperty = BindableProperty.Create(
+            nameof(ItemSpacing),
+            typeof(int),
+            typeof(HorizontalListView),
+            defaultValue: 0);
+
         public static readonly BindableProperty ScrollBeganCommandProperty = BindableProperty.Create(
             nameof(ScrollBeganCommand),
             typeof(ICommand),
@@ -100,11 +118,23 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             set => SetValue(CurrentIndexProperty, value);
         }
 
-        public int ItemHeight { get; set; }
+        public int ItemHeight
+        {
+            get => (int)GetValue(ItemHeightProperty);
+            set => SetValue(ItemHeightProperty, value);
+        }
 
-        public int ItemWidth { get; set; }
+        public int ItemWidth
+        {
+            get => (int)GetValue(ItemWidthProperty);
+            set => SetValue(ItemWidthProperty, value);
+        }
 
-        public int ItemSpacing { get; set; } = 0;
+        public int ItemSpacing
+        {
+            get => (int)GetValue(ItemSpacingProperty);
+            set => SetValue(ItemSpacingProperty, value);
+        }
 
         public int ViewCacheSize { get; set; } = 0;
 

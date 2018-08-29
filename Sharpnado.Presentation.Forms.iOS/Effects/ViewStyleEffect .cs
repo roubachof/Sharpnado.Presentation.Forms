@@ -32,6 +32,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
 
         UIColor _DefaultBackgroundColor { get; set; }
 
+        public static void Initialize()
+        {
+        }
+
         protected override void OnAttached()
         {
             try
