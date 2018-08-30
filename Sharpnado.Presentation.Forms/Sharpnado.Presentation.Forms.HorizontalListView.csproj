@@ -11,15 +11,22 @@
     <PackageIconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</PackageIconUrl>
     <RepositoryUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</RepositoryUrl>
     <PackageTags>xamarin.forms android ios netstandard horizontallistview tabs</PackageTags>
-    <Description>Collection of components for xamarin forms including:
-
-      * HorizontalListView with snapping and drap and drop (in grid mode)
-      * NotifyTaskLoader
-      * ViewSwitcher
-      * TabHostView, tabs component
-      * MaterialFrame, a card view like frame with elevation
-</Description>
+    <Description>HorizontalListView for Xamarin forms with
+* Snapping on first or middle element
+* Grid mode
+* Drag and drop on grid mode
+* View recycling
+    </Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Behaviors\*" />
+    <Compile Remove="Converters\*" />
+    <Compile Remove="CustomViews\**" />
+    <Compile Remove="ViewModels\*" />
+    <EmbeddedResource Remove="CustomViews\**" />
+    <None Remove="CustomViews\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
@@ -29,29 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="RenderedViews\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="CustomViews\TaskLoaderView.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="CustomViews\Tabs\BottomTabItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="CustomViews\Tabs\UnderlinedTabItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="CustomViews\TaskLoaderView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
   </ItemGroup>
 
 </Project>
