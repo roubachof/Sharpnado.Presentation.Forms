@@ -164,17 +164,20 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
                 var view = CreateView(out var viewCell);
 
-                var contentFrame = new FrameLayout(_context)
+                if (_element.ListLayout == HorizontalListViewLayout.Grid)
                 {
-                    LayoutParameters =
-                        new FrameLayout.LayoutParams(
-                            (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
+                    var contentFrame = new FrameLayout(_context)
+                    {
+                        LayoutParameters = new FrameLayout.LayoutParams(
+                            LayoutParams.MatchParent,
                             (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density)),
-                };
+                    };
 
-                contentFrame.AddView(view);
+                    contentFrame.AddView(view);
+                    view = contentFrame;
+                }
 
-                return new ViewHolder(contentFrame, viewCell);
+                return new ViewHolder(view, viewCell);
             }
 
             private View CreateView(out ViewCell viewCell)
@@ -195,7 +198,23 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                 viewCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
 
-                var layoutParams = new LayoutParams(LayoutParams.MatchParent, LayoutParams.MatchParent);
+                LayoutParams layoutParams = null;
+                if (_element.ListLayout == HorizontalListViewLayout.Grid)
+                {
+                    layoutParams = new FrameLayout.LayoutParams(
+                        (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
+                        (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density))
+                    {
+                        Gravity = GravityFlags.CenterHorizontal,
+                    };
+                }
+                else
+                {
+                    layoutParams = new LayoutParams(
+                        (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
+                        (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density));
+                    // LayoutParams.MatchParent, LayoutParams.MatchParent);
+                }
 
                 if (Xamarin.Forms.Platform.Android.Platform.GetRenderer(viewCell.View) == null)
                 {

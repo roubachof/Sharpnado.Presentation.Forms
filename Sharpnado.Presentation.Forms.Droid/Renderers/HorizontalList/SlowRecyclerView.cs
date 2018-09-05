@@ -3,6 +3,7 @@
 using Android.Content;
 using Android.Runtime;
 using Android.Support.V7.Widget;
+using Android.Views;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
@@ -16,6 +17,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         public SlowRecyclerView(Context context)
             : base(context)
         {
+            LayoutParameters = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MatchParent,
+                ViewGroup.LayoutParams.MatchParent);
         }
 
         public override bool Fling(int velocityX, int velocityY)
