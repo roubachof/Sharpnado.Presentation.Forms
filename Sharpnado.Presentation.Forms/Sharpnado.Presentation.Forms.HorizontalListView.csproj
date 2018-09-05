@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>..\Sharpnado.Infrastructure\StyleCopRules.ruleset</CodeAnalysisRuleSet>
     <Version>0.9.1</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Copyright>Sharpnado 2018</Copyright>
     <PackageLicenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</PackageProjectUrl>
@@ -17,6 +17,11 @@
 * Drag and drop on grid mode
 * View recycling
     </Description>
+    <AssemblyName>Sharpnado.Presentation.Forms</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);CustomViews\**;Converters\*;Behaviors\*</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,7 +36,7 @@
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.1.0.637273</Version>
+      <Version>2.5.1.444934</Version>
     </PackageReference>
   </ItemGroup>
 

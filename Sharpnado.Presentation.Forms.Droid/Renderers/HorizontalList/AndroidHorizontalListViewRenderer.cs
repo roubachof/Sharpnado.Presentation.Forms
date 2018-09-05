@@ -31,6 +31,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         public bool IsScrolling { get; set; }
 
+        public static void Initialize()
+        {
+        }
+
         protected override void OnElementChanged(ElementChangedEventArgs<HorizontalListView> e)
         {
             base.OnElementChanged(e);
