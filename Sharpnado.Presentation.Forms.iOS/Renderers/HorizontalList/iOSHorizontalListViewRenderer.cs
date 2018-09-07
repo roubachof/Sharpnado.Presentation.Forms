@@ -122,8 +122,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 {
                     ScrollDirection = UICollectionViewScrollDirection.Vertical,
                     ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),
-                    MinimumInteritemSpacing = Element.ItemSpacing * 2,
-                    MinimumLineSpacing = Element.ItemSpacing * 2,
+                    MinimumInteritemSpacing = Element.ItemSpacing,
+                    MinimumLineSpacing = Element.ItemSpacing,
+                    SectionInset = new UIEdgeInsets(
+                        (nfloat)Element.GridPadding.Top,
+                        (nfloat)Element.GridPadding.Left,
+                        (nfloat)Element.GridPadding.Bottom,
+                        (nfloat)Element.GridPadding.Right),
                 }
                 : new SnappingCollectionViewLayout(Element.SnapStyle)
                 {

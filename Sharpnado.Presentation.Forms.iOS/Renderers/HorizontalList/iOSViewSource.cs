@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
+
+using CoreGraphics;
+
 using Foundation;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
@@ -167,13 +170,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             if (Platform.GetRenderer(formsCell.View) == null)
             {
-                IVisualElementRenderer renderer = null;
-                renderer = Platform.CreateRenderer(formsCell.View);
+                IVisualElementRenderer renderer = Platform.CreateRenderer(formsCell.View);
                 Platform.SetRenderer(formsCell.View, renderer);
             }
 
             var nativeView = Platform.GetRenderer(formsCell.View).NativeView;
-            nativeView.ContentMode = UIViewContentMode.ScaleAspectFit;
+            nativeView.ContentMode = UIViewContentMode.Center;
+
             return new UIViewCellHolder(formsCell, nativeView);
         }
     }

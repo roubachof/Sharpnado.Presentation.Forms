@@ -4,33 +4,78 @@ using Android.Content;
 using Android.Graphics;
 using Android.Runtime;
 using Android.Support.V7.Widget;
-using Android.Views;
 
 using Sharpnado.Presentation.Forms.Droid.Helpers;
+
+using Xamarin.Forms;
+
+using View = Android.Views.View;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
     public class SpaceItemDecoration : RecyclerView.ItemDecoration
     {
-        private readonly int _spaceDp;
+        private readonly int _space;
+        private readonly int _leftPadding;
+        private readonly int _topPadding;
+        private readonly int _rightPadding;
+        private readonly int _bottomPadding;
 
         public SpaceItemDecoration(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
         }
 
-        public SpaceItemDecoration(int spaceDp)
+        public SpaceItemDecoration(int spaceDp, Thickness paddingDp)
         {
-            _spaceDp = spaceDp;
+            _space = PlatformHelper.DpToPixels(spaceDp);
+            _leftPadding = PlatformHelper.DpToPixels(paddingDp.Left);
+            _topPadding = PlatformHelper.DpToPixels(paddingDp.Top);
+            _rightPadding = PlatformHelper.DpToPixels(paddingDp.Right);
+            _bottomPadding = PlatformHelper.DpToPixels(paddingDp.Bottom);
         }
 
         public override void GetItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
         {
-            int spacePixel = PlatformHelper.DpToPixels(_spaceDp);
-            outRect.Left = spacePixel;
-            outRect.Top = spacePixel / 2;
-            outRect.Right = spacePixel;
-            outRect.Bottom = spacePixel / 2;
+            int left, top, right, bottom;
+            left = right = _space;
+            top = bottom = _space / 2;
+
+            if (parent.GetLayoutManager() is ResponsiveGridLayoutManager responsiveGridLayout)
+            {
+                int viewPosition = parent.GetChildAdapterPosition(view);
+                int viewCount = parent.GetAdapter().ItemCount;
+                int spanCount = responsiveGridLayout.SpanCount;
+                bool isViewEdgeLeft = viewPosition % spanCount == 0;
+                bool isViewEdgeTop = viewPosition < spanCount;
+                bool isViewEdgeRight = viewPosition % spanCount == spanCount - 1;
+                bool isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
+
+                if (_leftPadding > 0 && isViewEdgeLeft)
+                {
+                    left = _leftPadding;
+                }
+
+                if (_rightPadding > 0 && isViewEdgeRight)
+                {
+                    right = _rightPadding;
+                }
+
+                if (isViewEdgeTop)
+                {
+                    top = _topPadding > 0 ? _topPadding : _space;
+                }
+
+                if (isViewEdgeBottom)
+                {
+                    bottom = _bottomPadding > 0 ? _bottomPadding : _space;
+                }
+            }
+
+            outRect.Left = left;
+            outRect.Top = top;
+            outRect.Right = right;
+            outRect.Bottom = bottom;
         }
     }
 
