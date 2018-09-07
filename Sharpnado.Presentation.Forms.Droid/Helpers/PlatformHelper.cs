@@ -8,5 +8,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
         {
             return (int)(dp * Resources.System.DisplayMetrics.Density);
         }
+
+        public static int DpToPixels(double dp)
+        {
+            return (int)(dp * Resources.System.DisplayMetrics.Density);
+        }
     }
 }

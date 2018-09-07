@@ -4,19 +4,17 @@ using Android.Content;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 using Android.Views;
-
 using Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(AndroidHorizontalListViewRenderer))]
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
-    [Preserve]
+    [Xamarin.Forms.Internals.Preserve]
     public partial class AndroidHorizontalListViewRenderer : ViewRenderer<HorizontalListView, RecyclerView>
     {
         private bool _isCurrentIndexUpdateBackfire;
@@ -84,7 +82,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                 if (Element.ItemSpacing > 0)
                 {
-                    recyclerView.AddItemDecoration(new SpaceItemDecoration(Element.ItemSpacing));
+                    recyclerView.AddItemDecoration(new SpaceItemDecoration(Element.ItemSpacing, Element.GridPadding));
                 }
             }
             else
@@ -110,11 +108,12 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             if (LinearLayoutManager != null)
             {
                 Control.AddOnScrollListener(new OnControlScrollChangedListener(this, horizontalList));
-                Control.ViewTreeObserver.PreDraw += OnPreDraw;
 
                 ProcessDisableScroll();
                 ScrollToCurrentItem();
             }
+
+            Control.ViewTreeObserver.PreDraw += OnPreDraw;
         }
 
         private void OnPreDraw(object sender, ViewTreeObserver.PreDrawEventArgs e)
@@ -124,21 +123,30 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 return;
             }
 
+            bool orientationChanged = false;
             if (Control.Height < Control.Width)
             {
                 if (!_isLandscape)
                 {
+                    orientationChanged = true;
                     _isLandscape = true;
 
                     // Has just rotated
-                    ScrollToCurrentItem();
+                    if (LinearLayoutManager != null)
+                    {
+                        ScrollToCurrentItem();
+                    }
                 }
-
-                _isLandscape = true;
             }
             else
             {
+                orientationChanged = _isLandscape;
                 _isLandscape = false;
+            }
+
+            if (orientationChanged)
+            {
+                Control.InvalidateItemDecorations();
             }
         }
 
@@ -169,7 +177,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             var adapter = new RecycleViewAdapter(Element, Context);
             Control.SetAdapter(adapter);
 
-            if (Element.EnableDragAndDrop)
+            if (Element.ListLayout == HorizontalListViewLayout.Grid && Element.EnableDragAndDrop)
             {
                 var dragHelper = new ItemTouchHelper(new DragAnDropItemTouchHelperCallback(Element, adapter, Element.DragAndDropEndedCommand));
                 dragHelper.AttachToRecyclerView(Control);

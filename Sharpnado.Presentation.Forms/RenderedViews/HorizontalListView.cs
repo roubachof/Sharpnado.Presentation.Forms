@@ -54,19 +54,29 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             nameof(ItemHeight),
             typeof(int),
             typeof(HorizontalListView),
-            defaultValue: 100);
+            defaultValue: 100,
+            defaultBindingMode: BindingMode.OneTime);
 
         public static readonly BindableProperty ItemWidthProperty = BindableProperty.Create(
             nameof(ItemWidth),
             typeof(int),
             typeof(HorizontalListView),
-            defaultValue: 100);
+            defaultValue: 100,
+            defaultBindingMode: BindingMode.OneTime);
+
+        public static readonly BindableProperty GridPaddingProperty = BindableProperty.Create(
+            nameof(GridPadding),
+            typeof(Thickness),
+            typeof(HorizontalListView),
+            defaultValue: new Thickness(0, 0),
+            defaultBindingMode: BindingMode.OneTime);
 
         public static readonly BindableProperty ItemSpacingProperty = BindableProperty.Create(
             nameof(ItemSpacing),
             typeof(int),
             typeof(HorizontalListView),
-            defaultValue: 0);
+            defaultValue: 0,
+            defaultBindingMode: BindingMode.OneTime);
 
         public static readonly BindableProperty ScrollBeganCommandProperty = BindableProperty.Create(
             nameof(ScrollBeganCommand),
@@ -118,22 +128,44 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             set => SetValue(CurrentIndexProperty, value);
         }
 
+        /// <summary>
+        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// This property is only bindable to allow styling.
+        /// </summary>
         public int ItemHeight
         {
             get => (int)GetValue(ItemHeightProperty);
             set => SetValue(ItemHeightProperty, value);
         }
 
+        /// <summary>
+        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// This property is only bindable to allow styling.
+        /// </summary>
         public int ItemWidth
         {
             get => (int)GetValue(ItemWidthProperty);
             set => SetValue(ItemWidthProperty, value);
         }
 
+        /// <summary>
+        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// This property is only bindable to allow styling.
+        /// </summary>
         public int ItemSpacing
         {
             get => (int)GetValue(ItemSpacingProperty);
             set => SetValue(ItemSpacingProperty, value);
+        }
+
+        /// <summary>
+        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// This property is only bindable to allow styling.
+        /// </summary>
+        public Thickness GridPadding
+        {
+            get => (Thickness)GetValue(GridPaddingProperty);
+            set => SetValue(GridPaddingProperty, value);
         }
 
         public int ViewCacheSize { get; set; } = 0;

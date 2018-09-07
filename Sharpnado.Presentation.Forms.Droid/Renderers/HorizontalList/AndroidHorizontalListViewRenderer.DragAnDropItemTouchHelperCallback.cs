@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
+using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 
+using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
@@ -82,7 +85,16 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                 // System.Diagnostics.Debug.WriteLine($">>>>> OnMove( from: {viewHolder.AdapterPosition}, to: {target.AdapterPosition} )");
                 _recycleViewAdapter.OnItemMoving(viewHolder.AdapterPosition, target.AdapterPosition);
+
                 return true;
+            }
+
+            public override void OnMoved(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, int fromPos, RecyclerView.ViewHolder target, int toPos, int x, int y)
+            {
+                base.OnMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y);
+
+                // recompute items offsets
+                recyclerView.InvalidateItemDecorations();
             }
 
             public override int InterpolateOutOfBoundsScroll(
