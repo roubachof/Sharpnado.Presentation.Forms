@@ -55,28 +55,28 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             typeof(int),
             typeof(HorizontalListView),
             defaultValue: 100,
-            defaultBindingMode: BindingMode.OneTime);
+            defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty ItemWidthProperty = BindableProperty.Create(
             nameof(ItemWidth),
             typeof(int),
             typeof(HorizontalListView),
             defaultValue: 100,
-            defaultBindingMode: BindingMode.OneTime);
+            defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty GridPaddingProperty = BindableProperty.Create(
             nameof(GridPadding),
             typeof(Thickness),
             typeof(HorizontalListView),
             defaultValue: new Thickness(0, 0),
-            defaultBindingMode: BindingMode.OneTime);
+            defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty ItemSpacingProperty = BindableProperty.Create(
             nameof(ItemSpacing),
             typeof(int),
             typeof(HorizontalListView),
             defaultValue: 0,
-            defaultBindingMode: BindingMode.OneTime);
+            defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty ScrollBeganCommandProperty = BindableProperty.Create(
             nameof(ScrollBeganCommand),
@@ -129,7 +129,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         }
 
         /// <summary>
-        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// The platform renderers doesn't handle changes on this property: this is OneWayToSource binding.
         /// This property is only bindable to allow styling.
         /// </summary>
         public int ItemHeight
@@ -139,7 +139,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         }
 
         /// <summary>
-        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// The platform renderers doesn't handle changes on this property: this is OneWayToSource binding.
         /// This property is only bindable to allow styling.
         /// </summary>
         public int ItemWidth
@@ -149,7 +149,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         }
 
         /// <summary>
-        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// The platform renderers doesn't handle changes on this property: this is OneWayToSource binding.
         /// This property is only bindable to allow styling.
         /// </summary>
         public int ItemSpacing
@@ -159,7 +159,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         }
 
         /// <summary>
-        /// The platform renderers doesn't handle changes on this property: this is one time binding.
+        /// The platform renderers doesn't handle changes on this property: this is OneWayToSource binding.
         /// This property is only bindable to allow styling.
         /// </summary>
         public Thickness GridPadding
