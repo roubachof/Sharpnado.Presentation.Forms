@@ -17,10 +17,16 @@
         <tags>xamarin.forms android ios netstandard horizontallistview</tags>
 
        	<description>
-HorizontalListView on steroids for Xamarin Forms:
+HorizontalListView for Xamarin Forms:
   * Snapping on first or middle element
-  * Horizontal List or Grid mode
-  * Drag And Drop on Grid mode
+  * Padding and item spacing
+  * Handles NotifyCollectionChangedAction Add Remove and Reset actions
+  * View recycling
+
+Grid ListView (HorizontalListView with layout set to Grid):
+  * Drag And Drop
+  * Padding and item spacing
+  * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).

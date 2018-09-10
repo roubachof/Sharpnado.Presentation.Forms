@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
     
-    	<id>Sharpnado.Presentation.Forms</id>
+      <id>Sharpnado.Presentation.Forms</id>
         <version>0.9.3</version>
         <copyright>Sharpnado 2018</copyright>
         <title>Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView</title>
@@ -11,24 +11,30 @@
         <licenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</projectUrl>
         <iconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</iconUrl>
-       	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview</tags>        
 
-       	<description>
+        <description>
 Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView.
 
 The TaskLoaderView displays an ActivityLoader while loading then:
-* Handles error with custom messages and icons
-* Handles empty states
-* Don't show activity loader for refresh scenarios (if data is already shown)
-* Handles retry with button
+  * Handles error with custom messages and icons
+  * Handles empty states
+  * Don't show activity loader for refresh scenarios (if data is already shown)
+  * Handles retry with button
 
-HorizontalListView on steroids for Xamarin Forms:
+HorizontalListView for Xamarin Forms:
   * Snapping on first or middle element
-  * Horizontal List or Grid mode
-  * Drag And Drop on Grid mode
+  * Padding and item spacing
+  * Handles NotifyCollectionChangedAction Add Remove and Reset actions
+  * View recycling
+
+Grid ListView (HorizontalListView with layout set to Grid):
+  * Drag And Drop
+  * Padding and item spacing
+  * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
@@ -36,16 +42,16 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
 Implementation:
   * RecyclerView on Android
   * UICollectionView on iOS
-       	</description>
-           	
+        </description>
+            
         <dependencies>        
           <group>
             <dependency id="Xamarin.Forms" version="2.5.1" exclude="Build,Analyzers"/>
-          </group>		  
+          </group>      
         </dependencies>
        
-	</metadata>
-	
+  </metadata>
+  
     <files>
 
         <!--Net Standard-->
