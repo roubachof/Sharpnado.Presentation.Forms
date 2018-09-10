@@ -79,15 +79,15 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     Element.GridColumnCount == 0
                         ? new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing)
                         : new GridLayoutManager(Context, Element.GridColumnCount));
-
-                if (Element.ItemSpacing > 0)
-                {
-                    recyclerView.AddItemDecoration(new SpaceItemDecoration(Element.ItemSpacing, Element.GridPadding));
-                }
             }
             else
             {
                 recyclerView.SetLayoutManager(new CustomLinearLayoutManager(Context, OrientationHelper.Horizontal, false));
+            }
+
+            if (Element.ItemSpacing > 0 || Element.CollectionPadding != new Thickness(0))
+            {
+                recyclerView.AddItemDecoration(new SpaceItemDecoration(Element.ItemSpacing, Element.CollectionPadding));
             }
 
             SetNativeControl(recyclerView);

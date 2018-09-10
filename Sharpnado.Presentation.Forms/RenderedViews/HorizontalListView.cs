@@ -64,8 +64,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             defaultValue: 100,
             defaultBindingMode: BindingMode.OneWayToSource);
 
-        public static readonly BindableProperty GridPaddingProperty = BindableProperty.Create(
-            nameof(GridPadding),
+        public static readonly BindableProperty CollectionPaddingProperty = BindableProperty.Create(
+            nameof(CollectionPadding),
             typeof(Thickness),
             typeof(HorizontalListView),
             defaultValue: new Thickness(0, 0),
@@ -162,10 +162,10 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         /// The platform renderers doesn't handle changes on this property: this is OneWayToSource binding.
         /// This property is only bindable to allow styling.
         /// </summary>
-        public Thickness GridPadding
+        public Thickness CollectionPadding
         {
-            get => (Thickness)GetValue(GridPaddingProperty);
-            set => SetValue(GridPaddingProperty, value);
+            get => (Thickness)GetValue(CollectionPaddingProperty);
+            set => SetValue(CollectionPaddingProperty, value);
         }
 
         public int ViewCacheSize { get; set; } = 0;

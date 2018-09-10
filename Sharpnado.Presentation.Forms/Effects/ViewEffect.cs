@@ -204,10 +204,28 @@ namespace Sharpnado.Presentation.Forms.Effects
                 return;
             }
 
-            var effect = view.Effects.FirstOrDefault(x => x is ViewStyleEffect);
-            if (effect == null)
+            var frame = bindable as Frame;
+            if (frame != null)
             {
-                // Log.Debug($"Applying ViewEffect to {bindable.GetType().Name} object");
+                System.Diagnostics.Debug.WriteLine($"Frame not supported for android, attaching it to its content {frame.Content?.GetType().Name}");
+
+                view = frame.Content;
+
+                if (view == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Frame content is null: cannot apply effect");
+                    return;
+                }
+            }
+
+            if (newValue != null && GetTouchFeedbackColor(bindable) == (Color)newValue && frame != null)
+            {
+                SetTouchFeedbackColor(view, (Color)newValue);
+            }
+
+            var effect = view.Effects.FirstOrDefault(x => x is ViewStyleEffect);
+            if (frame == null && effect == null)
+            {
                 var resolvedEffect = Effect.Resolve(ViewStyleEffect.Name);
                 view.Effects.Add(resolvedEffect);
             }
