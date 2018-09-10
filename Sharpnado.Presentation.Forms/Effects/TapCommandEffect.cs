@@ -79,21 +79,56 @@ namespace Sharpnado.Presentation.Forms.Effects
         {
             if (!(bindable is View view))
             {
+                System.Diagnostics.Debug.WriteLine($"Cannot apply ViewEffect to {bindable.GetType().Name} object");
                 return;
+            }
+
+            var frame = bindable as Frame;
+            if (frame != null)
+            {
+                System.Diagnostics.Debug.WriteLine($"Frame not supported for android, attaching it to its content {frame.Content?.GetType().Name}");
+
+                view = frame.Content;
+
+                if (view == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Frame content is null: cannot apply effect");
+                    return;
+                }
             }
 
             var eff = view.Effects.FirstOrDefault(e => e is TapCommandRoutingEffect);
 
             if (GetTap(bindable) != null || GetLongTap(bindable) != null)
             {
-                if (eff == null)
+                if (newValue != null && GetTap(bindable) == newValue && frame != null)
+                {
+                    SetTap(view, (ICommand)newValue);
+                }
+
+                if (newValue != null && GetTapParameter(bindable) == newValue && frame != null)
+                {
+                    SetTapParameter(view, newValue);
+                }
+
+                if (newValue != null && GetLongTap(bindable) == newValue && frame != null)
+                {
+                    SetLongTap(view, (ICommand)newValue);
+                }
+
+                if (newValue != null && GetLongTapParameter(bindable) == newValue && frame != null)
+                {
+                    SetLongTapParameter(view, newValue);
+                }
+
+                if (frame == null && eff == null)
                 {
                     view.Effects.Add(new TapCommandRoutingEffect());
                 }
             }
             else
             {
-                if (eff != null && view.BindingContext != null)
+                if (frame == null && eff != null && view.BindingContext != null)
                 {
                     view.Effects.Remove(eff);
                 }

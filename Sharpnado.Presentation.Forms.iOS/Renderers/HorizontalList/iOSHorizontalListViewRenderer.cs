@@ -117,6 +117,12 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             Control?.CollectionViewLayout?.Dispose();
             Control?.Dispose();
 
+            var sectionInset = new UIEdgeInsets(
+                (nfloat)Element.CollectionPadding.Top,
+                (nfloat)Element.CollectionPadding.Left,
+                (nfloat)Element.CollectionPadding.Bottom,
+                (nfloat)Element.CollectionPadding.Right);
+
             var layout = Element.ListLayout == HorizontalListViewLayout.Grid
                 ? new UICollectionViewFlowLayout
                 {
@@ -124,27 +130,27 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),
                     MinimumInteritemSpacing = Element.ItemSpacing,
                     MinimumLineSpacing = Element.ItemSpacing,
-                    SectionInset = new UIEdgeInsets(
-                        (nfloat)Element.GridPadding.Top,
-                        (nfloat)Element.GridPadding.Left,
-                        (nfloat)Element.GridPadding.Bottom,
-                        (nfloat)Element.GridPadding.Right),
+                    SectionInset = sectionInset,
                 }
                 : new SnappingCollectionViewLayout(Element.SnapStyle)
                 {
                     ScrollDirection = UICollectionViewScrollDirection.Horizontal,
                     ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),
-                    MinimumInteritemSpacing = 0,
-                    MinimumLineSpacing = 0,
+                    MinimumInteritemSpacing = Element.ItemSpacing,
+                    MinimumLineSpacing = Element.ItemSpacing,
+                    SectionInset = sectionInset,
                 };
 
             var rect = new CGRect(0, 0, Element.ItemWidth, Element.ItemHeight);
-            var collectionView =
-                new UICollectionView(rect, layout) { DecelerationRate = UIScrollView.DecelerationRateFast };
-            SetNativeControl(collectionView);
-            Control.BackgroundColor = Element?.BackgroundColor.ToUIColor();
-            Control.ShowsHorizontalScrollIndicator = false;
+            var collectionView = new UICollectionView(rect, layout)
+            {
+                DecelerationRate = UIScrollView.DecelerationRateFast,
+                BackgroundColor = Element?.BackgroundColor.ToUIColor(),
+                ShowsHorizontalScrollIndicator = false,
+                ContentInset = new UIEdgeInsets(0, 0, 0, 0),
+            };
 
+            SetNativeControl(collectionView);
             UpdateItemsSource();
 
             if (Element.SnapStyle == SnapStyle.Center)

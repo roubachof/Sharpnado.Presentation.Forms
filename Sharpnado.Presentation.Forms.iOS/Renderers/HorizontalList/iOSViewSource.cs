@@ -175,7 +175,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
 
             var nativeView = Platform.GetRenderer(formsCell.View).NativeView;
-            nativeView.ContentMode = UIViewContentMode.Center;
+            nativeView.ContentMode = UIViewContentMode.ScaleAspectFit;
 
             return new UIViewCellHolder(formsCell, nativeView);
         }

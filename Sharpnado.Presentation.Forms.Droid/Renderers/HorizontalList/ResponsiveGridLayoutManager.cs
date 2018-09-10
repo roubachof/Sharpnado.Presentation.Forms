@@ -38,38 +38,49 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         public override void GetItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
         {
             int left, top, right, bottom;
-            left = right = _space;
-            top = bottom = _space / 2;
+            left = right = top = bottom = _space / 2;
+
+            bool isViewEdgeLeft = false;
+            bool isViewEdgeTop = false;
+            bool isViewEdgeRight = false;
+            bool isViewEdgeBottom = false;
+
+            int viewPosition = parent.GetChildAdapterPosition(view);
+            int viewCount = parent.GetAdapter().ItemCount;
 
             if (parent.GetLayoutManager() is ResponsiveGridLayoutManager responsiveGridLayout)
             {
-                int viewPosition = parent.GetChildAdapterPosition(view);
-                int viewCount = parent.GetAdapter().ItemCount;
                 int spanCount = responsiveGridLayout.SpanCount;
-                bool isViewEdgeLeft = viewPosition % spanCount == 0;
-                bool isViewEdgeTop = viewPosition < spanCount;
-                bool isViewEdgeRight = viewPosition % spanCount == spanCount - 1;
-                bool isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
+                isViewEdgeLeft = viewPosition % spanCount == 0;
+                isViewEdgeTop = viewPosition < spanCount;
+                isViewEdgeRight = viewPosition % spanCount == spanCount - 1;
+                isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
+            }
+            else if (parent.GetLayoutManager() is LinearLayoutManager)
+            {
+                isViewEdgeLeft = viewPosition == 0;
+                isViewEdgeTop = isViewEdgeBottom = true;
+                isViewEdgeRight = viewPosition == viewCount - 1;
+            }
 
-                if (_leftPadding > 0 && isViewEdgeLeft)
-                {
-                    left = _leftPadding;
-                }
+            if (isViewEdgeLeft)
+            {
+                left = _leftPadding > _space ? _leftPadding : _space;
+            }
 
-                if (_rightPadding > 0 && isViewEdgeRight)
-                {
-                    right = _rightPadding;
-                }
+            if (isViewEdgeRight)
+            {
+                right = _rightPadding > _space ? _rightPadding : _space;
+            }
 
-                if (isViewEdgeTop)
-                {
-                    top = _topPadding > 0 ? _topPadding : _space;
-                }
+            if (isViewEdgeTop)
+            {
+                top = _topPadding > 0 ? _topPadding : _space;
+            }
 
-                if (isViewEdgeBottom)
-                {
-                    bottom = _bottomPadding > 0 ? _bottomPadding : _space;
-                }
+            if (isViewEdgeBottom)
+            {
+                bottom = _bottomPadding > 0 ? _bottomPadding : _space;
             }
 
             outRect.Left = left;
