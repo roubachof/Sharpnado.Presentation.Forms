@@ -5,7 +5,7 @@
     	<id>Sharpnado.Forms.HorizontalListView</id>
         <version>0.9.3</version>
         <copyright>Sharpnado 2018</copyright>
-        <title>HorizontalListView on steroids for Xamarin Forms</title>
+        <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
         <authors>Jean-Marie Alfonsi</authors>
         <owners></owners>
         <licenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</licenseUrl>
@@ -13,27 +13,25 @@
         <iconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</iconUrl>
        	<requireLicenseAcceptance>false</requireLicenseAcceptance>
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
-        <summary>HorizontalListView on steroids for Xamarin Forms</summary>
-        <tags>xamarin.forms android ios netstandard horizontallistview</tags>
+        <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
+        <tags>xamarin.forms android ios netstandard horizontallistview collectionview</tags>
 
        	<description>
-HorizontalListView for Xamarin Forms:
+HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Snapping on first or middle element
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
+  * RecyclerView on Android
+  * UICollectionView on iOS
 
-Grid ListView (HorizontalListView with layout set to Grid):
+Grid ListView (HorizontalListView with ListLayout set to Grid):
   * Drag And Drop
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
-
-Implementation:
-  * RecyclerView on Android
-  * UICollectionView on iOS
        	</description>
         
         <dependencies>        

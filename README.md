@@ -10,8 +10,11 @@ Xamarin Forms custom components and renderers including:
 ```HorizontalListView``` for Xamarin Forms:
   * Snapping on first or middle element
   * Padding and item spacing
-  * Handles (```NotifyCollectionChangedAction(``` Add, Remove and Reset actions
+  * Handles ```NotifyCollectionChangedAction``` Add, Remove and Reset actions
   * View recycling
+  * ```RecyclerView``` on Android
+  * ```UICollectionView``` on iOS
+  * This implementation is in fact very close in terms of philosophy and implementation to what will provide the future Xamarin ```CollectionView```.
 
 <p align="center">
   <img src="__Docs__/horizontal_snap_center.gif" width="250"  />
@@ -20,7 +23,7 @@ Xamarin Forms custom components and renderers including:
 ```Grid``` collection view (```HorizontalListView``` with ```ListLayout``` set to ```Grid```):
   * Drag and Drop
   * Padding and item spacing
-  * Handles (```NotifyCollectionChangedAction(``` Add, Remove and Reset actions
+  * Handles ```NotifyCollectionChangedAction``` Add, Remove and Reset actions
   * View recycling
 
 <p align="center">
@@ -38,12 +41,16 @@ Xamarin Forms custom components and renderers including:
   <img src="__Docs__/task_loader_view.gif" width="250"  />
 </p>
 
+
 It's available in 2 Nuget flavors:
 
 * **Sharpnado.Presentation.Forms** (which include several others components like the increeeedible ```TaskLoaderView```)
 * **Sharpnado.Forms.HorizontalListView** (```HorizontalListView``` only with only ```TapCommand``` and ```MaterialFrame```)
 
-Those components are used and tested in the [Silly! app](https://github.com/roubachof/Xamarin-Forms-Practices).
+**IMPORTANT:** On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
+
+
+Those components are used and tested in the Silly! app:  https://github.com/roubachof/Xamarin-Forms-Practices.
 
 ## HorizontalListView (and Grid mode)
 
