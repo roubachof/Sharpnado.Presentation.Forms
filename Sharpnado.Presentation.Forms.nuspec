@@ -5,7 +5,7 @@
       <id>Sharpnado.Presentation.Forms</id>
         <version>0.9.3</version>
         <copyright>Sharpnado 2018</copyright>
-        <title>Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView</title>
+        <title>A Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</title>
         <authors>Jean-Marie Alfonsi</authors>
         <owners></owners>
         <licenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</licenseUrl>
@@ -13,8 +13,8 @@
         <iconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
-        <summary>Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView</summary>
-        <tags>xamarin.forms android ios netstandard horizontallistview</tags>        
+        <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</summary>
+        <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview</tags>        
 
         <description>
 Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView.
@@ -25,23 +25,21 @@ The TaskLoaderView displays an ActivityLoader while loading then:
   * Don't show activity loader for refresh scenarios (if data is already shown)
   * Handles retry with button
 
-HorizontalListView for Xamarin Forms:
+HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Snapping on first or middle element
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
+  * RecyclerView on Android
+  * UICollectionView on iOS
 
-Grid ListView (HorizontalListView with layout set to Grid):
+Grid ListView (HorizontalListView with ListLayout set to Grid):
   * Drag And Drop
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
-
-Implementation:
-  * RecyclerView on Android
-  * UICollectionView on iOS
         </description>
             
         <dependencies>        
