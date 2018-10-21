@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Input;
 using Sharpnado.Presentation.Forms.Paging;
-using Sharpnado.Presentation.Forms.ViewModels;
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.RenderedViews

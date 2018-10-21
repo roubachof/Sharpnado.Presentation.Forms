@@ -3,7 +3,7 @@
     <metadata>
     
       <id>Sharpnado.Presentation.Forms</id>
-        <version>0.9.3</version>
+        <version>0.9.4</version>
         <copyright>Sharpnado 2018</copyright>
         <title>A Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</title>
         <authors>Jean-Marie Alfonsi</authors>
@@ -15,7 +15,7 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview</tags>        
-
+        <releaseNotes>HorizontalListView infinite list (paging) now supported through IInfiniteListLoader and Paginator in both layout (Grid or Horizontal).</releaseNotes>
         <description>
 Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView.
 
