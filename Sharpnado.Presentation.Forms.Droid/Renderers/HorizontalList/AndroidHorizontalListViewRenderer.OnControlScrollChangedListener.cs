@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 
+using Sharpnado.Infrastructure;
 using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
@@ -18,6 +19,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             private readonly HorizontalListView _element;
 
             private CancellationTokenSource _cts;
+            private int _lastVisibleItemIndex = -1;
 
             public OnControlScrollChangedListener(IntPtr handle, JniHandleOwnership transfer)
                 : base(handle, transfer)
@@ -32,9 +34,31 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 _element = element;
             }
 
+            public override void OnScrolled(RecyclerView recyclerView, int dx, int dy)
+            {
+                base.OnScrolled(recyclerView, dx, dy);
+
+                var infiniteListLoader = _element?.InfiniteListLoader;
+                if (infiniteListLoader == null)
+                {
+                    return;
+                }
+
+                var linearLayoutManager = (LinearLayoutManager)recyclerView.GetLayoutManager();
+                int lastVisibleItem = linearLayoutManager.FindLastVisibleItemPosition();
+                if (_lastVisibleItemIndex == lastVisibleItem)
+                {
+                    return;
+                }
+
+                _lastVisibleItemIndex = lastVisibleItem;
+                InternalLogger.Info($"OnScrolled( lastVisibleItem: {lastVisibleItem} )");
+                infiniteListLoader.OnScroll(lastVisibleItem);
+            }
+
             public override void OnScrollStateChanged(RecyclerView recyclerView, int newState)
             {
-                // System.Diagnostics.Debug.WriteLine($"DEBUG_SCROLL: OnScrollStateChanged ( newState: {newState} )");
+                InternalLogger.Info($"OnScrollStateChanged( newState: {newState} )");
                 switch (newState)
                 {
                     case RecyclerView.ScrollStateSettling:
@@ -95,13 +119,18 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     return;
                 }
 
+                if (nativeView?.LinearLayoutManager == null || _element == null)
+                {
+                    return;
+                }
+
                 nativeView._isCurrentIndexUpdateBackfire = true;
                 try
                 {
                     _element.CurrentIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
                     _element.ScrollBeganCommand?.Execute(null);
 
-                    // System.Diagnostics.Debug.WriteLine($"DEBUG_SCROLL: CurrentIndex: {_element.CurrentIndex}");
+                    InternalLogger.Info($"CurrentIndex: {_element.CurrentIndex}");
                 }
                 finally
                 {

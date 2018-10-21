@@ -109,10 +109,26 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             _marginDp = marginDp;
         }
 
+        public bool CanScroll { get; set; }
+
         public override void OnLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state)
         {
-            ComputeSpanCount(Width);
+            if (Width > 0)
+            {
+                ComputeSpanCount(Width);
+            }
+
             base.OnLayoutChildren(recycler, state);
+        }
+
+        public override bool CanScrollHorizontally()
+        {
+            return CanScroll && base.CanScrollHorizontally();
+        }
+
+        public override bool CanScrollVertically()
+        {
+            return CanScroll && base.CanScrollVertically();
         }
 
         private void ComputeSpanCount(int recyclerWidth)

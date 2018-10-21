@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Input;
-
+using Sharpnado.Presentation.Forms.Paging;
+using Sharpnado.Presentation.Forms.ViewModels;
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.RenderedViews
@@ -43,6 +44,11 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             default(IEnumerable<object>),
             BindingMode.TwoWay,
             propertyChanged: OnItemsSourceChanged);
+
+        public static readonly BindableProperty InfiniteListLoaderProperty = BindableProperty.Create(
+            nameof(ItemsSource),
+            typeof(IInfiniteListLoader),
+            typeof(HorizontalListView));
 
         public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create(
             nameof(ItemTemplate),
@@ -200,6 +206,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             get => (IEnumerable)GetValue(ItemsSourceProperty);
             set => SetValue(ItemsSourceProperty, value);
+        }
+
+        public IInfiniteListLoader InfiniteListLoader
+        {
+            get => (IInfiniteListLoader)GetValue(InfiniteListLoaderProperty);
+            set => SetValue(InfiniteListLoaderProperty, value);
         }
 
         public ICommand ScrollBeganCommand

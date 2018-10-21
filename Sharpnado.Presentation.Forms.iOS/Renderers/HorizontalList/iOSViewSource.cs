@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-
-using CoreGraphics;
 
 using Foundation;
 using Sharpnado.Presentation.Forms.RenderedViews;
@@ -13,23 +12,10 @@ using Xamarin.Forms.Platform.iOS;
 
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
-    public class ViewCellHolder
+    public struct UIViewCellHolder
     {
-        public ViewCellHolder()
-            : this(null)
-        {
-        }
+        public static UIViewCellHolder Empty = new UIViewCellHolder(null, null);
 
-        public ViewCellHolder(ViewCell viewCell)
-        {
-            FormsCell = viewCell;
-        }
-
-        public ViewCell FormsCell { get; set; }
-    }
-
-    public class UIViewCellHolder
-    {
         public UIViewCellHolder(ViewCell formsCell, UIView view)
         {
             FormsCell = formsCell;
@@ -39,6 +25,40 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         public ViewCell FormsCell { get; }
 
         public UIView CellContent { get; }
+
+        public static bool operator ==(UIViewCellHolder c1, UIViewCellHolder c2)
+        {
+            return ReferenceEquals(c1.FormsCell, c2.FormsCell) && ReferenceEquals(c1.CellContent, c2.CellContent);
+        }
+
+        public static bool operator !=(UIViewCellHolder c1, UIViewCellHolder c2)
+        {
+            return !ReferenceEquals(c1.FormsCell, c2.FormsCell) || !ReferenceEquals(c1.CellContent, c2.CellContent);
+        }
+
+        public bool Equals(UIViewCellHolder other)
+        {
+            return Equals(FormsCell, other.FormsCell) && Equals(CellContent, other.CellContent);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is UIViewCellHolder holder && Equals(holder);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((FormsCell != null ? FormsCell.GetHashCode() : 0) * 397) ^ (CellContent != null ? CellContent.GetHashCode() : 0);
+            }
+        }
+
     }
 
     public class iOSViewCell : UICollectionViewCell
@@ -66,16 +86,16 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
     public class iOSViewSource : UICollectionViewDataSource
     {
-        private readonly HorizontalListView _element;
+        private readonly WeakReference<HorizontalListView> _weakElement;
 
-        private readonly IList _dataSource;
+        private readonly List<object> _dataSource;
         private readonly UIViewCellHolderQueue _viewCellHolderCellHolderQueue;
 
-        public iOSViewSource(HorizontalListView element)
+        public iOSViewSource(HorizontalListView weakElement)
         {
-            _element = element;
+            _weakElement = new WeakReference<HorizontalListView>(weakElement);
 
-            var elementItemsSource = _element.ItemsSource;
+            var elementItemsSource = weakElement.ItemsSource;
             _dataSource = elementItemsSource?.Cast<object>().ToList();
 
             if (_dataSource == null)
@@ -83,7 +103,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return;
             }
 
-            _viewCellHolderCellHolderQueue = new UIViewCellHolderQueue(element.ViewCacheSize, CreateViewCellHolder);
+            _viewCellHolderCellHolderQueue = new UIViewCellHolderQueue(weakElement.ViewCacheSize, CreateViewCellHolder);
             _viewCellHolderCellHolderQueue.Build();
         }
 
@@ -92,10 +112,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             switch (eventArgs.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    _dataSource.Insert(eventArgs.NewStartingIndex, eventArgs.NewItems[0]);
+                    _dataSource.InsertRange(eventArgs.NewStartingIndex, eventArgs.NewItems.Cast<object>());
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    _dataSource.RemoveAt(eventArgs.OldStartingIndex);
+                    _dataSource.RemoveRange(eventArgs.OldStartingIndex, eventArgs.OldItems.Count);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     _dataSource.Clear();
@@ -109,7 +129,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         }
 
         public override bool CanMoveItem(UICollectionView collectionView, NSIndexPath indexPath) =>
-            _element.EnableDragAndDrop;
+            _weakElement.TryGetTarget(out var element) && element.EnableDragAndDrop;
 
         public override void MoveItem(UICollectionView collectionView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath)
         {
@@ -136,6 +156,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             if (!nativeCell.IsInitialized)
             {
                 var holder = _viewCellHolderCellHolderQueue.Dequeue();
+                if (holder == UIViewCellHolder.Empty)
+                {
+                    return nativeCell;
+                }
+
                 nativeCell.Initialize(holder.FormsCell, holder.CellContent);
             }
 
@@ -154,7 +179,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private UIViewCellHolder CreateViewCellHolder()
         {
             ViewCell formsCell = null;
-            if (_element.ItemTemplate is DataTemplateSelector selector)
+
+            if (!_weakElement.TryGetTarget(out var element))
+            {
+                return UIViewCellHolder.Empty;
+            }
+
+            if (element.ItemTemplate is DataTemplateSelector selector)
             {
                 // TODO: handle DataTemplateSelector
                 // var template = selector.SelectTemplate(_dataSource[index], _element.Parent);
@@ -163,10 +194,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
             else
             {
-                formsCell = (ViewCell)_element.ItemTemplate.CreateContent();
+                formsCell = (ViewCell)element.ItemTemplate.CreateContent();
             }
 
-            formsCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
+            formsCell.View.Layout(new Rectangle(0, 0, element.ItemWidth, element.ItemHeight));
 
             if (Platform.GetRenderer(formsCell.View) == null)
             {

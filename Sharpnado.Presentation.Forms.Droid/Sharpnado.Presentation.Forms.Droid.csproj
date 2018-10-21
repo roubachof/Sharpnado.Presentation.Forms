@@ -60,6 +60,7 @@
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.OnControlScrollChangedListener.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.RecycleViewAdapter.cs" />
     <Compile Include="Renderers\HorizontalList\CellCache.cs" />
+    <Compile Include="Renderers\HorizontalList\CustomGridLayoutManager.cs" />
     <Compile Include="Renderers\HorizontalList\CustomLinearLayoutManager.cs" />
     <Compile Include="Renderers\HorizontalList\ResponsiveGridLayoutManager.cs" />
     <Compile Include="Renderers\HorizontalList\SlowRecyclerView.cs" />

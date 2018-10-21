@@ -25,7 +25,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
         }
 
-        public CustomLinearLayoutManager LinearLayoutManager => Control?.GetLayoutManager() as CustomLinearLayoutManager;
+        public CustomLinearLayoutManager HorizontalLinearLayoutManager => Control?.GetLayoutManager() as CustomLinearLayoutManager;
+
+        public GridLayoutManager GridLayoutManager => Control?.GetLayoutManager() as GridLayoutManager;
+
+        public LinearLayoutManager LinearLayoutManager => Control?.GetLayoutManager() as LinearLayoutManager;
 
         public bool IsScrolling { get; set; }
 
@@ -78,7 +82,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 recyclerView.SetLayoutManager(
                     Element.GridColumnCount == 0
                         ? new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing)
-                        : new GridLayoutManager(Context, Element.GridColumnCount));
+                        : (GridLayoutManager)new CustomGridLayoutManager(Context, Element.GridColumnCount));
             }
             else
             {
@@ -110,7 +114,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 Control.AddOnScrollListener(new OnControlScrollChangedListener(this, horizontalList));
 
                 ProcessDisableScroll();
-                ScrollToCurrentItem();
+
+                if (HorizontalLinearLayoutManager != null)
+                {
+                    ScrollToCurrentItem();
+                }
             }
 
             Control.ViewTreeObserver.PreDraw += OnPreDraw;
@@ -132,7 +140,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     _isLandscape = true;
 
                     // Has just rotated
-                    if (LinearLayoutManager != null)
+                    if (HorizontalLinearLayoutManager != null)
                     {
                         ScrollToCurrentItem();
                     }
@@ -157,17 +165,24 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 return;
             }
 
-            LinearLayoutManager.CanScroll = !Element.DisableScroll;
+            if (HorizontalLinearLayoutManager != null)
+            {
+                HorizontalLinearLayoutManager.CanScroll = !Element.DisableScroll;
+            }
+            else if (GridLayoutManager != null && GridLayoutManager is CustomGridLayoutManager customGridLayoutManager)
+            {
+                customGridLayoutManager.CanScroll = !Element.DisableScroll;
+            }
+            else if (GridLayoutManager != null
+                && GridLayoutManager is ResponsiveGridLayoutManager responsiveGridLayoutManager)
+            {
+                responsiveGridLayoutManager.CanScroll = !Element.DisableScroll;
+            }
         }
 
         private void ScrollToCurrentItem()
         {
-            if (LinearLayoutManager == null || !_isLandscape)
-            {
-                return;
-            }
-
-            LinearLayoutManager.ScrollToPositionWithOffset(Element.CurrentIndex, 0);
+            HorizontalLinearLayoutManager?.ScrollToPositionWithOffset(Element.CurrentIndex, 0);
         }
 
         private void UpdateItemsSource()

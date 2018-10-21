@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using CoreGraphics;
 using Foundation;
+
+using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
@@ -22,6 +25,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private bool _isCurrentIndexUpdateBackfire;
         private bool _isInternalScroll;
         private bool _isMovedBackfire;
+
+        private int _lastVisibleItemIndex = -1;
 
         public static void Initialize()
         {
@@ -56,7 +61,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 {
                     Control.DecelerationEnded -= OnStopScrolling;
                     Control.ScrollAnimationEnded -= OnStopScrolling;
-                    Control.Scrolled -= OnStartScrolling;
+                    Control.Scrolled -= OnScrolled;
+
+                    Control.DraggingEnded -= OnDraggingEnded;
+                    Control.DecelerationEnded -= OnDecelerationEnded;
 
                     Control.DataSource?.Dispose();
                     Control.CollectionViewLayout?.Dispose();
@@ -82,7 +90,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return;
             }
 
-            // System.Diagnostics.Debug.WriteLine($"ScrollToCurrentItem( Element.CurrentIndex = {Element.CurrentIndex} )");
+            InternalLogger.Info($"ScrollToCurrentItem( Element.CurrentIndex = {Element.CurrentIndex} )");
             _isInternalScroll = true;
             Control.ScrollToItem(
                 NSIndexPath.FromRowSection(Element.CurrentIndex, 0),
@@ -92,11 +100,6 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private void ProcessDisableScroll()
         {
-            if (Element.ListLayout == HorizontalListViewLayout.Grid)
-            {
-                return;
-            }
-
             Control.ScrollEnabled = !Element.DisableScroll;
         }
 
@@ -150,6 +153,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 ContentInset = new UIEdgeInsets(0, 0, 0, 0),
             };
 
+            // Otherwise the UICollectionView doesn't seem to take enough space
+            Element.HeightRequest = Element.ItemHeight
+                + Element.CollectionPadding.VerticalThickness
+                + Element.Margin.VerticalThickness;
+
             SetNativeControl(collectionView);
             UpdateItemsSource();
 
@@ -159,7 +167,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 Control.DecelerationEnded += OnDecelerationEnded;
             }
 
-            Control.Scrolled += OnStartScrolling;
+            Control.Scrolled += OnScrolled;
             Control.ScrollAnimationEnded += OnStopScrolling;
             Control.DecelerationEnded += OnStopScrolling;
 
@@ -205,8 +213,28 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
         }
 
-        private void OnStartScrolling(object sender, EventArgs e)
+        private void OnScrolled(object sender, EventArgs e)
         {
+            var infiniteListLoader = Element?.InfiniteListLoader;
+            if (infiniteListLoader != null)
+            {
+                int lastVisibleIndex =
+                    Control.IndexPathsForVisibleItems
+                        .Select(path => path.Row)
+                        .DefaultIfEmpty(-1)
+                        .Max();
+
+                if (_lastVisibleItemIndex == lastVisibleIndex)
+                {
+                    return;
+                }
+
+                _lastVisibleItemIndex = lastVisibleIndex;
+
+                InternalLogger.Info($"OnScrolled( lastVisibleItem: {lastVisibleIndex} )");
+                infiniteListLoader.OnScroll(lastVisibleIndex);
+            }
+
             if (_isInternalScroll)
             {
                 _isInternalScroll = false;
@@ -254,13 +282,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return;
             }
 
-            // System.Diagnostics.Debug.WriteLine($"UpdateCurrentIndex => {indexPath.Row}");
+            InternalLogger.Info($"UpdateCurrentIndex => {indexPath.Row}");
             Element.CurrentIndex = indexPath.Row;
         }
 
         private void UpdateItemsSource()
         {
-            // System.Diagnostics.Debug.WriteLine("UpdateItemsSource");
+            InternalLogger.Info("UpdateItemsSource");
             Control.DataSource?.Dispose();
             Control.DataSource = null;
 
@@ -306,10 +334,22 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    Control.InsertItems(new[] { NSIndexPath.FromRowSection(e.NewStartingIndex, 0) });
+                    var addedIndexPathes = new NSIndexPath[e.NewItems.Count];
+                    for (int addedIndex = e.NewStartingIndex, index = 0; index < addedIndexPathes.Length; addedIndex++, index++)
+                    {
+                        addedIndexPathes[index] = NSIndexPath.FromRowSection(addedIndex, 0);
+                    }
+
+                    Control.InsertItems(addedIndexPathes);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    Control.DeleteItems(new[] { NSIndexPath.FromRowSection(e.OldStartingIndex, 0) });
+                    var removedIndexPathes = new NSIndexPath[e.OldItems.Count];
+                    for (int removedIndex = e.OldStartingIndex, index = 0; index < removedIndexPathes.Length; removedIndex++, index++)
+                    {
+                        removedIndexPathes[index] = NSIndexPath.FromRowSection(removedIndex, 0);
+                    }
+
+                    Control.DeleteItems(removedIndexPathes);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     Control.ReloadData();

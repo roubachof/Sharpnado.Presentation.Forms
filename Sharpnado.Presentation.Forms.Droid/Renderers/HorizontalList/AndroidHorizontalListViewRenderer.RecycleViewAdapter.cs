@@ -50,7 +50,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             private readonly HorizontalListView _element;
             private readonly IEnumerable _elementItemsSource;
             private readonly INotifyCollectionChanged _notifyCollectionChanged;
-            private readonly IList<object> _dataSource;
+            private readonly List<object> _dataSource;
 
             private readonly ViewHolderQueue _viewHolderQueue;
 
@@ -242,11 +242,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        OnItemAdded(e.NewStartingIndex, e.NewItems[0]);
+                        OnItemAdded(e.NewStartingIndex, e.NewItems);
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
-                        OnItemRemoved(e.OldStartingIndex);
+                        OnItemRemoved(e.OldStartingIndex, e.OldItems.Count);
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
@@ -256,7 +256,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 }
             }
 
-            private void OnItemAdded(int newIndex, object item)
+            private void OnItemAdded(int newIndex, IList items)
             {
                 // System.Diagnostics.Debug.WriteLine($"OnItemAdded( newIndex: {newIndex} )");
                 using (var h = new Handler(Looper.MainLooper))
@@ -264,13 +264,20 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     h.Post(
                         () =>
                         {
-                            _dataSource.Insert(newIndex, item);
-                            NotifyItemInserted(newIndex);
+                            _dataSource.InsertRange(newIndex, items.Cast<object>());
+                            if (items.Count == 1)
+                            {
+                                NotifyItemInserted(newIndex);
+                            }
+                            else
+                            {
+                                NotifyItemRangeInserted(newIndex, items.Count);
+                            }
                         });
                 }
             }
 
-            private void OnItemRemoved(int removedIndex)
+            private void OnItemRemoved(int removedIndex, int itemCount)
             {
                 // System.Diagnostics.Debug.WriteLine($"OnItemRemoved( removedIndex: {removedIndex} )");
                 using (var h = new Handler(Looper.MainLooper))
@@ -278,10 +285,21 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     h.Post(
                         () =>
                         {
-                            var data = _dataSource[removedIndex];
-                            Unbind(data);
-                            _dataSource.RemoveAt(removedIndex);
-                            NotifyItemRemoved(removedIndex);
+                            for (int index = removedIndex; index < removedIndex + itemCount; index++)
+                            {
+                                var data = _dataSource[index];
+                                Unbind(data);
+                            }
+
+                            _dataSource.RemoveRange(removedIndex, itemCount);
+                            if (itemCount == 1)
+                            {
+                                NotifyItemRemoved(removedIndex);
+                            }
+                            else
+                            {
+                                NotifyItemRangeRemoved(removedIndex, itemCount);
+                            }
                         });
                 }
             }
