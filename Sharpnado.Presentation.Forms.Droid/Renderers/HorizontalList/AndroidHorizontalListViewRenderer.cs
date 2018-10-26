@@ -192,7 +192,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             var adapter = new RecycleViewAdapter(Element, Context);
             Control.SetAdapter(adapter);
 
-            if (Element.ListLayout == HorizontalListViewLayout.Grid && Element.EnableDragAndDrop)
+            if (Element.EnableDragAndDrop)
             {
                 var dragHelper = new ItemTouchHelper(new DragAnDropItemTouchHelperCallback(Element, adapter, Element.DragAndDropEndedCommand));
                 dragHelper.AttachToRecyclerView(Control);

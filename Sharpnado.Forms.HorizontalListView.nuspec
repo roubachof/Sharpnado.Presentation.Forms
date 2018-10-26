@@ -3,7 +3,7 @@
     <metadata>
     
     	<id>Sharpnado.Forms.HorizontalListView</id>
-        <version>0.9.4</version>
+        <version>0.9.5</version>
         <copyright>Sharpnado 2018</copyright>
         <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
         <authors>Jean-Marie Alfonsi</authors>
@@ -15,7 +15,7 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview</tags>
-        <releaseNotes>HorizontalListView infinite list (paging) now supported through IInfiniteListLoader and Paginator in both layout (Grid or Horizontal).</releaseNotes>
+        <releaseNotes>HorizontalListView: Added support for DataTemplateSelector.</releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Snapping on first or middle element

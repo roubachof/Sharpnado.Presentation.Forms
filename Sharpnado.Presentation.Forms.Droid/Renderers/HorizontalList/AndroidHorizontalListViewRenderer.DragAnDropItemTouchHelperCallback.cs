@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 
-using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
