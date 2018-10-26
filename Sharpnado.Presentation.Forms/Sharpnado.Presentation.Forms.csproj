@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>..\Sharpnado.Infrastructure\StyleCopRules.ruleset</CodeAnalysisRuleSet>
-    <Version>0.9.3</Version>
+    <Version>0.9.4</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Copyright>Sharpnado 2018</Copyright>
     <PackageLicenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</PackageLicenseUrl>
@@ -24,7 +24,7 @@
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.2.0.839982</Version>
+      <Version>3.3.0.912540</Version>
     </PackageReference>
   </ItemGroup>
 

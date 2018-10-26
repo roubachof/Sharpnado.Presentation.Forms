@@ -91,11 +91,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private readonly List<object> _dataSource;
         private readonly UIViewCellHolderQueue _viewCellHolderCellHolderQueue;
 
-        public iOSViewSource(HorizontalListView weakElement)
+        public iOSViewSource(HorizontalListView element)
         {
-            _weakElement = new WeakReference<HorizontalListView>(weakElement);
+            _weakElement = new WeakReference<HorizontalListView>(element);
 
-            var elementItemsSource = weakElement.ItemsSource;
+            var elementItemsSource = element.ItemsSource;
             _dataSource = elementItemsSource?.Cast<object>().ToList();
 
             if (_dataSource == null)
@@ -103,8 +103,14 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return;
             }
 
-            _viewCellHolderCellHolderQueue = new UIViewCellHolderQueue(weakElement.ViewCacheSize, CreateViewCellHolder);
-            _viewCellHolderCellHolderQueue.Build();
+            if (!(element.ItemTemplate is DataTemplateSelector))
+            {
+                // Cache only support single DataTemplate
+                _viewCellHolderCellHolderQueue = new UIViewCellHolderQueue(
+                    element.ViewCacheSize,
+                    () => CreateViewCellHolder());
+                _viewCellHolderCellHolderQueue.Build();
+            }
         }
 
         public void HandleNotifyCollectionChanged(NotifyCollectionChangedEventArgs eventArgs)
@@ -155,7 +161,16 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             if (!nativeCell.IsInitialized)
             {
-                var holder = _viewCellHolderCellHolderQueue.Dequeue();
+                UIViewCellHolder holder;
+                if (_weakElement.TryGetTarget(out var element) && element.ItemTemplate is DataTemplateSelector)
+                {
+                    holder = CreateViewCellHolder(indexPath.Row);
+                }
+                else
+                {
+                    holder = _viewCellHolderCellHolderQueue.Dequeue();
+                }
+
                 if (holder == UIViewCellHolder.Empty)
                 {
                     return nativeCell;
@@ -176,7 +191,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             base.Dispose(disposing);
         }
 
-        private UIViewCellHolder CreateViewCellHolder()
+        private UIViewCellHolder CreateViewCellHolder(int itemIndex = -1)
         {
             ViewCell formsCell = null;
 
@@ -187,10 +202,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             if (element.ItemTemplate is DataTemplateSelector selector)
             {
-                // TODO: handle DataTemplateSelector
-                // var template = selector.SelectTemplate(_dataSource[index], _element.Parent);
-                // formsCell = (ViewCell)template.CreateContent();
-                throw new NotSupportedException();
+                if (itemIndex == -1)
+                {
+                    throw new InvalidOperationException("Cannot select a DataTemplate without an itemIndex");
+                }
+
+                var template = selector.SelectTemplate(_dataSource[itemIndex], element.Parent);
+                formsCell = (ViewCell)template.CreateContent();
             }
             else
             {

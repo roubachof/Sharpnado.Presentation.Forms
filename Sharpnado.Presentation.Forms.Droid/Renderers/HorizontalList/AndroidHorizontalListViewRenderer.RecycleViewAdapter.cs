@@ -54,6 +54,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             private readonly ViewHolderQueue _viewHolderQueue;
 
+            private readonly List<DataTemplate> _dataTemplates = new List<DataTemplate>(3);
+
             private readonly List<WeakReference<ViewCell>> _formsViews;
 
             private bool _collectionChangedBackfire;
@@ -73,8 +75,13 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 _dataSource = _elementItemsSource?.Cast<object>().ToList() ?? new List<object>();
 
                 _formsViews = new List<WeakReference<ViewCell>>();
-                _viewHolderQueue = new ViewHolderQueue(element.ViewCacheSize, CreateViewHolder);
-                _viewHolderQueue.Build();
+
+                if (!(_element.ItemTemplate is DataTemplateSelector))
+                {
+                    // Cache only support single DataTemplate
+                    _viewHolderQueue = new ViewHolderQueue(element.ViewCacheSize, () => CreateViewHolder());
+                    _viewHolderQueue.Build();
+                }
 
                 _notifyCollectionChanged = _elementItemsSource as INotifyCollectionChanged;
                 if (_notifyCollectionChanged != null)
@@ -90,6 +97,25 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 return position;
             }
 
+            public override int GetItemViewType(int position)
+            {
+                if (_element.ItemTemplate is DataTemplateSelector dataTemplateSelector)
+                {
+                    var dataTemplate = dataTemplateSelector.SelectTemplate(_dataSource[position], _element.Parent);
+
+                    int itemViewType = _dataTemplates.IndexOf(dataTemplate);
+                    if (itemViewType == -1)
+                    {
+                        itemViewType = _dataTemplates.Count;
+                        _dataTemplates.Add(dataTemplate);
+                    }
+
+                    return itemViewType;
+                }
+
+                return base.GetItemViewType(position);
+            }
+
             public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
             {
                 var item = (ViewHolder)holder;
@@ -99,6 +125,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
             {
+                if (_element.ItemTemplate is DataTemplateSelector)
+                {
+                    return CreateViewHolder(viewType);
+                }
+
                 return _viewHolderQueue.Dequeue();
             }
 
@@ -160,9 +191,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 base.Dispose(disposing);
             }
 
-            private ViewHolder CreateViewHolder()
+            private ViewHolder CreateViewHolder(int itemViewType = -1)
             {
-                var view = CreateView(out var viewCell);
+                var view = CreateView(out var viewCell, itemViewType);
 
                 if (_element.ListLayout == HorizontalListViewLayout.Grid)
                 {
@@ -180,20 +211,18 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 return new ViewHolder(view, viewCell);
             }
 
-            private View CreateView(out ViewCell viewCell)
+            private View CreateView(out ViewCell viewCell, int itemViewType)
             {
                 viewCell = null;
                 var dataTemplate = _element.ItemTemplate;
-                if (dataTemplate is DataTemplateSelector selector)
+
+                if (itemViewType == -1)
                 {
-                    // TODO: support templateSelector
-                    // var template = selector.SelectTemplate(_dataSource[position], _element.Parent);
-                    // viewCell = (ViewCell)template.CreateContent();
-                    throw new NotSupportedException();
+                    viewCell = (ViewCell)dataTemplate.CreateContent();
                 }
                 else
                 {
-                    viewCell = (ViewCell)dataTemplate.CreateContent();
+                    viewCell = (ViewCell)_dataTemplates[itemViewType].CreateContent();
                 }
 
                 viewCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
