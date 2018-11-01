@@ -225,6 +225,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     viewCell = (ViewCell)_dataTemplates[itemViewType].CreateContent();
                 }
 
+                viewCell.Parent = _element;
                 viewCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
 
                 LayoutParams layoutParams = null;
@@ -347,6 +348,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 if (weakViewCell.TryGetTarget(out var viewCell))
                 {
                     viewCell.BindingContext = null;
+                    viewCell.Parent = null;
                 }
             }
         }

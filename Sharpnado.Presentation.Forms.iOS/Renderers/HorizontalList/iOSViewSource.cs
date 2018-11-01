@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -215,6 +214,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 formsCell = (ViewCell)element.ItemTemplate.CreateContent();
             }
 
+            formsCell.Parent = element;
             formsCell.View.Layout(new Rectangle(0, 0, element.ItemWidth, element.ItemHeight));
 
             if (Platform.GetRenderer(formsCell.View) == null)
