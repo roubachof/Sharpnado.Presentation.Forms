@@ -115,7 +115,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 Control.Hidden = true;
                 return;
             }
-
+            Element.OnScrollRequested += Element_OnScrollRequested;
             Control?.DataSource?.Dispose();
             Control?.CollectionViewLayout?.Dispose();
             Control?.Dispose();
@@ -204,6 +204,44 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         {
             SnapToCenter();
         }
+
+        void Element_OnScrollRequested(object sender, ScrollRequestedEventArgs e)
+        {
+
+
+            if (Element.ListLayout == HorizontalListViewLayout.Grid || Control.NumberOfItemsInSection(0) == 0 || e.Position >= Control.NumberOfItemsInSection(0))
+            {
+                return;
+            }
+
+
+
+
+            _isInternalScroll = true;
+
+            UICollectionViewScrollPosition type = UICollectionViewScrollPosition.Left;
+
+            switch(e.Type)
+            {
+                case ScrollType.Start:
+                    type = UICollectionViewScrollPosition.Left;
+                    break;
+                case ScrollType.End:
+                    type = UICollectionViewScrollPosition.Right;
+                    break;
+                case ScrollType.Center:
+                    type = UICollectionViewScrollPosition.CenteredHorizontally;
+                    break;
+            }
+
+
+
+            Control.ScrollToItem(
+                NSIndexPath.FromRowSection(e.Position, 0),
+                type,
+                e.Animate);
+        }
+
 
         private void OnDraggingEnded(object sender, DraggingEventArgs e)
         {

@@ -76,6 +76,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         private void CreateView(HorizontalListView horizontalList)
         {
             var recyclerView = new SlowRecyclerView(Context);
+            Element.OnScrollRequested += Element_OnScrollRequested;
 
             if (Element.ListLayout == HorizontalListViewLayout.Grid)
             {
@@ -182,8 +183,37 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void ScrollToCurrentItem()
         {
+
             HorizontalLinearLayoutManager?.ScrollToPositionWithOffset(Element.CurrentIndex, 0);
         }
+
+        void Element_OnScrollRequested(object sender, ScrollRequestedEventArgs e)
+        {
+            if (e.Position >= Control.ChildCount) return;
+
+            var itemWidth = Control.GetChildAt(e.Position).MeasuredWidth;
+            var width = Control.MeasuredWidth;
+            int offset = 0;
+            switch(e.Type)
+            {
+                case ScrollType.Start:
+                    offset = 0;
+                    break;
+                case ScrollType.Center:
+                    offset = (width / 2) - (itemWidth / 2);
+                    break;
+                case ScrollType.End:
+                    offset = width - itemWidth;
+                    break;
+            }
+
+
+
+            HorizontalLinearLayoutManager?.ScrollToPositionWithOffset(e.Position, offset);
+         
+
+        }
+
 
         private void UpdateItemsSource()
         {

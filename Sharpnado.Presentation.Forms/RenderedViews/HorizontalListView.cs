@@ -189,6 +189,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public int GridColumnCount { get; set; } = 0;
 
+        public event System.EventHandler<ScrollRequestedEventArgs> OnScrollRequested;
+
         public int VisibleCellCount
         {
             get => (int)GetValue(VisibleCellCountProperty);
@@ -231,6 +233,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             set => SetValue(DragAndDropEndedCommandProperty, value);
         }
 
+
+        public void ScrollToPosition(int position,ScrollType type, bool animate)
+        {
+            OnScrollRequested?.Invoke(this, new ScrollRequestedEventArgs { Animate = animate, Position = position, Type = type });
+        }
+
+
         public DataTemplate ItemTemplate
         {
             get => (DataTemplate)GetValue(ItemTemplateProperty);
@@ -249,4 +258,18 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
         }
     }
+
+
+    public enum ScrollType
+    {
+        Start,Center,End
+    }
+
+    public class ScrollRequestedEventArgs
+    {
+        public int Position { get; set; }
+        public ScrollType Type { get; set; }
+        public bool Animate { get; set; }
+    }
+
 }
