@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using Android.Content;
 using Android.Support.V7.Widget;
@@ -126,7 +127,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void OnPreDraw(object sender, ViewTreeObserver.PreDrawEventArgs e)
         {
-            if (Control == null)
+            // Since Control.IsDisposed() can't be accessed we need to check that manually
+            if (Control == null || Control.Handle == IntPtr.Zero)
             {
                 return;
             }
