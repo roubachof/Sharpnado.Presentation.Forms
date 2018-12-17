@@ -20,6 +20,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
     public partial class iOSHorizontalListViewRenderer : ViewRenderer<HorizontalListView, UICollectionView>
     {
         private IEnumerable _itemsSource;
+        private UICollectionView _collectionView;
 
         private bool _isScrolling;
         private bool _isCurrentIndexUpdateBackfire;
@@ -32,15 +33,28 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         {
         }
 
+        public override void LayoutSubviews()
+        {
+            base.LayoutSubviews();
+
+            double height = Bounds.Height;
+            double width = Bounds.Width;
+
+            if (_collectionView == null || height <= 0 || width <= 0)
+            {
+                return;
+            }
+
+            _collectionView.Frame = new CGRect(0, 0, width, height);
+            SetCollectionView(_collectionView);
+        }
+
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case nameof(HorizontalListView.ItemsSource):
                     UpdateItemsSource();
-                    break;
-                case nameof(HorizontalListView.IsVisible):
-                    CreateView();
                     break;
                 case nameof(HorizontalListView.CurrentIndex) when !_isCurrentIndexUpdateBackfire:
                     ScrollToCurrentItem();
@@ -65,10 +79,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
                     Control.DraggingEnded -= OnDraggingEnded;
                     Control.DecelerationEnded -= OnDecelerationEnded;
+                }
 
-                    Control.DataSource?.Dispose();
-                    Control.CollectionViewLayout?.Dispose();
-                    Control.Dispose();
+                if (_collectionView != null)
+                {
+                    _collectionView.Dispose();
+                    _collectionView.DataSource?.Dispose();
+                    _collectionView.CollectionViewLayout?.Dispose();
                 }
 
                 if (_itemsSource is INotifyCollectionChanged oldNotifyCollection)
@@ -83,39 +100,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
         }
 
-        private void ScrollToCurrentItem()
-        {
-            if (Element.ListLayout == HorizontalListViewLayout.Grid || Control.NumberOfItemsInSection(0) == 0)
-            {
-                return;
-            }
-
-            InternalLogger.Info($"ScrollToCurrentItem( Element.CurrentIndex = {Element.CurrentIndex} )");
-            _isInternalScroll = true;
-            Control.ScrollToItem(
-                NSIndexPath.FromRowSection(Element.CurrentIndex, 0),
-                UICollectionViewScrollPosition.Left,
-                false);
-        }
-
-        private void ProcessDisableScroll()
-        {
-            Control.ScrollEnabled = !Element.DisableScroll;
-        }
-
         private void CreateView()
         {
-            if (Control == null && !Element.IsVisible)
-            {
-                return;
-            }
-
-            if (Control != null && !Element.IsVisible)
-            {
-                Control.Hidden = true;
-                return;
-            }
-
             Control?.DataSource?.Dispose();
             Control?.CollectionViewLayout?.Dispose();
             Control?.Dispose();
@@ -144,20 +130,23 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     SectionInset = sectionInset,
                 };
 
-            var rect = new CGRect(0, 0, Element.ItemWidth, Element.ItemHeight);
-            var collectionView = new UICollectionView(rect, layout)
+            // Otherwise the UICollectionView doesn't seem to take enough space
+            Element.HeightRequest = Element.ItemHeight
+                + Element.CollectionPadding.VerticalThickness
+                + Element.Margin.VerticalThickness;
+
+            var rect = new CGRect(0, 0, 100, Element.HeightRequest);
+            _collectionView = new UICollectionView(rect, layout)
             {
                 DecelerationRate = UIScrollView.DecelerationRateFast,
                 BackgroundColor = Element?.BackgroundColor.ToUIColor(),
                 ShowsHorizontalScrollIndicator = false,
                 ContentInset = new UIEdgeInsets(0, 0, 0, 0),
             };
+        }
 
-            // Otherwise the UICollectionView doesn't seem to take enough space
-            Element.HeightRequest = Element.ItemHeight
-                + Element.CollectionPadding.VerticalThickness
-                + Element.Margin.VerticalThickness;
-
+        private void SetCollectionView(UICollectionView collectionView)
+        {
             SetNativeControl(collectionView);
             UpdateItemsSource();
 
@@ -180,114 +169,58 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             ProcessDisableScroll();
         }
 
-        private void SnapToCenter()
+        private void ScrollToCurrentItem()
         {
-            var collectionRect = new CGRect
-            {
-                X = Control.ContentOffset.X,
-                Y = Control.ContentOffset.Y,
-                Size = new CGSize(Control.Frame.Width, Control.Frame.Height),
-            };
-
-            var collectionViewCenter = new CGPoint(collectionRect.GetMidX(), collectionRect.GetMidY());
-
-            var indexPath = Control.IndexPathForItemAtPoint(collectionViewCenter);
-            if (indexPath == null)
+            if (Control == null
+                || Element.CurrentIndex == -1
+                || Element.CurrentIndex >= Control.NumberOfItemsInSection(0)
+                || Control.NumberOfItemsInSection(0) == 0)
             {
                 return;
             }
 
-            Control.ScrollToItem(indexPath, UICollectionViewScrollPosition.CenteredHorizontally, true);
-        }
+            InternalLogger.Info($"ScrollToCurrentItem( Element.CurrentIndex = {Element.CurrentIndex} )");
+            _isInternalScroll = true;
 
-        private void OnDecelerationEnded(object sender, EventArgs e)
-        {
-            SnapToCenter();
-        }
+            Control.LayoutIfNeeded();
 
-        private void OnDraggingEnded(object sender, DraggingEventArgs e)
-        {
-            if (!e.Decelerate)
+            UICollectionViewScrollPosition position = UICollectionViewScrollPosition.Top;
+            if (Element.ListLayout == HorizontalListViewLayout.Linear)
             {
-                SnapToCenter();
-            }
-        }
-
-        private void OnScrolled(object sender, EventArgs e)
-        {
-            var infiniteListLoader = Element?.InfiniteListLoader;
-            if (infiniteListLoader != null)
-            {
-                int lastVisibleIndex =
-                    Control.IndexPathsForVisibleItems
-                        .Select(path => path.Row)
-                        .DefaultIfEmpty(-1)
-                        .Max();
-
-                if (_lastVisibleItemIndex == lastVisibleIndex)
+                switch (Element.SnapStyle)
                 {
-                    return;
+                    case SnapStyle.Center:
+                        position = UICollectionViewScrollPosition.CenteredHorizontally;
+                        break;
+                    case SnapStyle.Start:
+                        position = UICollectionViewScrollPosition.Left;
+                        break;
                 }
-
-                _lastVisibleItemIndex = lastVisibleIndex;
-
-                InternalLogger.Info($"OnScrolled( lastVisibleItem: {lastVisibleIndex} )");
-                infiniteListLoader.OnScroll(lastVisibleIndex);
             }
 
-            if (_isInternalScroll)
-            {
-                _isInternalScroll = false;
-                return;
-            }
-
-            if (_isScrolling)
-            {
-                return;
-            }
-
-            _isScrolling = true;
-            Element.ScrollBeganCommand?.Execute(null);
+            Control.ScrollToItem(
+                NSIndexPath.FromRowSection(Element.CurrentIndex, 0),
+                position,
+                false);
         }
 
-        private void OnStopScrolling(object sender, EventArgs e)
+        private void ProcessDisableScroll()
         {
-            _isScrolling = false;
-
-            _isCurrentIndexUpdateBackfire = true;
-            try
-            {
-                UpdateCurrentIndex();
-            }
-            finally
-            {
-                _isCurrentIndexUpdateBackfire = false;
-            }
-        }
-
-        private void UpdateCurrentIndex()
-        {
-            var firstCellBounds = new CGRect
-            {
-                X = Control.ContentOffset.X,
-                Y = Control.ContentOffset.Y,
-                Size = new CGSize(Element.ItemWidth, Element.ItemHeight),
-            };
-
-            var firstCellCenter = new CGPoint(firstCellBounds.GetMidX(), firstCellBounds.GetMidY());
-
-            var indexPath = Control.IndexPathForItemAtPoint(firstCellCenter);
-            if (indexPath == null)
+            if (Control == null)
             {
                 return;
             }
 
-            InternalLogger.Info($"UpdateCurrentIndex => {indexPath.Row}");
-            Element.CurrentIndex = indexPath.Row;
+            Control.ScrollEnabled = !Element.DisableScroll;
         }
 
         private void UpdateItemsSource()
         {
+            if (Control == null)
+            {
+                return;
+            }
+
             InternalLogger.Info("UpdateItemsSource");
             Control.DataSource?.Dispose();
             Control.DataSource = null;
@@ -335,7 +268,9 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             {
                 case NotifyCollectionChangedAction.Add:
                     var addedIndexPathes = new NSIndexPath[e.NewItems.Count];
-                    for (int addedIndex = e.NewStartingIndex, index = 0; index < addedIndexPathes.Length; addedIndex++, index++)
+                    for (int addedIndex = e.NewStartingIndex, index = 0;
+                        index < addedIndexPathes.Length;
+                        addedIndex++, index++)
                     {
                         addedIndexPathes[index] = NSIndexPath.FromRowSection(addedIndex, 0);
                     }
@@ -344,7 +279,9 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     var removedIndexPathes = new NSIndexPath[e.OldItems.Count];
-                    for (int removedIndex = e.OldStartingIndex, index = 0; index < removedIndexPathes.Length; removedIndex++, index++)
+                    for (int removedIndex = e.OldStartingIndex, index = 0;
+                        index < removedIndexPathes.Length;
+                        removedIndex++, index++)
                     {
                         removedIndexPathes[index] = NSIndexPath.FromRowSection(removedIndex, 0);
                     }

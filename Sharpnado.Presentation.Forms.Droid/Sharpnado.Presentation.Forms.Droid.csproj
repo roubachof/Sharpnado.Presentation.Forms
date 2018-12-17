@@ -51,6 +51,7 @@
     <Compile Include="Effects\TintableImageEffect.cs" />
     <Compile Include="Effects\ViewOverlayCollector.cs" />
     <Compile Include="Effects\ViewStyleEffect.cs" />
+    <Compile Include="Helpers\JniExtensions.cs" />
     <Compile Include="Helpers\JniWeakReference.cs" />
     <Compile Include="Helpers\PlatformHelper.cs" />
     <Compile Include="Initializer.cs" />
@@ -90,7 +91,7 @@
       <Version>27.0.2.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.3.0.912540</Version>
+      <Version>3.4.0.1008975</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

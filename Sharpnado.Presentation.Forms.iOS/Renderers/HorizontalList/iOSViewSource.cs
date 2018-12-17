@@ -57,7 +57,6 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return ((FormsCell != null ? FormsCell.GetHashCode() : 0) * 397) ^ (CellContent != null ? CellContent.GetHashCode() : 0);
             }
         }
-
     }
 
     public class iOSViewCell : UICollectionViewCell

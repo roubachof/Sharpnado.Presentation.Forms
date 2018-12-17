@@ -53,6 +53,7 @@
     <Compile Include="Renderers\HorizontalList\CenteredCollectionViewFlowLayout.cs" />
     <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.DragAndDrop.cs" />
+    <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.ScrollDelegates.cs" />
     <Compile Include="Renderers\HorizontalList\iOSViewSource.cs" />
     <Compile Include="Renderers\HorizontalList\SnappingCollectionViewLayout.cs" />
     <Compile Include="Renderers\HorizontalList\UIViewCellHolderQueue.cs" />
@@ -63,7 +64,7 @@
       <Version>1.1.0-beta008</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.3.0.912540</Version>
+      <Version>3.4.0.1008975</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

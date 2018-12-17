@@ -60,14 +60,14 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             nameof(ItemHeight),
             typeof(int),
             typeof(HorizontalListView),
-            defaultValue: 100,
+            defaultValue: 0,
             defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty ItemWidthProperty = BindableProperty.Create(
             nameof(ItemWidth),
             typeof(int),
             typeof(HorizontalListView),
-            defaultValue: 100,
+            defaultValue: 0,
             defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty CollectionPaddingProperty = BindableProperty.Create(
@@ -103,7 +103,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             nameof(CurrentIndex),
             typeof(int),
             typeof(HorizontalListView),
-            defaultValue: 0,
+            defaultValue: -1,
             defaultBindingMode: BindingMode.TwoWay,
             propertyChanged: OnCurrentIndexChanged);
 

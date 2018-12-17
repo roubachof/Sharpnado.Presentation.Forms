@@ -4,6 +4,7 @@ using Android.Content;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 using Android.Views;
+using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
@@ -41,10 +42,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             base.OnElementChanged(e);
 
-            if (e.OldElement != null)
+            if (e.OldElement != null && !Control.IsNullOrDisposed())
             {
-                Control?.ClearOnScrollListeners();
-                var treeViewObserver = Control?.ViewTreeObserver;
+                Control.ClearOnScrollListeners();
+                var treeViewObserver = Control.ViewTreeObserver;
                 if (treeViewObserver != null)
                 {
                     treeViewObserver.PreDraw -= OnPreDraw;
@@ -126,7 +127,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void OnPreDraw(object sender, ViewTreeObserver.PreDrawEventArgs e)
         {
-            if (Control == null)
+            if (Control.IsNullOrDisposed())
             {
                 return;
             }
@@ -182,7 +183,26 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void ScrollToCurrentItem()
         {
-            HorizontalLinearLayoutManager?.ScrollToPositionWithOffset(Element.CurrentIndex, 0);
+            if (Element.CurrentIndex == -1 || Control.GetAdapter() == null || Element.CurrentIndex >= Control.GetAdapter().ItemCount)
+            {
+                return;
+            }
+
+            int offset = 0;
+            if (HorizontalLinearLayoutManager != null)
+            {
+                var itemWidth = PlatformHelper.DpToPixels(Element.ItemWidth + Element.ItemSpacing);
+                var width = Control.MeasuredWidth;
+
+                switch (Element.SnapStyle)
+                {
+                    case SnapStyle.Center:
+                        offset = (width / 2) - (itemWidth / 2);
+                        break;
+                }
+            }
+
+            LinearLayoutManager?.ScrollToPositionWithOffset(Element.CurrentIndex, offset);
         }
 
         private void UpdateItemsSource()
