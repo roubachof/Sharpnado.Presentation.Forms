@@ -53,6 +53,7 @@
     <Compile Include="Renderers\HorizontalList\CenteredCollectionViewFlowLayout.cs" />
     <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.DragAndDrop.cs" />
+    <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.ScrollDelegates.cs" />
     <Compile Include="Renderers\HorizontalList\iOSViewSource.cs" />
     <Compile Include="Renderers\HorizontalList\SnappingCollectionViewLayout.cs" />
     <Compile Include="Renderers\HorizontalList\UIViewCellHolderQueue.cs" />

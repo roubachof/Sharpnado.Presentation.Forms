@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 using Android.Runtime;
 using Android.Support.V7.Widget;
 
 using Sharpnado.Infrastructure;
-using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
@@ -101,19 +99,18 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                         nativeView.IsScrolling = false;
 
                         _cts = new CancellationTokenSource();
-                        NotifyTask.Create(UpdateCurrentIndexAsync(nativeView, _cts.Token));
+                        UpdateCurrentIndex(nativeView, _cts.Token);
+                        _element.ScrollEndedCommand?.Execute(null);
 
                         break;
                     }
                 }
             }
 
-            private async Task UpdateCurrentIndexAsync(
+            private void UpdateCurrentIndex(
                 AndroidHorizontalListViewRenderer nativeView,
                 CancellationToken token)
             {
-                await Task.Delay(500);
-
                 if (token.IsCancellationRequested)
                 {
                     return;
@@ -128,7 +125,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 try
                 {
                     _element.CurrentIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
-                    _element.ScrollBeganCommand?.Execute(null);
 
                     InternalLogger.Info($"CurrentIndex: {_element.CurrentIndex}");
                 }

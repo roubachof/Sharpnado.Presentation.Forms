@@ -51,6 +51,7 @@
     <Compile Include="Effects\TintableImageEffect.cs" />
     <Compile Include="Effects\ViewOverlayCollector.cs" />
     <Compile Include="Effects\ViewStyleEffect.cs" />
+    <Compile Include="Helpers\JniExtensions.cs" />
     <Compile Include="Helpers\JniWeakReference.cs" />
     <Compile Include="Helpers\PlatformHelper.cs" />
     <Compile Include="Initializer.cs" />
