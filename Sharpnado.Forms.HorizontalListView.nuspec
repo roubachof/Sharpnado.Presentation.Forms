@@ -3,7 +3,7 @@
     <metadata>
     
     	<id>Sharpnado.Forms.HorizontalListView</id>
-        <version>0.9.6</version>
+        <version>0.9.7</version>
         <copyright>Sharpnado 2018</copyright>
         <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
         <authors>Jean-Marie Alfonsi</authors>
@@ -15,7 +15,14 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview</tags>
-        <releaseNotes>HorizontalListView: fix issue preventing cellview elements to auto size themselves (need to explicitly set HeightRequest).</releaseNotes>
+        <releaseNotes>Several fixes:
+* Improvement: UICollectionView is now added when the parent view has been layout
+* issue 13: Task.Delay(500) in AndroidHorizontalListViewRenderer
+* issue 07: ScrollEndedCommand does not fire
+* issue 12: Ios ignores change in CurrentIndex
+* PR 14: Fixed crash when nav'ing back
+* PR 08: added ScrollToPosition method
+        </releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Snapping on first or middle element
