@@ -24,7 +24,7 @@
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
     <PackageReference Include="Xamarin.Forms">
-      <Version>2.5.1.444934</Version>
+      <Version>3.4.0.1008975</Version>
     </PackageReference>
   </ItemGroup>
 
