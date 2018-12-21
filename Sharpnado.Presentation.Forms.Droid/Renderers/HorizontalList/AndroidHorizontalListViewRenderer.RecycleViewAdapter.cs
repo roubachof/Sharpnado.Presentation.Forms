@@ -181,7 +181,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             protected override void Dispose(bool disposing)
             {
-                _viewHolderQueue.Clear();
+                _viewHolderQueue?.Clear();
 
                 if (_notifyCollectionChanged != null)
                 {
@@ -195,7 +195,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
                 var view = CreateView(out var viewCell, itemViewType);
 
-                if (_element.ListLayout == HorizontalListViewLayout.Grid)
+                if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
                 {
                     var contentFrame = new FrameLayout(_context)
                     {
@@ -229,7 +229,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 viewCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
 
                 LayoutParams layoutParams = null;
-                if (_element.ListLayout == HorizontalListViewLayout.Grid)
+                if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
                 {
                     layoutParams = new FrameLayout.LayoutParams(
                         (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
@@ -243,7 +243,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     layoutParams = new LayoutParams(
                         (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
                         (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density));
-                    // LayoutParams.MatchParent, LayoutParams.MatchParent);
                 }
 
                 if (Xamarin.Forms.Platform.Android.Platform.GetRenderer(viewCell.View) == null)

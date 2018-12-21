@@ -138,7 +138,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             var rect = new CGRect(0, 0, 100, Element.HeightRequest);
             _collectionView = new UICollectionView(rect, layout)
             {
-                DecelerationRate = UIScrollView.DecelerationRateFast,
+                DecelerationRate =
+                    Element.ScrollSpeed == ScrollSpeed.Normal
+                        ? UIScrollView.DecelerationRateNormal
+                        : UIScrollView.DecelerationRateFast,
                 BackgroundColor = Element?.BackgroundColor.ToUIColor(),
                 ShowsHorizontalScrollIndicator = false,
                 ContentInset = new UIEdgeInsets(0, 0, 0, 0),

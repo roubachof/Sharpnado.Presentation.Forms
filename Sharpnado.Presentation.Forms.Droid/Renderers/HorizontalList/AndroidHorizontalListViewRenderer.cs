@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using Android.Content;
 using Android.Support.V7.Widget;
@@ -74,16 +75,84 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             }
         }
 
+        protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
+        {
+            if (!changed
+                || Control == null
+                || Element == null
+                || (Element.ColumnCount == 0
+                    && (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight > 0)))
+            {
+                base.OnLayout(changed, left, top, right, bottom);
+                return;
+            }
+
+            int itemSpace = PlatformHelper.DpToPixels(Element.ItemSpacing);
+            if (Element.ColumnCount > 0)
+            {
+                int leftPadding = Element.CollectionPadding.Left > 0
+                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Left)
+                    : itemSpace;
+                int rightPadding = Element.CollectionPadding.Right > 0
+                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Right)
+                    : itemSpace;
+
+                int totalWidthSpacing = itemSpace * (Element.ColumnCount - 1) + leftPadding + rightPadding;
+
+                int spaceWidthLeft = right - left - totalWidthSpacing;
+
+                Element.ItemWidth = PlatformHelper.PixelsToDp(spaceWidthLeft / Element.ColumnCount);
+
+                if (Element.ListLayout == HorizontalListViewLayout.Grid)
+                {
+                    var layoutManager = Control.GetLayoutManager();
+                    Control.SetLayoutManager(new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing));
+                    Control.InvalidateItemDecorations();
+
+                    layoutManager?.Dispose();
+                }
+            }
+
+            if (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight == 0)
+            {
+                int topPadding = Element.CollectionPadding.Top > 0 ? PlatformHelper.DpToPixels(Element.CollectionPadding.Top) : itemSpace;
+                int bottomPadding = Element.CollectionPadding.Bottom > 0 ? PlatformHelper.DpToPixels(Element.CollectionPadding.Bottom) : itemSpace;
+                int totalHeightSpacing = topPadding + bottomPadding;
+
+                int spaceHeightLeft = bottom - top - totalHeightSpacing;
+
+                Element.ItemHeight = PlatformHelper.PixelsToDp(spaceHeightLeft);
+            }
+
+            base.OnLayout(changed, left, top, right, bottom);
+        }
+
         private void CreateView(HorizontalListView horizontalList)
         {
-            var recyclerView = new SlowRecyclerView(Context);
+            if (Element.ItemWidth > 0 && Element.ColumnCount > 0)
+            {
+                throw new InvalidOperationException(
+                    "You cannot set at the same time the item width and the column count:"
+                    + " ItemWidth will be automatically calculated from padding and margin to fit in the number of columns specified ");
+            }
+
+            if (Element.ListLayout == HorizontalListViewLayout.Carousel
+                && (Element.ColumnCount != 1 || Element.SnapStyle != SnapStyle.Center))
+            {
+                throw new InvalidOperationException(
+                    "When setting ListLayout to Carousel, you can only set ColumnCount to 1 and SnapStyle to Center");
+            }
+
+            var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed);
 
             if (Element.ListLayout == HorizontalListViewLayout.Grid)
             {
-                recyclerView.SetLayoutManager(
-                    Element.GridColumnCount == 0
-                        ? new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing)
-                        : (GridLayoutManager)new CustomGridLayoutManager(Context, Element.GridColumnCount));
+                recyclerView.SetLayoutManager(new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing));
+
+                //recyclerView.SetLayoutManager(
+                //    Element.ColumnCount == 0
+                //        ? new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing)
+                //        : (GridLayoutManager)new CustomGridLayoutManager(Context, Element.ColumnCount));
             }
             else
             {

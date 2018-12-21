@@ -10,6 +10,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
     {
         Linear = 0,
         Grid,
+        Carousel,
     }
 
     public enum SnapStyle
@@ -17,6 +18,16 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         None = 0,
         Start,
         Center,
+    }
+
+    /// <summary>
+    /// Slower and slowest have the same result on iOS.
+    /// </summary>
+    public enum ScrollSpeed
+    {
+        Normal = 0,
+        Slower,
+        Slowest,
     }
 
     public class DraggableViewCell : ViewCell
@@ -127,6 +138,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             typeof(HorizontalListView),
             defaultValue: false);
 
+        private HorizontalListViewLayout _layout = HorizontalListViewLayout.Linear;
+
         public int CurrentIndex
         {
             get => (int)GetValue(CurrentIndexProperty);
@@ -183,11 +196,26 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             set => SetValue(IsDragAndDroppingProperty, value);
         }
 
-        public HorizontalListViewLayout ListLayout { get; set; } = HorizontalListViewLayout.Linear;
+        public HorizontalListViewLayout ListLayout
+        {
+            get => _layout;
+            set
+            {
+                _layout = value;
+                if (_layout == HorizontalListViewLayout.Carousel)
+                {
+                    SnapStyle = SnapStyle.Center;
+                    ColumnCount = 1;
+                    ScrollSpeed = ScrollSpeed.Slowest;
+                }
+            }
+        }
 
         public SnapStyle SnapStyle { get; set; } = SnapStyle.None;
 
-        public int GridColumnCount { get; set; } = 0;
+        public int ColumnCount { get; set; } = 0;
+
+        public ScrollSpeed ScrollSpeed { get; set; } = ScrollSpeed.Normal;
 
         public int VisibleCellCount
         {
