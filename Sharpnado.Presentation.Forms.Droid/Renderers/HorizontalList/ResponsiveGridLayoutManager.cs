@@ -6,7 +6,7 @@ using Android.Runtime;
 using Android.Support.V7.Widget;
 
 using Sharpnado.Presentation.Forms.Droid.Helpers;
-
+using Sharpnado.Presentation.Forms.RenderedViews;
 using Xamarin.Forms;
 
 using View = Android.Views.View;
@@ -93,27 +93,33 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
     public class ResponsiveGridLayoutManager : GridLayoutManager
     {
         private readonly Context _context;
-        private readonly int _itemWidthDp;
-        private readonly int _marginDp;
+        private readonly WeakReference<HorizontalListView> _weakElement;
+
+        private bool _spanNeedsCompute;
 
         public ResponsiveGridLayoutManager(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
         }
 
-        public ResponsiveGridLayoutManager(Context context, int itemWidthDp, int marginDp = 0)
+        public ResponsiveGridLayoutManager(Context context, HorizontalListView element)
             : base(context, 1)
         {
             _context = context;
-            _itemWidthDp = itemWidthDp;
-            _marginDp = marginDp;
+            _weakElement = new WeakReference<HorizontalListView>(element);
+            _spanNeedsCompute = true;
         }
 
         public bool CanScroll { get; set; }
 
+        public void ResetSpan()
+        {
+            _spanNeedsCompute = true;
+        }
+
         public override void OnLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state)
         {
-            if (Width > 0)
+            if (Width > 0 && _spanNeedsCompute)
             {
                 ComputeSpanCount(Width);
             }
@@ -133,8 +139,12 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void ComputeSpanCount(int recyclerWidth)
         {
-            int spanCount = recyclerWidth / PlatformHelper.DpToPixels(_itemWidthDp + 2 * _marginDp);
-            SpanCount = spanCount;
+            if (_weakElement.TryGetTarget(out var element))
+            {
+                SpanCount = MeasureHelper.ComputeSpan(recyclerWidth, element);
+            }
+
+            _spanNeedsCompute = false;
         }
     }
 }

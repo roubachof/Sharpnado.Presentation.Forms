@@ -87,6 +87,29 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 return;
             }
 
+            int width = right - left;
+            int height = bottom - top;
+
+            if (ComputeItemSize(width, height))
+            {
+                UpdateItemsSource();
+            }
+
+            base.OnLayout(changed, left, top, right, bottom);
+        }
+
+        private bool ComputeItemSize(int width, int height)
+        {
+            if (Control == null
+                || Element == null
+                || (Element.ColumnCount == 0
+                    && (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight > 0)))
+            {
+                return false;
+            }
+
+            bool widthChanged = false;
+            bool heightChanged = false;
             int itemSpace = PlatformHelper.DpToPixels(Element.ItemSpacing);
             if (Element.ColumnCount > 0)
             {
@@ -99,32 +122,47 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                 int totalWidthSpacing = itemSpace * (Element.ColumnCount - 1) + leftPadding + rightPadding;
 
-                int spaceWidthLeft = right - left - totalWidthSpacing;
+                int spaceWidthLeft = width - totalWidthSpacing;
 
-                Element.ItemWidth = PlatformHelper.PixelsToDp(spaceWidthLeft / Element.ColumnCount);
+                int newItemWidth = PlatformHelper.PixelsToDp(spaceWidthLeft / Element.ColumnCount);
+                if (Element.ItemWidth != newItemWidth)
+                {
+                    Element.ItemWidth = newItemWidth;
+                    widthChanged = true;
+                }
 
                 if (Element.ListLayout == HorizontalListViewLayout.Grid)
                 {
-                    var layoutManager = Control.GetLayoutManager();
-                    Control.SetLayoutManager(new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing));
-                    Control.InvalidateItemDecorations();
-
-                    layoutManager?.Dispose();
+                    if (Control.GetLayoutManager() is ResponsiveGridLayoutManager layoutManager)
+                    {
+                        layoutManager.ResetSpan();
+                        Control.InvalidateItemDecorations();
+                    }
                 }
             }
 
             if (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight == 0)
             {
-                int topPadding = Element.CollectionPadding.Top > 0 ? PlatformHelper.DpToPixels(Element.CollectionPadding.Top) : itemSpace;
-                int bottomPadding = Element.CollectionPadding.Bottom > 0 ? PlatformHelper.DpToPixels(Element.CollectionPadding.Bottom) : itemSpace;
+                int topPadding = Element.CollectionPadding.Top > 0
+                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Top)
+                    : itemSpace;
+                int bottomPadding = Element.CollectionPadding.Bottom > 0
+                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Bottom)
+                    : itemSpace;
+
                 int totalHeightSpacing = topPadding + bottomPadding;
 
-                int spaceHeightLeft = bottom - top - totalHeightSpacing;
+                int spaceHeightLeft = height - totalHeightSpacing;
 
-                Element.ItemHeight = PlatformHelper.PixelsToDp(spaceHeightLeft);
+                int newItemHeight = PlatformHelper.PixelsToDp(spaceHeightLeft);
+                if (Element.ItemHeight != newItemHeight)
+                {
+                    Element.ItemHeight = newItemHeight;
+                    heightChanged = true;
+                }
             }
 
-            base.OnLayout(changed, left, top, right, bottom);
+            return widthChanged || heightChanged;
         }
 
         private void CreateView(HorizontalListView horizontalList)
@@ -147,12 +185,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             if (Element.ListLayout == HorizontalListViewLayout.Grid)
             {
-                recyclerView.SetLayoutManager(new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing));
-
-                //recyclerView.SetLayoutManager(
-                //    Element.ColumnCount == 0
-                //        ? new ResponsiveGridLayoutManager(Context, Element.ItemWidth, Element.ItemSpacing)
-                //        : (GridLayoutManager)new CustomGridLayoutManager(Context, Element.ColumnCount));
+                recyclerView.SetLayoutManager(new ResponsiveGridLayoutManager(Context, Element));
             }
             else
             {
@@ -224,6 +257,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             if (orientationChanged)
             {
+                if (Control.GetLayoutManager() is ResponsiveGridLayoutManager layoutManager)
+                {
+                    layoutManager.ResetSpan();
+                }
+
                 Control.InvalidateItemDecorations();
             }
         }
@@ -238,10 +276,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             if (HorizontalLinearLayoutManager != null)
             {
                 HorizontalLinearLayoutManager.CanScroll = !Element.DisableScroll;
-            }
-            else if (GridLayoutManager != null && GridLayoutManager is CustomGridLayoutManager customGridLayoutManager)
-            {
-                customGridLayoutManager.CanScroll = !Element.DisableScroll;
             }
             else if (GridLayoutManager != null
                 && GridLayoutManager is ResponsiveGridLayoutManager responsiveGridLayoutManager)
