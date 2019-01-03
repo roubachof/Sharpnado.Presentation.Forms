@@ -1,20 +1,21 @@
 ﻿using Android.Content.Res;
+using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Helpers
 {
-    public class PlatformHelper
+    public class AndroidPlatformHelper : PlatformHelper
     {
-        public static int DpToPixels(int dp)
+        public override int DpToPixels(int dp)
         {
             return (int)(dp * Resources.System.DisplayMetrics.Density);
         }
 
-        public static int DpToPixels(double dp)
+        public override int DpToPixels(double dp)
         {
             return (int)(dp * Resources.System.DisplayMetrics.Density);
         }
 
-        public static int PixelsToDp(int pixels)
+        public override int PixelsToDp(int pixels)
         {
             return (int)(pixels / Resources.System.DisplayMetrics.Density);
         }

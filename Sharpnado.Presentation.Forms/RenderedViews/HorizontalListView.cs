@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Windows.Input;
 using Sharpnado.Presentation.Forms.Paging;
 using Xamarin.Forms;
@@ -186,37 +188,6 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             set => SetValue(CollectionPaddingProperty, value);
         }
 
-        public int ViewCacheSize { get; set; } = 0;
-
-        public bool EnableDragAndDrop { get; set; } = false;
-
-        public bool IsDragAndDropping
-        {
-            get => (bool)GetValue(IsDragAndDroppingProperty);
-            set => SetValue(IsDragAndDroppingProperty, value);
-        }
-
-        public HorizontalListViewLayout ListLayout
-        {
-            get => _layout;
-            set
-            {
-                _layout = value;
-                if (_layout == HorizontalListViewLayout.Carousel)
-                {
-                    SnapStyle = SnapStyle.Center;
-                    ColumnCount = 1;
-                    ScrollSpeed = ScrollSpeed.Slowest;
-                }
-            }
-        }
-
-        public SnapStyle SnapStyle { get; set; } = SnapStyle.None;
-
-        public int ColumnCount { get; set; } = 0;
-
-        public ScrollSpeed ScrollSpeed { get; set; } = ScrollSpeed.Normal;
-
         public int VisibleCellCount
         {
             get => (int)GetValue(VisibleCellCountProperty);
@@ -263,6 +234,103 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             get => (DataTemplate)GetValue(ItemTemplateProperty);
             set => SetValue(ItemTemplateProperty, value);
+        }
+
+        public bool IsDragAndDropping
+        {
+            get => (bool)GetValue(IsDragAndDroppingProperty);
+            set => SetValue(IsDragAndDroppingProperty, value);
+        }
+
+        public int ViewCacheSize { get; set; } = 0;
+
+        public bool EnableDragAndDrop { get; set; } = false;
+
+        public HorizontalListViewLayout ListLayout
+        {
+            get => _layout;
+            set
+            {
+                _layout = value;
+                if (_layout == HorizontalListViewLayout.Carousel)
+                {
+                    SnapStyle = SnapStyle.Center;
+                    ColumnCount = 1;
+                    ScrollSpeed = ScrollSpeed.Slowest;
+                }
+            }
+        }
+
+        public SnapStyle SnapStyle { get; set; } = SnapStyle.None;
+
+        public int ColumnCount { get; set; } = 0;
+
+        public ScrollSpeed ScrollSpeed { get; set; } = ScrollSpeed.Normal;
+
+        public bool IsLayoutLinear =>
+            ListLayout == HorizontalListViewLayout.Linear || ListLayout == HorizontalListViewLayout.Carousel;
+
+        public void CheckConsistency()
+        {
+            if (ItemWidth > 0 && ColumnCount > 0)
+            {
+                throw new InvalidOperationException(
+                    "You cannot set at the same time the item width and the column count:"
+                    + " ItemWidth will be automatically calculated from padding and margin to fit in the number of columns specified ");
+            }
+
+            if (ListLayout == HorizontalListViewLayout.Carousel
+                && (ColumnCount != 1 || SnapStyle != SnapStyle.Center))
+            {
+                throw new InvalidOperationException(
+                    "When setting ListLayout to Carousel, you can only set ColumnCount to 1 and SnapStyle to Center");
+            }
+        }
+
+        /// <summary>
+        /// Automatically compute item width for a given parent width and a given column count.
+        /// </summary>
+        /// <remarks>This method is Pure.</remarks>
+        [Pure]
+        public int ComputeItemWidth(double availableWidth)
+        {
+            if (ColumnCount == 0)
+            {
+                throw new InvalidOperationException("ColumnCount should be greater than in order to automatically compute item width");
+            }
+
+            int itemSpace = PlatformHelper.Instance.DpToPixels(ItemSpacing);
+            int leftPadding = PlatformHelper.Instance.DpToPixels(CollectionPadding.Left);
+            int rightPadding = PlatformHelper.Instance.DpToPixels(CollectionPadding.Right);
+
+            int totalWidthSpacing = itemSpace * (ColumnCount - 1) + leftPadding + rightPadding;
+
+            double spaceWidthLeft = availableWidth - totalWidthSpacing;
+
+            return PlatformHelper.Instance.PixelsToDp((int)(spaceWidthLeft / ColumnCount));
+        }
+
+        /// <summary>
+        /// Automatically compute item height for a given parent height.
+        /// </summary>
+        /// <remarks>This method is Pure.</remarks>
+        [Pure]
+        public int ComputeItemHeight(double availableHeight)
+        {
+            if (ListLayout == HorizontalListViewLayout.Grid || ItemHeight > 0)
+            {
+                throw new InvalidOperationException(
+                    "Can compute item height only if a height has not been specified and layout is horizontal linear");
+            }
+
+            int topPadding = PlatformHelper.Instance.DpToPixels(CollectionPadding.Top);
+            int bottomPadding = PlatformHelper.Instance.DpToPixels(CollectionPadding.Bottom);
+
+            int totalHeightSpacing = topPadding + bottomPadding;
+
+            double spaceHeightLeft = availableHeight - totalHeightSpacing;
+
+            return PlatformHelper.Instance.PixelsToDp((int)spaceHeightLeft);
         }
 
         private static void OnItemsSourceChanged(BindableObject bindable, object oldvalue, object newvalue)

@@ -46,7 +46,16 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
 
             _collectionView.Frame = new CGRect(0, 0, width, height);
-            SetCollectionView(_collectionView);
+
+            if (Control == null)
+            {
+                SetCollectionView(_collectionView);
+            }
+
+            if (ComputeItemSize(width, height) && _collectionView.CollectionViewLayout is UICollectionViewFlowLayout flowLayout)
+            {
+                flowLayout.ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight);
+            }
         }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -100,8 +109,49 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
         }
 
+        private bool ComputeItemSize(double width, double height)
+        {
+            if (Control == null
+                || Element == null
+                || (Element.ColumnCount == 0
+                    && (Element.IsLayoutLinear && Element.ItemHeight > 0)))
+            {
+                return false;
+            }
+
+            bool widthChanged = false;
+            bool heightChanged = false;
+            if (Element.ColumnCount > 0)
+            {
+                int newItemWidth = Element.ComputeItemWidth(width);
+                if (Element.ItemWidth != newItemWidth)
+                {
+                    Element.ItemWidth = newItemWidth;
+                    widthChanged = true;
+                }
+            }
+
+            if (Element.IsLayoutLinear && Element.ItemHeight == 0)
+            {
+                int newItemHeight = Element.ComputeItemHeight(height);
+                if (Element.ItemHeight != newItemHeight)
+                {
+                    Element.ItemHeight = newItemHeight;
+                    heightChanged = true;
+
+                    Element.HeightRequest = Element.ItemHeight
+                        + Element.CollectionPadding.VerticalThickness
+                        + Element.Margin.VerticalThickness;
+                }
+            }
+
+            return widthChanged || heightChanged;
+        }
+
         private void CreateView()
         {
+            Element.CheckConsistency();
+
             Control?.DataSource?.Dispose();
             Control?.CollectionViewLayout?.Dispose();
             Control?.Dispose();
@@ -131,9 +181,12 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 };
 
             // Otherwise the UICollectionView doesn't seem to take enough space
-            Element.HeightRequest = Element.ItemHeight
-                + Element.CollectionPadding.VerticalThickness
-                + Element.Margin.VerticalThickness;
+            if (Element.ItemHeight > 0)
+            {
+                Element.HeightRequest = Element.ItemHeight
+                    + Element.CollectionPadding.VerticalThickness
+                    + Element.Margin.VerticalThickness;
+            }
 
             var rect = new CGRect(0, 0, 100, Element.HeightRequest);
             _collectionView = new UICollectionView(rect, layout)
@@ -188,7 +241,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             Control.LayoutIfNeeded();
 
             UICollectionViewScrollPosition position = UICollectionViewScrollPosition.Top;
-            if (Element.ListLayout == HorizontalListViewLayout.Linear)
+            if (Element.IsLayoutLinear)
             {
                 switch (Element.SnapStyle)
                 {

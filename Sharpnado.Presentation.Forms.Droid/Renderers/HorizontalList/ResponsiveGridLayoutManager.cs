@@ -28,11 +28,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         public SpaceItemDecoration(int spaceDp, Thickness paddingDp)
         {
-            _space = PlatformHelper.DpToPixels(spaceDp);
-            _leftPadding = PlatformHelper.DpToPixels(paddingDp.Left);
-            _topPadding = PlatformHelper.DpToPixels(paddingDp.Top);
-            _rightPadding = PlatformHelper.DpToPixels(paddingDp.Right);
-            _bottomPadding = PlatformHelper.DpToPixels(paddingDp.Bottom);
+            _space = PlatformHelper.Instance.DpToPixels(spaceDp);
+            _leftPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Left);
+            _topPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Top);
+            _rightPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Right);
+            _bottomPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Bottom);
         }
 
         public override void GetItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
@@ -65,22 +65,22 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             if (isViewEdgeLeft)
             {
-                left = _leftPadding > _space ? _leftPadding : _space;
+                left = _leftPadding;
             }
 
             if (isViewEdgeRight)
             {
-                right = _rightPadding > _space ? _rightPadding : _space;
+                right = _rightPadding;
             }
 
             if (isViewEdgeTop)
             {
-                top = _topPadding > 0 ? _topPadding : _space;
+                top = _topPadding;
             }
 
             if (isViewEdgeBottom)
             {
-                bottom = _bottomPadding > 0 ? _bottomPadding : _space;
+                bottom = _bottomPadding;
             }
 
             outRect.Left = left;

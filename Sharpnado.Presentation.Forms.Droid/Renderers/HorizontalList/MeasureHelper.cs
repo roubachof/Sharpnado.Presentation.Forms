@@ -1,22 +1,15 @@
 using System;
-using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 public static class MeasureHelper
 {
     public static int ComputeSpan(int availableWidth, HorizontalListView element)
     {
-        int itemSpace = PlatformHelper.DpToPixels(element.ItemSpacing);
+        int itemSpace = PlatformHelper.Instance.DpToPixels(element.ItemSpacing);
+        int leftPadding = PlatformHelper.Instance.DpToPixels(element.CollectionPadding.Left);
+        int rightPadding = PlatformHelper.Instance.DpToPixels(element.CollectionPadding.Right);
 
-        int leftPadding = element.CollectionPadding.Left > 0
-            ? PlatformHelper.DpToPixels(element.CollectionPadding.Left)
-            : itemSpace;
-
-        int rightPadding = element.CollectionPadding.Right > 0
-            ? PlatformHelper.DpToPixels(element.CollectionPadding.Right)
-            : itemSpace;
-
-        int itemWidth = PlatformHelper.DpToPixels(element.ItemWidth);
+        int itemWidth = PlatformHelper.Instance.DpToPixels(element.ItemWidth);
 
         int columnCount = 0;
         while (true)

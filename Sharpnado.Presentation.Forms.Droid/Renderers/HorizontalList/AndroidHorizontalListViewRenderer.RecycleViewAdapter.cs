@@ -195,18 +195,18 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
                 var view = CreateView(out var viewCell, itemViewType);
 
-                if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
-                {
-                    var contentFrame = new FrameLayout(_context)
-                    {
-                        LayoutParameters = new FrameLayout.LayoutParams(
-                            LayoutParams.MatchParent,
-                            (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density)),
-                    };
+                //if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
+                //{
+                //    var contentFrame = new FrameLayout(_context)
+                //    {
+                //        LayoutParameters = new FrameLayout.LayoutParams(
+                //            LayoutParams.MatchParent,
+                //            (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density)),
+                //    };
 
-                    contentFrame.AddView(view);
-                    view = contentFrame;
-                }
+                //    contentFrame.AddView(view);
+                //    view = contentFrame;
+                //}
 
                 return new ViewHolder(view, viewCell);
             }
@@ -229,21 +229,21 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 viewCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
 
                 LayoutParams layoutParams = null;
-                if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
-                {
-                    layoutParams = new FrameLayout.LayoutParams(
-                        (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
-                        (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density))
-                    {
-                        Gravity = GravityFlags.CenterHorizontal,
-                    };
-                }
-                else
-                {
+                //if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
+                //{
+                //    layoutParams = new FrameLayout.LayoutParams(
+                //        (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
+                //        (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density))
+                //    {
+                //        Gravity = GravityFlags.CenterHorizontal,
+                //    };
+                //}
+                //else
+                //{
                     layoutParams = new LayoutParams(
                         (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
                         (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density));
-                }
+                //}
 
                 if (Xamarin.Forms.Platform.Android.Platform.GetRenderer(viewCell.View) == null)
                 {

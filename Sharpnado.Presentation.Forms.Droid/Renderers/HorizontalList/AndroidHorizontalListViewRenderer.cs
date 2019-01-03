@@ -81,7 +81,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 || Control == null
                 || Element == null
                 || (Element.ColumnCount == 0
-                    && (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight > 0)))
+                    && (Element.IsLayoutLinear && Element.ItemHeight > 0)))
             {
                 base.OnLayout(changed, left, top, right, bottom);
                 return;
@@ -103,28 +103,16 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             if (Control == null
                 || Element == null
                 || (Element.ColumnCount == 0
-                    && (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight > 0)))
+                    && (Element.IsLayoutLinear && Element.ItemHeight > 0)))
             {
                 return false;
             }
 
             bool widthChanged = false;
             bool heightChanged = false;
-            int itemSpace = PlatformHelper.DpToPixels(Element.ItemSpacing);
             if (Element.ColumnCount > 0)
             {
-                int leftPadding = Element.CollectionPadding.Left > 0
-                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Left)
-                    : itemSpace;
-                int rightPadding = Element.CollectionPadding.Right > 0
-                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Right)
-                    : itemSpace;
-
-                int totalWidthSpacing = itemSpace * (Element.ColumnCount - 1) + leftPadding + rightPadding;
-
-                int spaceWidthLeft = width - totalWidthSpacing;
-
-                int newItemWidth = PlatformHelper.PixelsToDp(spaceWidthLeft / Element.ColumnCount);
+                int newItemWidth = Element.ComputeItemWidth(width);
                 if (Element.ItemWidth != newItemWidth)
                 {
                     Element.ItemWidth = newItemWidth;
@@ -141,20 +129,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 }
             }
 
-            if (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight == 0)
+            if (Element.IsLayoutLinear && Element.ItemHeight == 0)
             {
-                int topPadding = Element.CollectionPadding.Top > 0
-                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Top)
-                    : itemSpace;
-                int bottomPadding = Element.CollectionPadding.Bottom > 0
-                    ? PlatformHelper.DpToPixels(Element.CollectionPadding.Bottom)
-                    : itemSpace;
-
-                int totalHeightSpacing = topPadding + bottomPadding;
-
-                int spaceHeightLeft = height - totalHeightSpacing;
-
-                int newItemHeight = PlatformHelper.PixelsToDp(spaceHeightLeft);
+                int newItemHeight = Element.ComputeItemHeight(height);
                 if (Element.ItemHeight != newItemHeight)
                 {
                     Element.ItemHeight = newItemHeight;
@@ -167,19 +144,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void CreateView(HorizontalListView horizontalList)
         {
-            if (Element.ItemWidth > 0 && Element.ColumnCount > 0)
-            {
-                throw new InvalidOperationException(
-                    "You cannot set at the same time the item width and the column count:"
-                    + " ItemWidth will be automatically calculated from padding and margin to fit in the number of columns specified ");
-            }
-
-            if (Element.ListLayout == HorizontalListViewLayout.Carousel
-                && (Element.ColumnCount != 1 || Element.SnapStyle != SnapStyle.Center))
-            {
-                throw new InvalidOperationException(
-                    "When setting ListLayout to Carousel, you can only set ColumnCount to 1 and SnapStyle to Center");
-            }
+            Element.CheckConsistency();
 
             var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed);
 
@@ -294,8 +259,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             int offset = 0;
             if (HorizontalLinearLayoutManager != null)
             {
-                var itemWidth = PlatformHelper.DpToPixels(Element.ItemWidth + Element.ItemSpacing);
-                var width = Control.MeasuredWidth;
+                int itemWidth = PlatformHelper.Instance.DpToPixels(Element.ItemWidth + Element.ItemSpacing);
+                int width = Control.MeasuredWidth;
 
                 switch (Element.SnapStyle)
                 {
