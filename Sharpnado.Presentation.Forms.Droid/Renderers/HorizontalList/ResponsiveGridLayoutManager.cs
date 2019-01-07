@@ -44,6 +44,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             bool isViewEdgeTop = false;
             bool isViewEdgeRight = false;
             bool isViewEdgeBottom = false;
+            bool horizontalOffsetAssigned = false;
 
             int viewPosition = parent.GetChildAdapterPosition(view);
             int viewCount = parent.GetAdapter().ItemCount;
@@ -55,6 +56,23 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 isViewEdgeTop = viewPosition < spanCount;
                 isViewEdgeRight = viewPosition % spanCount == spanCount - 1;
                 isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
+
+                if (responsiveGridLayout.TryGetItemWidth(out int itemWidth))
+                {
+                    int gridLeftPadding = _leftPadding;
+                    int gridRightPadding = _rightPadding;
+                    if (spanCount == 1)
+                    {
+                        // If there is only one column we want our items centered
+                        gridLeftPadding = 0;
+                        gridRightPadding = 0;
+                        horizontalOffsetAssigned = true;
+                    }
+
+                    int availableWidthSpace = parent.Width - gridLeftPadding - gridRightPadding - spanCount * itemWidth;
+                    int interItemSpacing = spanCount > 1 ? availableWidthSpace / (spanCount - 1) : availableWidthSpace;
+                    left = right = interItemSpacing / 2;
+                }
             }
             else if (parent.GetLayoutManager() is LinearLayoutManager)
             {
@@ -63,12 +81,12 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 isViewEdgeRight = viewPosition == viewCount - 1;
             }
 
-            if (isViewEdgeLeft)
+            if (isViewEdgeLeft && !horizontalOffsetAssigned)
             {
                 left = _leftPadding;
             }
 
-            if (isViewEdgeRight)
+            if (isViewEdgeRight && !horizontalOffsetAssigned)
             {
                 right = _rightPadding;
             }
@@ -111,6 +129,17 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         }
 
         public bool CanScroll { get; set; }
+
+        public bool TryGetItemWidth(out int itemWidth)
+        {
+            itemWidth = 0;
+            if (_weakElement.TryGetTarget(out var element))
+            {
+                itemWidth = PlatformHelper.Instance.DpToPixels(element.ItemWidth);
+            }
+
+            return itemWidth > 0;
+        }
 
         public void ResetSpan()
         {

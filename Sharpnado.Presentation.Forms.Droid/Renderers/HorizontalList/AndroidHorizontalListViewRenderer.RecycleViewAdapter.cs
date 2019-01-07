@@ -10,7 +10,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
-using Android.Widget;
 
 using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.RenderedViews;
@@ -38,9 +37,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             public object BindingContext => ViewCell?.BindingContext;
 
-            public void Bind(object context)
+            public void Bind(object context, HorizontalListView parent)
             {
                 _viewCell.BindingContext = context;
+                _viewCell.Parent = parent;
             }
         }
 
@@ -120,7 +120,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
                 var item = (ViewHolder)holder;
 
-                item.Bind(_dataSource[position]);
+                item.Bind(_dataSource[position], _element);
             }
 
             public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
@@ -225,7 +225,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     viewCell = (ViewCell)_dataTemplates[itemViewType].CreateContent();
                 }
 
-                viewCell.Parent = _element;
+                // viewCell.Parent = _element;
                 viewCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
 
                 LayoutParams layoutParams = null;

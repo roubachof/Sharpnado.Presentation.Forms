@@ -22,6 +22,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         private bool _isCurrentIndexUpdateBackfire;
         private bool _isLandscape;
 
+        private ItemTouchHelper _dragHelper;
+
         public AndroidHorizontalListViewRenderer(Context context)
             : base(context)
         {
@@ -51,6 +53,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 {
                     treeViewObserver.PreDraw -= OnPreDraw;
                 }
+
+                _dragHelper.AttachToRecyclerView(null);
+                _dragHelper = null;
             }
 
             if (e.NewElement != null)
@@ -282,8 +287,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             if (Element.EnableDragAndDrop)
             {
-                var dragHelper = new ItemTouchHelper(new DragAnDropItemTouchHelperCallback(Element, adapter, Element.DragAndDropEndedCommand));
-                dragHelper.AttachToRecyclerView(Control);
+                _dragHelper?.AttachToRecyclerView(null);
+
+                _dragHelper = new ItemTouchHelper(
+                    new DragAnDropItemTouchHelperCallback(Element, adapter, Element.DragAndDropEndedCommand));
+                _dragHelper.AttachToRecyclerView(Control);
             }
         }
     }

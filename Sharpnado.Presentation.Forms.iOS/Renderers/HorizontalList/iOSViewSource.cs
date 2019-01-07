@@ -61,6 +61,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
     public class iOSViewCell : UICollectionViewCell
     {
+        private const int InnerViewTag = 99;
+
         public iOSViewCell(IntPtr p)
             : base(p)
         {
@@ -70,15 +72,31 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         public ViewCell FormsCell { get; private set; }
 
+        public void Reset()
+        {
+            if (!IsInitialized)
+            {
+                return;
+            }
+
+            FormsCell = null;
+        }
+
         public void Initialize(ViewCell formsCell, UIView view)
         {
             FormsCell = formsCell;
+
+            // A previous view may have been added in a different data source
+            ContentView.ViewWithTag(InnerViewTag)?.RemoveFromSuperview();
+
+            view.Tag = InnerViewTag;
             ContentView.AddSubview(view);
         }
 
-        public void Bind(object dataContext)
+        public void Bind(object dataContext, HorizontalListView parent)
         {
             FormsCell.BindingContext = dataContext;
+            FormsCell.Parent = parent;
         }
     }
 
@@ -88,10 +106,12 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private readonly List<object> _dataSource;
         private readonly UIViewCellHolderQueue _viewCellHolderCellHolderQueue;
+        private readonly Dictionary<long, WeakReference<iOSViewCell>> _createdCells;
 
         public iOSViewSource(HorizontalListView element)
         {
             _weakElement = new WeakReference<HorizontalListView>(element);
+            _createdCells = new Dictionary<long, WeakReference<iOSViewCell>>();
 
             var elementItemsSource = element.ItemsSource;
             _dataSource = elementItemsSource?.Cast<object>().ToList();
@@ -157,6 +177,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         {
             var nativeCell = (iOSViewCell)collectionView.DequeueReusableCell(nameof(iOSViewCell), indexPath);
 
+            if (!_createdCells.ContainsKey(nativeCell.GetHashCode()))
+            {
+                _createdCells.Add(nativeCell.GetHashCode(), new WeakReference<iOSViewCell>(nativeCell));
+            }
+
             if (!nativeCell.IsInitialized)
             {
                 UIViewCellHolder holder;
@@ -177,7 +202,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 nativeCell.Initialize(holder.FormsCell, holder.CellContent);
             }
 
-            nativeCell.Bind(_dataSource[indexPath.Row]);
+            if (_weakElement.TryGetTarget(out var parent))
+            {
+                nativeCell.Bind(_dataSource[indexPath.Row], parent);
+            }
 
             return nativeCell;
         }
@@ -185,6 +213,16 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         protected override void Dispose(bool disposing)
         {
             _viewCellHolderCellHolderQueue?.Clear();
+
+            foreach (var weakCreatedCell in _createdCells.Values)
+            {
+                if (weakCreatedCell.TryGetTarget(out var createdCell))
+                {
+                    createdCell.Reset();
+                }
+            }
+
+            _createdCells.Clear();
 
             base.Dispose(disposing);
         }
@@ -213,7 +251,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 formsCell = (ViewCell)element.ItemTemplate.CreateContent();
             }
 
-            formsCell.Parent = element;
+            // formsCell.Parent = element;
             formsCell.View.Layout(new Rectangle(0, 0, element.ItemWidth, element.ItemHeight));
 
             if (Platform.GetRenderer(formsCell.View) == null)

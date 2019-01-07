@@ -35,8 +35,6 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         public override void LayoutSubviews()
         {
-            base.LayoutSubviews();
-
             double height = Bounds.Height;
             double width = Bounds.Width;
 
@@ -55,7 +53,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             if (ComputeItemSize(width, height) && _collectionView.CollectionViewLayout is UICollectionViewFlowLayout flowLayout)
             {
                 flowLayout.ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight);
+                UpdateItemsSource();
+                ScrollToCurrentItem();
             }
+
+            base.LayoutSubviews();
         }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
