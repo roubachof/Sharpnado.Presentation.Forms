@@ -296,7 +296,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             if (ColumnCount == 0)
             {
-                throw new InvalidOperationException("ColumnCount should be greater than in order to automatically compute item width");
+                throw new InvalidOperationException("ColumnCount should be greater than 0 in order to automatically compute item width");
             }
 
             int itemSpace = PlatformHelper.Instance.DpToPixels(ItemSpacing);

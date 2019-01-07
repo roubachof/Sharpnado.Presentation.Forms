@@ -3,20 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>..\Sharpnado.Infrastructure\StyleCopRules.ruleset</CodeAnalysisRuleSet>
-    <Version>0.9.7</Version>
+    <Version>0.9.8</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Copyright>Sharpnado 2018</Copyright>
-    <PackageLicenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</PackageProjectUrl>
-    <PackageIconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</PackageIconUrl>
-    <RepositoryUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</RepositoryUrl>
-    <PackageTags>xamarin.forms android ios netstandard horizontallistview tabs</PackageTags>
-    <Description>HorizontalListView for Xamarin forms with
-* Snapping on first or middle element
-* Grid mode
-* Drag and drop on grid mode
-* View recycling
-    </Description>
+    <Copyright>Sharpnado 2019</Copyright>
     <AssemblyName>Sharpnado.Presentation.Forms</AssemblyName>
   </PropertyGroup>
 

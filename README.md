@@ -8,6 +8,9 @@
 Xamarin Forms custom components and renderers including:
 
 ```HorizontalListView``` for Xamarin Forms:
+  * Carousel layout
+  * Column count
+  * Infinite loading with ```Paginator``` component
   * Snapping on first or middle element
   * Padding and item spacing
   * Handles ```NotifyCollectionChangedAction``` Add, Remove and Reset actions
@@ -16,19 +19,32 @@ Xamarin Forms custom components and renderers including:
   * ```UICollectionView``` on iOS
   * This implementation is in fact very close in terms of philosophy and implementation to what will provide the future Xamarin ```CollectionView```.
 
-<p align="center">
-  <img src="__Docs__/horizontal_snap_center.gif" width="250"  />
-</p>
+<div style="display: flex">
+  <div style="flex: 50%; padding: 10px">
+    <img src="__Docs__/horizontal_snap_center.gif" width="250">
+  </div>
+  <div style="flex: 50%; padding: 10px">
+    <img src="__Docs__/carousel-ios.gif" width="250" >
+  </div>
+</div>
+
 
 ```Grid``` collection view (```HorizontalListView``` with ```ListLayout``` set to ```Grid```):
+  * Column count (if equal to 1 then you have a classic ```ListView``` ;)
+  * Infinite loading with ```Paginator``` component
   * Drag and Drop
   * Padding and item spacing
   * Handles ```NotifyCollectionChangedAction``` Add, Remove and Reset actions
   * View recycling
 
-<p align="center">
-  <img src="__Docs__/drag_and_drop.gif" width="250"  />
-</p>
+<div style="display: flex">
+  <div style="flex: 50%; padding: 10px">
+    <img src="__Docs__/drag_and_drop.gif" width="250">
+  </div>
+  <div style="flex: 50%; padding: 10px">
+    <img src="__Docs__/listview-dragandrop.gif" width="250" >
+  </div>
+</div>
 
 ```TaskLoaderView``` displays an ```ActivityLoader``` while loading then:
   * Handles error with custom messages and icons
@@ -62,14 +78,14 @@ You can find the blog post on www.sharpnado.com/a-real-horizontal-list-view/.
 public HorizontalListViewLayout ListLayout { get; set; } = HorizontalListViewLayout.Linear;
 ```
 By default the layout is in ```Linear``` mode, which means you will have only one row.
-You'll need to specify the ```ItemWidth``` and ```ItemHeight```.
+You can specify the ```ItemWidth``` and ```ItemHeight```.
 You can also specify ```ItemSpacing``` and ```CollectionPadding```.
 
 
 ```xml
 <renderedViews:HorizontalListView Grid.Row="3"
                                   Margin="-16,8"
-                                  CollectionPadding="0,8"
+                                  CollectionPadding="8,8"
                                   ItemSpacing="8"
                                   ItemHeight="144"
                                   ItemWidth="144"
@@ -88,13 +104,61 @@ You can also specify ```ItemSpacing``` and ```CollectionPadding```.
 ```
 
 <p align="center">
-  A ```HorizontalListView``` with ```SnapStyle=Center```.
+  A ```HorizontalListView``` with ```SnapStyle=Center``` and ```ItemWidth```/```ItemHeight``` set.
 </p>
 <p align="center">
   <img src="__Docs__/horizontal_snap_center.gif" width="250" />
 </p>
 
 As you can see ```TapCommand``` and ```TouchFeedbackColor``` (aka Ripple) are brought to you by the awesome effects created by mrxten (https://github.com/mrxten/XamEffects). The class effects are directly integrated in the Sharpnado projects so you don't have to reference another nuget package.
+
+#### ColumnCount property
+
+You can also decide to just specify the number of column you want, the ```ColumnCount``` property, and the ```ItemWidth``` will be computed for you.
+
+```xml
+<renderedViews:HorizontalListView Grid.Row="3"
+                                  Margin="-16,8"
+                                  CollectionPadding="8,8"
+                                  ItemSpacing="8"
+                                  ColumnCount="2"
+                                  ItemsSource="{Binding SillyPeopleLoader.Result}"
+                                  SnapStyle="Start">
+    ...
+</renderedViews:HorizontalListView>
+```
+
+<p align="center">
+  A ```HorizontalListView``` with ```ColumnCount=2```.
+</p>
+<p align="center">
+  <img src="__Docs__/cc_2-ll_Linear-ss_start.png" width="250" />
+</p>
+
+#### Carousel Layout
+
+You can set ```ListLayout``` to ```Carousel```.
+In this mode you can't specify ```ItemWidth``` (obviously).
+If you don't specify the ```ItemHeight```, it will be automatically computed for you.
+
+```xml
+<renderedViews:HorizontalListView Grid.Row="3"
+                                  Margin="-16,8"
+                                  CollectionPadding="8,8"
+                                  ItemSpacing="8"
+                                  ListLayout="Carousel"
+                                  ItemsSource="{Binding SillyPeopleLoader.Result}"
+                                  SnapStyle="Center">
+    ...
+</renderedViews:HorizontalListView>
+```
+
+<p align="center">
+  A ```HorizontalListView``` with ```ListLayout=Carousel```.
+</p>
+<p align="center">
+  <img src="__Docs__/carousel-ios.gif" width="250" />
+</p>
 
 ### Grid Layout
 
@@ -158,19 +222,51 @@ A ```Grid``` ```ListLayout``` with padding and item spacing.<br>
 
 You can use the ```IsDragAndDropping``` property of the ```DraggableViewCell``` to achieve an Elevation effect while dragging your view with a simple ```DataTrigger```.
 
+#### ColumnCount property
+
+The ```ColumnCount``` property works also with the grid layout.
+
+```xml
+<renderedViews:HorizontalListView CollectionPadding="8"
+                                  ItemSpacing="8"
+                                  EnableDragAndDrop="True"
+                                  ColumnCount="1"
+                                  ItemHeight="120"
+                                  ItemsSource="{Binding SillyPeople}"
+                                  ListLayout="Grid">
+```
+
+<p align="center">
+A ```Grid``` ```ListLayout``` ```with ColumnCount=1```.
+</p>
+<p align="center">
+  <img src="__Docs__/listview-dragandrop.gif" width="250" />
+</p>
+
+### Infinite Loading
+
+You can achieve infinite loading really easily by using the ```Paginator``` component, and bind it to the ```InfiniteListLoader``` property.
+All is explained here:
+
+https://www.sharpnado.com/paginator-platform-independent/
+
 ### Others properties
 
 #### Properties available with both layout mode
 
 ```csharp
-public int ViewCacheSize { get; set; } = 0;
-```
+public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(
+    nameof(ItemsSource),
+    typeof(IEnumerable),
+    typeof(HorizontalListView),
+    default(IEnumerable<object>),
+    BindingMode.TwoWay);
 
-In certain scenarios, the first scroll of the list can be smoothen by pre-building some views.
+public static readonly BindableProperty InfiniteListLoaderProperty = BindableProperty.Create(
+    nameof(ItemsSource),
+    typeof(IInfiniteListLoader),
+    typeof(HorizontalListView));
 
-#### Properties available with Linear ListLayout
-
-```csharp
 public static readonly BindableProperty ScrollBeganCommandProperty = BindableProperty.Create(
     nameof(ScrollBeganCommand),
     typeof(ICommand),
@@ -186,16 +282,14 @@ public static readonly BindableProperty CurrentIndexProperty = BindableProperty.
     typeof(int),
     typeof(HorizontalListView),
     defaultValue: 0,
-    defaultBindingMode: BindingMode.TwoWay,
-    propertyChanged: OnCurrentIndexChanged);
+    defaultBindingMode: BindingMode.TwoWay);
 
 public static readonly BindableProperty VisibleCellCountProperty = BindableProperty.Create(
     nameof(VisibleCellCount),
     typeof(int),
     typeof(HorizontalListView),
     defaultValue: 0,
-    defaultBindingMode: BindingMode.TwoWay,
-    propertyChanged: OnVisibleCellCountChanged);
+    defaultBindingMode: BindingMode.TwoWay);
 
 public static readonly BindableProperty DisableScrollProperty = BindableProperty.Create(
     nameof(DisableScroll),
@@ -203,6 +297,18 @@ public static readonly BindableProperty DisableScrollProperty = BindableProperty
     typeof(HorizontalListView),
     defaultValue: false,
     defaultBindingMode: BindingMode.TwoWay);
+
+
+/// In certain scenarios, the first scroll of the list can be smoothen
+/// by pre-building some views.
+public int ViewCacheSize { get; set; } = 0;
+
+public SnapStyle SnapStyle { get; set; } = SnapStyle.None;
+
+public int ColumnCount { get; set; } = 0;
+
+public ScrollSpeed ScrollSpeed { get; set; } = ScrollSpeed.Normal;
+
 ```
 
 #### Properties available with Grid ListLayout
