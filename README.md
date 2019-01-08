@@ -19,15 +19,10 @@ Xamarin Forms custom components and renderers including:
   * ```UICollectionView``` on iOS
   * This implementation is in fact very close in terms of philosophy and implementation to what will provide the future Xamarin ```CollectionView```.
 
-<div style="display: flex">
-  <div style="flex: 50%; padding: 10px">
-    <img src="__Docs__/horizontal_snap_center.gif" width="250">
-  </div>
-  <div style="flex: 50%; padding: 10px">
-    <img src="__Docs__/carousel-ios.gif" width="250" >
-  </div>
-</div>
-
+<p float="left" align="middle">
+  <img src="__Docs__/horizontal_snap_center.gif" width="250" hspace="20"/>
+  <img src="__Docs__/carousel-ios.gif" width="250" hspace="20"/>
+</p>
 
 ```Grid``` collection view (```HorizontalListView``` with ```ListLayout``` set to ```Grid```):
   * Column count (if equal to 1 then you have a classic ```ListView``` ;)
@@ -37,14 +32,10 @@ Xamarin Forms custom components and renderers including:
   * Handles ```NotifyCollectionChangedAction``` Add, Remove and Reset actions
   * View recycling
 
-<div style="display: flex">
-  <div style="flex: 50%; padding: 10px">
-    <img src="__Docs__/drag_and_drop.gif" width="250">
-  </div>
-  <div style="flex: 50%; padding: 10px">
-    <img src="__Docs__/listview-dragandrop.gif" width="250" >
-  </div>
-</div>
+<p float="left" align="middle">
+  <img src="__Docs__/drag_and_drop.gif" width="250" hspace="20"/>
+  <img src="__Docs__/listview-dragandrop.gif" width="250" hspace="20"/>
+</p>
 
 ```TaskLoaderView``` displays an ```ActivityLoader``` while loading then:
   * Handles error with custom messages and icons
@@ -104,7 +95,7 @@ You can also specify ```ItemSpacing``` and ```CollectionPadding```.
 ```
 
 <p align="center">
-  A ```HorizontalListView``` with ```SnapStyle=Center``` and ```ItemWidth```/```ItemHeight``` set.
+  A <code>HorizontalListView</code> with <code>SnapStyle=Center</code> and <code>ItemWidth/ItemHeight</code> set.
 </p>
 <p align="center">
   <img src="__Docs__/horizontal_snap_center.gif" width="250" />
@@ -129,7 +120,7 @@ You can also decide to just specify the number of column you want, the ```Column
 ```
 
 <p align="center">
-  A ```HorizontalListView``` with ```ColumnCount=2```.
+  A <code>HorizontalListView</code> with <code>ColumnCount=2</code>.
 </p>
 <p align="center">
   <img src="__Docs__/cc_2-ll_Linear-ss_start.png" width="250" />
@@ -154,7 +145,7 @@ If you don't specify the ```ItemHeight```, it will be automatically computed for
 ```
 
 <p align="center">
-  A ```HorizontalListView``` with ```ListLayout=Carousel```.
+  A <code>HorizontalListView</code> with <code>ListLayout=Carousel</code>.
 </p>
 <p align="center">
   <img src="__Docs__/carousel-ios.gif" width="250" />
@@ -214,7 +205,7 @@ If you set the ```ListLayout``` property to ```Grid```, you will have access to 
 The nuget package comes also with a ```MaterialFrame``` view with ```Elevation``` property. Some code has been taken from [Alex Dunn work](https://alexdunn.org/2018/06/06/xamarin-tip-dynamic-elevation-frames/).
 
 <p align="center">
-A ```Grid``` ```ListLayout``` with padding and item spacing.<br>
+A <code>Grid</code> <code>ListLayout</code> with padding and item spacing.<br>
 </p>
 <p align="center">
   <img src="__Docs__/drag_and_drop.gif" width="250" />
@@ -237,7 +228,7 @@ The ```ColumnCount``` property works also with the grid layout.
 ```
 
 <p align="center">
-A ```Grid``` ```ListLayout``` ```with ColumnCount=1```.
+A <code>Grid</code> <code>ListLayout</code> with <code>ColumnCount=1</code>.
 </p>
 <p align="center">
   <img src="__Docs__/listview-dragandrop.gif" width="250" />
