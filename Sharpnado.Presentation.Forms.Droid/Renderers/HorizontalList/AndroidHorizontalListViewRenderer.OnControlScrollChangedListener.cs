@@ -96,6 +96,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                             return;
                         }
 
+                        if (nativeView.IsSnapHelperBusy)
+                        {
+                            return;
+                        }
+
                         nativeView.IsScrolling = false;
 
                         _cts = new CancellationTokenSource();
@@ -124,7 +129,16 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 nativeView._isCurrentIndexUpdateBackfire = true;
                 try
                 {
-                    _element.CurrentIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
+                    if (_element.SnapStyle == SnapStyle.Center)
+                    {
+                        int firstItemIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
+                        int lastItemIndex = nativeView.LinearLayoutManager.FindLastVisibleItemPosition();
+                        _element.CurrentIndex = firstItemIndex + (lastItemIndex - firstItemIndex) / 2;
+                    }
+                    else
+                    {
+                        _element.CurrentIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
+                    }
 
                     InternalLogger.Info($"CurrentIndex: {_element.CurrentIndex}");
                 }

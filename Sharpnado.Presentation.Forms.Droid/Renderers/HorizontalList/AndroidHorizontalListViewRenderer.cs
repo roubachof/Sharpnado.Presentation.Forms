@@ -20,6 +20,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
     public partial class AndroidHorizontalListViewRenderer : ViewRenderer<HorizontalListView, RecyclerView>
     {
         private bool _isCurrentIndexUpdateBackfire;
+
         private bool _isLandscape;
 
         private ItemTouchHelper _dragHelper;
@@ -36,6 +37,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         public LinearLayoutManager LinearLayoutManager => Control?.GetLayoutManager() as LinearLayoutManager;
 
         public bool IsScrolling { get; set; }
+
+        public bool IsSnapHelperBusy { get; set; }
 
         public static void Initialize()
         {
@@ -171,7 +174,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             if (Element.SnapStyle != SnapStyle.None)
             {
-                var snapHelper = Element.SnapStyle == SnapStyle.Start ? new StartSnapHelper() : new LinearSnapHelper();
+                LinearSnapHelper snapHelper = Element.SnapStyle == SnapStyle.Start
+                    ? new StartSnapHelper(this)
+                    : new CenterSnapHelper(this);
                 snapHelper.AttachToRecyclerView(Control);
             }
 

@@ -30,23 +30,52 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private void UpdateCurrentIndex()
         {
-            var firstCellBounds = new CGRect
+            int newIndex;
+            if (Element.SnapStyle == RenderedViews.SnapStyle.Center)
             {
-                X = Control.ContentOffset.X,
-                Y = Control.ContentOffset.Y,
-                Size = new CGSize(Element.ItemWidth, Element.ItemHeight),
-            };
+                var collectionViewCenter = Control.Center;
+                var contentOffset = Control.ContentOffset;
+                var center = new CGPoint(
+                    collectionViewCenter.X
+                        + contentOffset.X
+                        + (nfloat)Element.CollectionPadding.Left
+                        - (nfloat)Element.CollectionPadding.Right,
+                    collectionViewCenter.Y
+                        + contentOffset.Y
+                        + (nfloat)Element.CollectionPadding.Top
+                        - (nfloat)Element.CollectionPadding.Bottom);
 
-            var firstCellCenter = new CGPoint(firstCellBounds.GetMidX(), firstCellBounds.GetMidY());
+                var centerPath = Control.IndexPathForItemAtPoint(center);
+                if (centerPath == null)
+                {
+                    return;
+                }
 
-            var indexPath = Control.IndexPathForItemAtPoint(firstCellCenter);
-            if (indexPath == null)
+                newIndex = centerPath.Row;
+            }
+            else
             {
-                return;
+                var firstCellBounds = new CGRect
+                {
+                    X = Control.ContentOffset.X,
+                    Y = Control.ContentOffset.Y,
+                    Size = new CGSize(Element.ItemWidth, Element.ItemHeight),
+                };
+
+                var firstCellCenter = new CGPoint(firstCellBounds.GetMidX(), firstCellBounds.GetMidY());
+
+                var indexPath = Control.IndexPathForItemAtPoint(firstCellCenter);
+                if (indexPath == null)
+                {
+                    return;
+                }
+
+                newIndex = indexPath.Row;
             }
 
-            InternalLogger.Info($"UpdateCurrentIndex => {indexPath.Row}");
-            Element.CurrentIndex = indexPath.Row;
+            InternalLogger.Info($"UpdateCurrentIndex => {newIndex}");
+
+            Element.CurrentIndex = newIndex;
         }
 
         private void OnDecelerationEnded(object sender, EventArgs e)

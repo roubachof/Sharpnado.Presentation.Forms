@@ -4,14 +4,17 @@ using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
 
+using Sharpnado.Infrastructure;
+
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
-    public class StartSnapHelper : LinearSnapHelper
+    public class StartSnapHelper : CenterSnapHelper
     {
         private OrientationHelper _verticalHelper;
         private OrientationHelper _horizontalHelper;
 
-        public StartSnapHelper()
+        public StartSnapHelper(AndroidHorizontalListViewRenderer nativeView)
+            : base(nativeView)
         {
         }
 
@@ -32,6 +35,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 ? DistanceToStart(targetView, GetVerticalHelper(layoutManager))
                 : 0;
 
+            InternalLogger.Info($"CalculateDistanceToFinalSnap()");
             return result;
         }
 
@@ -48,7 +52,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             var startView = GetStartView(layoutManager, helper, out int viewPosition);
 
-            // System.Diagnostics.Debug.WriteLine($"DEBUG_SCROLL: FindSnapView ( viewPosition: {viewPosition} )");
+            InternalLogger.Info($"FindSnapView ( viewPosition: {viewPosition} )");
+
+            ReleaseIsBusy();
+
             return startView;
         }
 
