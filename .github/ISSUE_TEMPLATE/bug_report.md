@@ -1,12 +1,17 @@
 ---
 name: Bug report
 about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
 **Platform (please complete the following information):**
  - OS: [iOS/Android/Both]
  - Device: [iPhone6/iPhoneSimulator/Pixel/AndroidEmulator/...]
+ - Sdk vervion: [iOS 11/Android SDK 21]
+ - Xamarin.Forms: [3.4.0.1029999]
 
 **Describe the bug**
 A clear and concise description of what the bug is.
