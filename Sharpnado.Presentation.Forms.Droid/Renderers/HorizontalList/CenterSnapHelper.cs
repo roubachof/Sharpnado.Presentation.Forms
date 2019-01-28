@@ -22,14 +22,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
         }
 
-        public override int[] CalculateDistanceToFinalSnap(RecyclerView.LayoutManager layoutManager, View targetView)
-        {
-            var result = base.CalculateDistanceToFinalSnap(layoutManager, targetView);
-
-            InternalLogger.Info($"CalculateDistanceToFinalSnap()");
-            return result;
-        }
-
         public override int FindTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY)
         {
             var targetSnapPosition = base.FindTargetSnapPosition(layoutManager, velocityX, velocityY);
@@ -45,13 +37,36 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         public override View FindSnapView(RecyclerView.LayoutManager layoutManager)
         {
-            var view = base.FindSnapView(layoutManager);
-
             InternalLogger.Info($"FindSnapView()");
+
+            View snapView = null;
+            if (_weakNativeView.TryGetTarget(out var target))
+            {
+                int firstIndex = target.LinearLayoutManager.FindFirstCompletelyVisibleItemPosition();
+                if (firstIndex == 0)
+                {
+                    // Check if first item is fully visible, if true don't snap.
+                    snapView = target.LinearLayoutManager.FindViewByPosition(firstIndex);
+                    InternalLogger.Info("Getting first view for snap: overriding center snap behavior");
+                }
+
+                int lastIndex = target.LinearLayoutManager.FindLastCompletelyVisibleItemPosition();
+                if (lastIndex == target.Control.GetAdapter()?.ItemCount - 1)
+                {
+                    // Check if last item is fully visible, if true don't snap.
+                    snapView = target.LinearLayoutManager.FindViewByPosition(lastIndex);
+                    InternalLogger.Info("Getting last view for snap: overriding center snap behavior");
+                }
+            }
+
+            if (snapView == null)
+            {
+                snapView = base.FindSnapView(layoutManager);
+            }
 
             ReleaseIsBusy();
 
-            return view;
+            return snapView;
         }
 
         protected void ReleaseIsBusy()

@@ -3,7 +3,7 @@
     <metadata>
     
     	<id>Sharpnado.Forms.HorizontalListView</id>
-        <version>0.9.8</version>
+        <version>0.9.9</version>
         <copyright>Sharpnado 2019</copyright>
         <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
         <authors>Jean-Marie Alfonsi</authors>
@@ -16,10 +16,9 @@
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview</tags>
         <releaseNotes>  
-  * Add Carousel Layout with ListLayout = Carousel
-  * Add ColumnCount property for ItemWidth auto sizing
-  * Add ScrollSpeed property
-  * Add auto ItemHeight computing if ListLayout = Linear and ItemHeight == 0
+  * Fix CurrentItem is not correct when SnapStyle = Center (iOS and Android)
+  * Fix BeginScroll and EndScroll called two times because of SnapHelper (Android)
+  * Consistency between CurrentItem update and Snapping between iOS and Android
         </releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):

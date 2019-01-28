@@ -99,7 +99,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                         if (nativeView.IsSnapHelperBusy)
                         {
                             return;
-                        }
+                         }
 
                         nativeView.IsScrolling = false;
 
@@ -129,17 +129,43 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 nativeView._isCurrentIndexUpdateBackfire = true;
                 try
                 {
+                    int newIndex = -1;
                     if (_element.SnapStyle == SnapStyle.Center)
                     {
-                        int firstItemIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
-                        int lastItemIndex = nativeView.LinearLayoutManager.FindLastVisibleItemPosition();
-                        _element.CurrentIndex = firstItemIndex + (lastItemIndex - firstItemIndex) / 2;
+                        int firstIndex = nativeView.LinearLayoutManager.FindFirstCompletelyVisibleItemPosition();
+                        if (firstIndex == 0)
+                        {
+                            // Check if first item is fully visible, if true don't snap.
+                            newIndex = 0;
+                        }
+
+                        int lastIndex = nativeView.LinearLayoutManager.FindLastCompletelyVisibleItemPosition();
+                        if (lastIndex == nativeView.Control.GetAdapter().ItemCount - 1)
+                        {
+                            // Check if first item is fully visible, if true don't snap.
+                            newIndex = lastIndex;
+                        }
+
+                        if (newIndex == -1)
+                        {
+                            int firstItemIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
+                            int lastItemIndex = nativeView.LinearLayoutManager.FindLastVisibleItemPosition();
+                            newIndex = firstItemIndex + (lastItemIndex - firstItemIndex) / 2;
+                        }
                     }
                     else
                     {
-                        _element.CurrentIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
+                        newIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
                     }
 
+                    if (newIndex == -1)
+                    {
+                        InternalLogger.Warn(
+                            "Failed to find the current index: UpdateCurrentIndex returns nothing");
+                        return;
+                    }
+
+                    _element.CurrentIndex = newIndex;
                     InternalLogger.Info($"CurrentIndex: {_element.CurrentIndex}");
                 }
                 finally

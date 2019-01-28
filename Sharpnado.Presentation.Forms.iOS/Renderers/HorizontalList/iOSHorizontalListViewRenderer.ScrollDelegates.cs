@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
 using CoreGraphics;
+
+using Foundation;
+
 using Sharpnado.Infrastructure;
 using UIKit;
 
@@ -8,21 +11,78 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public partial class iOSHorizontalListViewRenderer
     {
+        private bool IsCellFullyVisible(NSIndexPath path)
+        {
+            var cell = Control.CellForItem(path);
+
+            if (cell != null)
+            {
+                var firstCellFrame = Control.ConvertRectToView(cell.Frame, Control.Superview);
+                if (Control.Frame.Contains(firstCellFrame))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsFirstCellFullyVisible()
+        {
+            return IsCellFullyVisible(NSIndexPath.FromItemSection(0, 0));
+        }
+
+        private bool IsLastCellFullyVisible()
+        {
+            var lastIndex = NSIndexPath.FromItemSection(Control.NumberOfItemsInSection(0) - 1, 0);
+            return IsCellFullyVisible(lastIndex);
+        }
+
         private void SnapToCenter()
         {
-            var collectionRect = new CGRect
+            var firstIndex = NSIndexPath.FromItemSection(0, 0);
+            if (IsCellFullyVisible(firstIndex))
             {
-                X = Control.ContentOffset.X,
-                Y = Control.ContentOffset.Y,
-                Size = new CGSize(Control.Frame.Width, Control.Frame.Height),
-            };
+                // Check if first item is fully visible, if true don't snap.
+                Control.ScrollToItem(firstIndex, UICollectionViewScrollPosition.CenteredHorizontally, true);
+                return;
+            }
 
-            var collectionViewCenter = new CGPoint(collectionRect.GetMidX(), collectionRect.GetMidY());
+            var lastIndex = NSIndexPath.FromItemSection(Control.NumberOfItemsInSection(0) - 1, 0);
+            if (IsCellFullyVisible(lastIndex))
+            {
+                // Check if last item is fully visible, if true don't snap.
+                Control.ScrollToItem(lastIndex, UICollectionViewScrollPosition.CenteredHorizontally, true);
+                return;
+            }
 
-            var indexPath = Control.IndexPathForItemAtPoint(collectionViewCenter);
+            var collectionViewCenter = Control.Center;
+            var contentOffset = Control.ContentOffset;
+            var center = new CGPoint(
+                collectionViewCenter.X
+                + contentOffset.X
+                + (nfloat)Element.CollectionPadding.Left
+                - (nfloat)Element.CollectionPadding.Right,
+                collectionViewCenter.Y
+                + contentOffset.Y
+                + (nfloat)Element.CollectionPadding.Top
+                - (nfloat)Element.CollectionPadding.Bottom);
+
+            var indexPath = Control.IndexPathForItemAtPoint(center);
             if (indexPath == null)
             {
-                return;
+                // Point is right between two cells: picking one
+                var indexes = Control.IndexPathsForVisibleItems.OrderBy(i => i.Item).ToArray();
+                int middleIndex = (indexes.Count() - 1) / 2;
+                var candidateIndexPath = indexes[middleIndex];
+                if (candidateIndexPath.Row < Element.CurrentIndex)
+                {
+                    indexPath = candidateIndexPath;
+                }
+                else
+                {
+                    indexPath = indexes[middleIndex + 1 > indexes.Length ? middleIndex : middleIndex + 1];
+                }
             }
 
             Control.ScrollToItem(indexPath, UICollectionViewScrollPosition.CenteredHorizontally, true);
@@ -30,28 +90,42 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private void UpdateCurrentIndex()
         {
-            int newIndex;
+            nint newIndex;
             if (Element.SnapStyle == RenderedViews.SnapStyle.Center)
             {
-                var collectionViewCenter = Control.Center;
-                var contentOffset = Control.ContentOffset;
-                var center = new CGPoint(
-                    collectionViewCenter.X
+                var lastIndex = NSIndexPath.FromItemSection(Control.NumberOfItemsInSection(0) - 1, 0);
+                if (IsCellFullyVisible(lastIndex))
+                {
+                    newIndex = lastIndex.Item;
+                }
+                else if (IsFirstCellFullyVisible())
+                {
+                    newIndex = 0;
+                }
+                else
+                {
+                    var collectionViewCenter = Control.Center;
+                    var contentOffset = Control.ContentOffset;
+                    var center = new CGPoint(
+                        collectionViewCenter.X
                         + contentOffset.X
                         + (nfloat)Element.CollectionPadding.Left
                         - (nfloat)Element.CollectionPadding.Right,
-                    collectionViewCenter.Y
+                        collectionViewCenter.Y
                         + contentOffset.Y
                         + (nfloat)Element.CollectionPadding.Top
                         - (nfloat)Element.CollectionPadding.Bottom);
 
-                var centerPath = Control.IndexPathForItemAtPoint(center);
-                if (centerPath == null)
-                {
-                    return;
-                }
+                    var centerPath = Control.IndexPathForItemAtPoint(center);
+                    if (centerPath == null)
+                    {
+                        InternalLogger.Warn(
+                            "Failed to find a NSIndexPath in SnapStyle center context: UpdateCurrentIndex returns nothing");
+                        return;
+                    }
 
-                newIndex = centerPath.Row;
+                    newIndex = centerPath.Item;
+                }
             }
             else
             {
@@ -75,7 +149,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             InternalLogger.Info($"UpdateCurrentIndex => {newIndex}");
 
-            Element.CurrentIndex = newIndex;
+            Element.CurrentIndex = (int)newIndex;
         }
 
         private void OnDecelerationEnded(object sender, EventArgs e)
