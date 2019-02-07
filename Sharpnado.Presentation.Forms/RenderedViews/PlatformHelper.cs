@@ -10,11 +10,6 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public static void InitializeSingleton(PlatformHelper instance)
         {
-            if (_instance != null)
-            {
-                throw new InvalidOperationException("Singleton already set");
-            }
-
             _instance = instance;
         }
 

@@ -5,6 +5,7 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 
+using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using Xamarin.Forms;
@@ -105,6 +106,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             outRect.Top = top;
             outRect.Right = right;
             outRect.Bottom = bottom;
+
+            InternalLogger.Info(
+                $"view n°{++viewPosition} => left: {left}, top: {top}, right: {right}, bottom: {bottom}");
         }
     }
 
