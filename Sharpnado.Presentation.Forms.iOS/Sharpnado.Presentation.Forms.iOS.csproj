@@ -62,10 +62,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers">
-      <Version>1.1.0-beta008</Version>
+      <Version>1.1.1-rc.94</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.4.0.1008975</Version>
+      <Version>3.5.0.129452</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

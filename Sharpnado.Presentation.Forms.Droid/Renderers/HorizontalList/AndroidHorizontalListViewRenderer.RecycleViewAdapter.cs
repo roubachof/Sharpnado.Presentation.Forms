@@ -10,11 +10,15 @@ using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
+using Android.Widget;
 
 using Sharpnado.Infrastructure;
+using Sharpnado.Presentation.Forms.Droid.Helpers;
+using Sharpnado.Presentation.Forms.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Platform.Android;
 
 using IList = System.Collections.IList;
 using View = Android.Views.View;
@@ -48,6 +52,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             private readonly Context _context;
             private readonly HorizontalListView _element;
+            private readonly WeakReference<RecyclerView> _weakParentView;
             private readonly IEnumerable _elementItemsSource;
             private readonly INotifyCollectionChanged _notifyCollectionChanged;
             private readonly List<object> _dataSource;
@@ -65,9 +70,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
             }
 
-            public RecycleViewAdapter(HorizontalListView element, Context context)
+            public RecycleViewAdapter(HorizontalListView element, RecyclerView parentView, Context context)
             {
                 _element = element;
+                _weakParentView = new WeakReference<RecyclerView>(parentView);
                 _context = context;
 
                 _elementItemsSource = element.ItemsSource;
@@ -119,7 +125,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
             {
                 var item = (ViewHolder)holder;
-
                 item.Bind(_dataSource[position], _element);
             }
 
@@ -194,20 +199,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             private ViewHolder CreateViewHolder(int itemViewType = -1)
             {
                 var view = CreateView(out var viewCell, itemViewType);
-
-                //if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
-                //{
-                //    var contentFrame = new FrameLayout(_context)
-                //    {
-                //        LayoutParameters = new FrameLayout.LayoutParams(
-                //            LayoutParams.MatchParent,
-                //            (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density)),
-                //    };
-
-                //    contentFrame.AddView(view);
-                //    view = contentFrame;
-                //}
-
                 return new ViewHolder(view, viewCell);
             }
 
@@ -225,40 +216,37 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     viewCell = (ViewCell)_dataTemplates[itemViewType].CreateContent();
                 }
 
-                // viewCell.Parent = _element;
-                viewCell.View.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
+                _formsViews.Add(new WeakReference<ViewCell>(viewCell));
+                var view = viewCell.View;
 
-                LayoutParams layoutParams = null;
-                //if (_element.ListLayout == HorizontalListViewLayout.Grid && _element.ColumnCount == 0)
-                //{
-                //    layoutParams = new FrameLayout.LayoutParams(
-                //        (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
-                //        (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density))
-                //    {
-                //        Gravity = GravityFlags.CenterHorizontal,
-                //    };
-                //}
-                //else
-                //{
-                    layoutParams = new LayoutParams(
-                        (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
-                        (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density));
-                //}
+                var renderer = Platform.CreateRendererWithContext(view, _context);
+                Platform.SetRenderer(view, renderer);
 
-                if (Xamarin.Forms.Platform.Android.Platform.GetRenderer(viewCell.View) == null)
+                renderer.Element.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
+                renderer.UpdateLayout();
+
+                var itemView = renderer.View;
+                itemView.LayoutParameters = new FrameLayout.LayoutParams(
+                    (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
+                    (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density))
                 {
-                    Xamarin.Forms.Platform.Android.Platform.SetRenderer(
-                        viewCell.View,
-                        Xamarin.Forms.Platform.Android.Platform.CreateRendererWithContext(viewCell.View, _context));
+                    Gravity = GravityFlags.CenterHorizontal,
+                };
+
+                if (_element.IsLayoutLinear)
+                {
+                    return itemView;
                 }
 
-                var renderer = Xamarin.Forms.Platform.Android.Platform.GetRenderer(viewCell.View);
+                var container = new FrameLayout(_context)
+                {
+                    LayoutParameters = new FrameLayout.LayoutParams(
+                        LayoutParams.MatchParent,
+                        LayoutParams.WrapContent),
+                };
 
-                var view = renderer.View;
-                view.LayoutParameters = layoutParams;
-
-                _formsViews.Add(new WeakReference<ViewCell>(viewCell));
-                return view;
+                container.AddView(itemView);
+                return container;
             }
 
             private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -268,14 +256,25 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     return;
                 }
 
+                RecyclerView parentView;
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                         OnItemAdded(e.NewStartingIndex, e.NewItems);
+                        if (_weakParentView.TryGetTarget(out parentView))
+                        {
+                            parentView.InvalidateItemDecorations();
+                        }
+
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
                         OnItemRemoved(e.OldStartingIndex, e.OldItems.Count);
+                        if (_weakParentView.TryGetTarget(out parentView))
+                        {
+                            parentView.InvalidateItemDecorations();
+                        }
+
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
@@ -287,7 +286,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             private void OnItemAdded(int newIndex, IList items)
             {
-                // System.Diagnostics.Debug.WriteLine($"OnItemAdded( newIndex: {newIndex} )");
+                InternalLogger.Info($"OnItemAdded( newIndex: {newIndex}, itemCount: {items.Count} )");
                 using (var h = new Handler(Looper.MainLooper))
                 {
                     h.Post(
@@ -308,7 +307,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             private void OnItemRemoved(int removedIndex, int itemCount)
             {
-                // System.Diagnostics.Debug.WriteLine($"OnItemRemoved( removedIndex: {removedIndex} )");
+                InternalLogger.Info($"OnItemRemoved( newIndex: {removedIndex}, itemCount: {itemCount} )");
                 using (var h = new Handler(Looper.MainLooper))
                 {
                     h.Post(

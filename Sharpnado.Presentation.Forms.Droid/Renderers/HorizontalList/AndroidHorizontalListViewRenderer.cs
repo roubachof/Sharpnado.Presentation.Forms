@@ -5,6 +5,8 @@ using Android.Content;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 using Android.Views;
+
+using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
@@ -154,7 +156,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             Element.CheckConsistency();
 
-            var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed);
+            var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed) { HasFixedSize = true };
 
             if (Element.ListLayout == HorizontalListViewLayout.Grid)
             {
@@ -168,6 +170,17 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             if (Element.ItemSpacing > 0 || Element.CollectionPadding != new Thickness(0))
             {
                 recyclerView.AddItemDecoration(new SpaceItemDecoration(Element.ItemSpacing, Element.CollectionPadding));
+
+                if (!(Element.ListLayout == HorizontalListViewLayout.Grid && Element.ColumnCount == 0))
+                {
+                    recyclerView.SetPadding(
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Left),
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Top),
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Right),
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Bottom));
+                }
+
+                recyclerView.SetClipToPadding(false);
             }
 
             SetNativeControl(recyclerView);
@@ -266,6 +279,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 return;
             }
 
+            InternalLogger.Info($"ScrollToCurrentItem() => CurrentItem: {Element.CurrentIndex}");
+
             int offset = 0;
             if (HorizontalLinearLayoutManager != null)
             {
@@ -287,7 +302,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             Control.GetAdapter()?.Dispose();
 
-            var adapter = new RecycleViewAdapter(Element, Context);
+            var adapter = new RecycleViewAdapter(Element, Control, Context);
             Control.SetAdapter(adapter);
 
             if (Element.EnableDragAndDrop)
