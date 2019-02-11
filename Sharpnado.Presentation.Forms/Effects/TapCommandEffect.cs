@@ -86,7 +86,7 @@ namespace Sharpnado.Presentation.Forms.Effects
             var frame = bindable as Frame;
             if (frame != null)
             {
-                System.Diagnostics.Debug.WriteLine($"Frame not supported for android, attaching it to its content {frame.Content?.GetType().Name}");
+                // System.Diagnostics.Debug.WriteLine($"Frame not supported for android, attaching it to its content {frame.Content?.GetType().Name}");
 
                 view = frame.Content;
 

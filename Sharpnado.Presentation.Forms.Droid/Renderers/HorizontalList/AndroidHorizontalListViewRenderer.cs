@@ -156,7 +156,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             Element.CheckConsistency();
 
-            var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed);
+            var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed) { HasFixedSize = true };
 
             if (Element.ListLayout == HorizontalListViewLayout.Grid)
             {
@@ -170,6 +170,17 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             if (Element.ItemSpacing > 0 || Element.CollectionPadding != new Thickness(0))
             {
                 recyclerView.AddItemDecoration(new SpaceItemDecoration(Element.ItemSpacing, Element.CollectionPadding));
+
+                if (!(Element.ListLayout == HorizontalListViewLayout.Grid && Element.ColumnCount == 0))
+                {
+                    recyclerView.SetPadding(
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Left),
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Top),
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Right),
+                        PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Bottom));
+                }
+
+                recyclerView.SetClipToPadding(false);
             }
 
             SetNativeControl(recyclerView);

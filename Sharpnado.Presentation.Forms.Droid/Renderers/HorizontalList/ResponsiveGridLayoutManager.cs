@@ -4,6 +4,7 @@ using Android.Content;
 using Android.Graphics;
 using Android.Runtime;
 using Android.Support.V7.Widget;
+using Android.Util;
 
 using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
@@ -22,6 +23,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         private readonly int _rightPadding;
         private readonly int _bottomPadding;
 
+
         public SpaceItemDecoration(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
@@ -38,77 +40,139 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         public override void GetItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
         {
-            int left, top, right, bottom;
-            left = right = top = bottom = _space / 2;
+            int right = _space / 2;
+            int left = _space / 2;
 
             bool isViewEdgeLeft = false;
-            bool isViewEdgeTop = false;
             bool isViewEdgeRight = false;
-            bool isViewEdgeBottom = false;
-            bool horizontalOffsetAssigned = false;
 
             int viewPosition = parent.GetChildAdapterPosition(view);
             int viewCount = parent.GetAdapter().ItemCount;
 
             if (parent.GetLayoutManager() is ResponsiveGridLayoutManager responsiveGridLayout)
             {
+                int top = _space / 2;
+                int bottom = _space / 2;
+
+                bool isAutoComputedItemWidth = responsiveGridLayout.IsAutoComputedItemWidth();
+
                 int spanCount = responsiveGridLayout.SpanCount;
                 isViewEdgeLeft = viewPosition % spanCount == 0;
-                isViewEdgeTop = viewPosition < spanCount;
+                bool isViewEdgeTop = viewPosition < spanCount;
                 isViewEdgeRight = viewPosition % spanCount == spanCount - 1;
-                isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
+                bool isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
 
-                if (responsiveGridLayout.TryGetItemWidth(out int itemWidth))
+                if (isViewEdgeTop)
                 {
-                    int gridLeftPadding = _leftPadding;
-                    int gridRightPadding = _rightPadding;
-                    if (spanCount == 1)
-                    {
-                        // If there is only one column we want our items centered
-                        gridLeftPadding = 0;
-                        gridRightPadding = 0;
-                        horizontalOffsetAssigned = true;
-                    }
-
-                    int availableWidthSpace = parent.Width - gridLeftPadding - gridRightPadding - spanCount * itemWidth;
-                    int interItemSpacing = spanCount > 1 ? availableWidthSpace / (spanCount - 1) : availableWidthSpace;
-                    left = right = interItemSpacing / 2;
+                    top = isAutoComputedItemWidth ? 0 : _topPadding;
                 }
+
+                if (isViewEdgeBottom)
+                {
+                    bottom = isAutoComputedItemWidth ? 0 : _bottomPadding;
+                }
+
+                bool isHorizontalEdge = isViewEdgeLeft || isViewEdgeRight;
+
+                if (!responsiveGridLayout.TryGetItemWidth(out int itemWidth))
+                {
+                    base.GetItemOffsets(outRect, view, parent, state);
+                    return;
+                }
+
+                int gridLeftPadding = _leftPadding;
+                int gridRightPadding = _rightPadding;
+                if (spanCount == 1)
+                {
+                    // If there is only one column we want our items centered
+                    gridLeftPadding = 0;
+                    gridRightPadding = 0;
+                }
+
+                //InternalLogger.Info(
+                //    $"interSpacing computation:{Environment.NewLine}    parent.MeasuredWidth: {parent.MeasuredWidth}{Environment.NewLine}    parent.Width: {parent.Width}{Environment.NewLine}    spanCount: {spanCount}{Environment.NewLine}    itemWidth:{itemWidth}{Environment.NewLine}    gridLeftPadding: {gridLeftPadding}{Environment.NewLine}    gridRightPadding: {gridRightPadding}");
+
+                int availableWidthSpace =
+                    parent.MeasuredWidth - gridLeftPadding - gridRightPadding - spanCount * itemWidth;
+
+                //InternalLogger.Info($"availableWidthSpace: {availableWidthSpace}");
+
+                if (spanCount == 1)
+                {
+                    if (isAutoComputedItemWidth)
+                    {
+                        left = 0;
+                        right = 0;
+                    }
+                    else
+                    {
+                        left = right = availableWidthSpace / 2;
+                    }
+                }
+                else
+                {
+                    int interItemSpace = availableWidthSpace / (spanCount - 1);
+                    int halfInterItemSpace = interItemSpace / 2;
+                    left = interItemSpace / 2;
+                    right = interItemSpace / 2;
+
+                    if (isHorizontalEdge)
+                    {
+                        int remaining = availableWidthSpace - halfInterItemSpace * 2 * (spanCount - 1);
+
+                        // InternalLogger.Info($"halfInterItemSpace: {halfInterItemSpace}, remaining: {remaining}");
+
+                        if (isViewEdgeLeft)
+                        {
+                            left = _leftPadding + remaining;
+                        }
+
+                        if (isViewEdgeRight)
+                        {
+                            right = _rightPadding;
+                        }
+                    }
+                }
+
+                if (isAutoComputedItemWidth)
+                {
+                    base.GetItemOffsets(outRect, view, parent, state);
+                    outRect.Set(outRect.Left, top, outRect.Right, bottom);
+
+                    // InternalLogger.Info(
+                    //    $"view n°{viewPosition + 1} => left: {outRect.Left}, top: {outRect.Top}, right: {outRect.Right}, bottom: {outRect.Bottom}");
+                    return;
+                }
+
+                outRect.Set(left, top, right, bottom);
+                // InternalLogger.Info(
+                //    $"view n°{viewPosition + 1} => left: {outRect.Left}, top: {outRect.Top}, right: {outRect.Right}, bottom: {outRect.Bottom}");
+                return;
             }
-            else if (parent.GetLayoutManager() is LinearLayoutManager)
+
+            if (!(parent.GetLayoutManager() is LinearLayoutManager))
             {
-                isViewEdgeLeft = viewPosition == 0;
-                isViewEdgeTop = isViewEdgeBottom = true;
-                isViewEdgeRight = viewPosition == viewCount - 1;
+                base.GetItemOffsets(outRect, view, parent, state);
+                return;
             }
 
-            if (isViewEdgeLeft && !horizontalOffsetAssigned)
+            isViewEdgeLeft = viewPosition == 0;
+            isViewEdgeRight = viewPosition == viewCount - 1;
+
+            if (isViewEdgeLeft)
             {
-                left = _leftPadding;
+                left = 0;
             }
 
-            if (isViewEdgeRight && !horizontalOffsetAssigned)
+            if (isViewEdgeRight)
             {
-                right = _rightPadding;
+                right = 0;
             }
 
-            if (isViewEdgeTop)
-            {
-                top = _topPadding;
-            }
+            outRect.Set(left, 0, right, 0);
 
-            if (isViewEdgeBottom)
-            {
-                bottom = _bottomPadding;
-            }
-
-            outRect.Left = left;
-            outRect.Top = top;
-            outRect.Right = right;
-            outRect.Bottom = bottom;
-
-            InternalLogger.Info(
-                $"view n°{++viewPosition} => left: {left}, top: {top}, right: {right}, bottom: {bottom}");
+            //InternalLogger.Info(
+            //    $"view n°{viewPosition + 1} => left: {left}, right: {right}");
         }
     }
 
@@ -143,6 +207,16 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             }
 
             return itemWidth > 0;
+        }
+
+        public bool IsAutoComputedItemWidth()
+        {
+            if (_weakElement.TryGetTarget(out var element))
+            {
+                return element.ColumnCount > 0;
+            }
+
+            return false;
         }
 
         public void ResetSpan()

@@ -10,6 +10,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
+using Android.Widget;
 
 using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
@@ -215,6 +216,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     viewCell = (ViewCell)_dataTemplates[itemViewType].CreateContent();
                 }
 
+                _formsViews.Add(new WeakReference<ViewCell>(viewCell));
                 var view = viewCell.View;
 
                 var renderer = Platform.CreateRendererWithContext(view, _context);
@@ -223,14 +225,28 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 renderer.Element.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
                 renderer.UpdateLayout();
 
-                var layoutParams = new LayoutParams(
+                var itemView = renderer.View;
+                itemView.LayoutParameters = new FrameLayout.LayoutParams(
                     (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
-                    (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density));
+                    (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density))
+                {
+                    Gravity = GravityFlags.CenterHorizontal,
+                };
 
-                renderer.View.LayoutParameters = layoutParams;
+                if (_element.IsLayoutLinear)
+                {
+                    return itemView;
+                }
 
-                _formsViews.Add(new WeakReference<ViewCell>(viewCell));
-                return renderer.View;
+                var container = new FrameLayout(_context)
+                {
+                    LayoutParameters = new FrameLayout.LayoutParams(
+                        LayoutParams.MatchParent,
+                        LayoutParams.WrapContent),
+                };
+
+                container.AddView(itemView);
+                return container;
             }
 
             private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
