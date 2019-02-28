@@ -25,6 +25,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private bool _isLandscape;
 
+        private bool _isFirstInitialization = true;
+
         private ItemTouchHelper _dragHelper;
 
         public AndroidHorizontalListViewRenderer(Context context)
@@ -154,7 +156,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void CreateView(HorizontalListView horizontalList)
         {
-            Element.CheckConsistency();
+            if (_isFirstInitialization)
+            {
+                Element.CheckConsistency();
+                _isFirstInitialization = false;
+            }
 
             var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed) { HasFixedSize = true };
 
@@ -300,10 +306,14 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private void UpdateItemsSource()
         {
-            Control.GetAdapter()?.Dispose();
+            InternalLogger.Info($"UpdateItemsSource()");
+
+            var oldAdapter = Control.GetAdapter();
 
             var adapter = new RecycleViewAdapter(Element, Control, Context);
             Control.SetAdapter(adapter);
+
+            oldAdapter?.Dispose();
 
             if (Element.EnableDragAndDrop)
             {

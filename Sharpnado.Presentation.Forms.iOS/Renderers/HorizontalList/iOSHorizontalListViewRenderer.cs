@@ -26,6 +26,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private bool _isCurrentIndexUpdateBackfire;
         private bool _isInternalScroll;
         private bool _isMovedBackfire;
+        private bool _isFirstInitialization = true;
 
         private int _lastVisibleItemIndex = -1;
 
@@ -152,7 +153,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private void CreateView()
         {
-            Element.CheckConsistency();
+            if (_isFirstInitialization)
+            {
+                Element.CheckConsistency();
+                _isFirstInitialization = false;
+            }
 
             Control?.DataSource?.Dispose();
             Control?.CollectionViewLayout?.Dispose();
@@ -280,8 +285,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
 
             InternalLogger.Info("UpdateItemsSource");
-            Control.DataSource?.Dispose();
-            Control.DataSource = null;
+
+            var oldDataSource = Control.DataSource;
 
             if (_itemsSource is INotifyCollectionChanged oldNotifyCollection)
             {
@@ -289,13 +294,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
 
             _itemsSource = Element.ItemsSource;
-            if (_itemsSource == null)
-            {
-                return;
-            }
 
             Control.DataSource = new iOSViewSource(Element);
             Control.RegisterClassForCell(typeof(iOSViewCell), nameof(iOSViewCell));
+
+            oldDataSource?.Dispose();
 
             if (_itemsSource is INotifyCollectionChanged newNotifyCollection)
             {

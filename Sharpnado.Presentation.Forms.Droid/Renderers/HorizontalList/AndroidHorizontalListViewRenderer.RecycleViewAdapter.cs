@@ -65,6 +65,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             private bool _collectionChangedBackfire;
 
+            private bool _isDisposed;
+
             public RecycleViewAdapter(IntPtr javaReference, JniHandleOwnership transfer)
                 : base(javaReference, transfer)
             {
@@ -96,7 +98,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 }
             }
 
-            public override int ItemCount => _dataSource.Count;
+            public override int ItemCount => _isDisposed ? 0 : _dataSource.Count;
 
             public override long GetItemId(int position)
             {
@@ -105,6 +107,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             public override int GetItemViewType(int position)
             {
+                if (_isDisposed)
+                {
+                    return -1;
+                }
+
                 if (_element.ItemTemplate is DataTemplateSelector dataTemplateSelector)
                 {
                     var dataTemplate = dataTemplateSelector.SelectTemplate(_dataSource[position], _element.Parent);
@@ -124,6 +131,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position)
             {
+                if (_isDisposed)
+                {
+                    return;
+                }
+
                 var item = (ViewHolder)holder;
                 item.Bind(_dataSource[position], _element);
             }
@@ -186,6 +198,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             protected override void Dispose(bool disposing)
             {
+                _isDisposed = true;
                 _viewHolderQueue?.Clear();
 
                 if (_notifyCollectionChanged != null)
@@ -251,7 +264,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
-                if (_collectionChangedBackfire)
+                if (_isDisposed || _collectionChangedBackfire)
                 {
                     return;
                 }

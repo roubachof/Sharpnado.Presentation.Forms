@@ -61,6 +61,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                                     if (draggedViewCell?.FormsCell is DraggableViewCell draggableViewCell)
                                     {
                                         draggableViewCell.IsDragAndDropping = false;
+                                        Element.DragAndDropEndedCommand?.Execute(null);
                                     }
 
                                     draggedViewCell = null;

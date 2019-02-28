@@ -22,7 +22,7 @@ namespace Sharpnado.Presentation.Forms.Paging
 
         private readonly object _syncRoot = new object();
         private readonly int _maxItemCount;
-        private readonly Func<int, int, Task<PageResult<TResult>>> _pageSourceLoader;
+        private readonly Func<int, int, bool, Task<PageResult<TResult>>> _pageSourceLoader;
         private readonly Action<INotifyTask> _onTaskCompleted;
         private readonly float _loadingThreshold;
 
@@ -41,7 +41,7 @@ namespace Sharpnado.Presentation.Forms.Paging
         /// The onTaskCompleted callback will be optional.
         /// 2. The func still calls the domain service, but just returns the PageResult of Models.
         /// The onTaskCompleted will create your ViewModels and add them to the ObservableCollection.
-        /// The two parameters of the Func are pageNumber and pageSize.
+        /// The three parameters of the Func are pageNumber, pageSize and isRefreshed.
         /// </param>
         /// <param name="onTaskCompleted">
         /// This callback is called at the end of each page loading, successful or not.
@@ -55,7 +55,7 @@ namespace Sharpnado.Presentation.Forms.Paging
         /// Default is 0.25. Requires loadingThreshold in [0,1].
         /// </param>
         public Paginator(
-            Func<int, int, Task<PageResult<TResult>>> pageSourceLoader,
+            Func<int, int, bool, Task<PageResult<TResult>>> pageSourceLoader,
             Action<INotifyTask> onTaskCompleted = null,
             int pageSize = PageSizeDefault,
             int maxItemCount = MaxItemCountDefault,
@@ -203,7 +203,7 @@ namespace Sharpnado.Presentation.Forms.Paging
                 }
 
                 LoadingTask = new NotifyTask<PageResult<TResult>>.Builder(
-                    () => _pageSourceLoader(pageNumber, PageSize))
+                    () => _pageSourceLoader(pageNumber, PageSize, _refreshRequested))
                         .WithWhenSuccessfullyCompleted(OnPageRetrieved)
                         .WithWhenCompleted(OnTaskCompleted)
                         .Build();
