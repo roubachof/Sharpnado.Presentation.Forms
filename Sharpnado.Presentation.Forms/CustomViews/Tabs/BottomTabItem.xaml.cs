@@ -11,6 +11,12 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             typeof(string),
             typeof(BottomTabItem));
 
+        public static readonly BindableProperty IconSizeProperty = BindableProperty.Create(
+            nameof(IconSize),
+            typeof(double),
+            typeof(BottomTabItem),
+            defaultValue: (double)30);
+
         public static readonly BindableProperty IconUnselectedColorProperty = BindableProperty.Create(
             nameof(IconUnselectedColor),
             typeof(Color),
@@ -18,6 +24,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         public BottomTabItem()
         {
+            LabelSize = 12;
+
             InitializeComponent();
         }
 
@@ -25,6 +33,12 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             get => (string)GetValue(IconImageSourceProperty);
             set => SetValue(IconImageSourceProperty, value);
+        }
+
+        public double IconSize
+        {
+            get => (double)GetValue(IconSizeProperty);
+            set => SetValue(IconSizeProperty, value);
         }
 
         public Color IconUnselectedColor

@@ -8,6 +8,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
     {
         public UnderlinedTabItem()
         {
+            LabelSize = 14;
+
             InitializeComponent();
         }
     }

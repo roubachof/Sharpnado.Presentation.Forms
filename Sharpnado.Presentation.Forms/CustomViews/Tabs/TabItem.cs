@@ -4,6 +4,13 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 {
     public abstract class TabItem : ContentView
     {
+        public static readonly BindableProperty FontFamilyProperty = BindableProperty.Create(
+            nameof(FontFamily),
+            typeof(string),
+            typeof(TabItem),
+            null,
+            BindingMode.OneWay);
+
         public static readonly BindableProperty IsSelectedProperty = BindableProperty.Create(
             nameof(IsSelected),
             typeof(bool),
@@ -16,10 +23,15 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             typeof(TabItem),
             string.Empty);
 
+        public static readonly BindableProperty LabelSizeProperty = BindableProperty.Create(
+            nameof(LabelSize),
+            typeof(double),
+            typeof(TabItem));
+
         public static readonly BindableProperty SelectedTabColorProperty = BindableProperty.Create(
             nameof(SelectedTabColor),
             typeof(Color),
-            typeof(UnderlinedTabItem));
+            typeof(TabItem));
 
         public bool IsSelected
         {
@@ -33,10 +45,22 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             set => SetValue(LabelProperty, value);
         }
 
+        public double LabelSize
+        {
+            get => (double)GetValue(LabelSizeProperty);
+            set => SetValue(LabelSizeProperty, value);
+        }
+
         public Color SelectedTabColor
         {
             get => (Color)GetValue(SelectedTabColorProperty);
             set => SetValue(SelectedTabColorProperty, value);
+        }
+
+        public string FontFamily
+        {
+            get => (string)GetValue(FontFamilyProperty);
+            set => SetValue(FontFamilyProperty, value);
         }
     }
 }

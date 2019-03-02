@@ -5,14 +5,16 @@ namespace Sharpnado.Presentation.Forms.CustomViews
 {
     public interface ILazyView
     {
-        View Content { get; }
+        View Content { get; set; }
+
+        Color AccentColor { get; }
 
         bool IsLoaded { get; }
 
         void LoadView();
     }
 
-    public class LazyView<TView> : ContentView, ILazyView, IDisposable
+    public class LazyView<TView> : ContentView, ILazyView, IDisposable, IAnimatable
         where TView : View, new()
     {
         public static readonly BindableProperty AccentColorProperty = BindableProperty.Create(
@@ -22,21 +24,39 @@ namespace Sharpnado.Presentation.Forms.CustomViews
             Color.Accent,
             propertyChanged: AccentColorChanged);
 
+        public static readonly BindableProperty UseActivityIndicatorProperty = BindableProperty.Create(
+            nameof(UseActivityIndicator),
+            typeof(bool),
+            typeof(ILazyView),
+            false,
+            propertyChanged: UseActivityIndicatorChanged);
+
+        public static readonly BindableProperty AnimateProperty = BindableProperty.Create(
+            nameof(Animate),
+            typeof(bool),
+            typeof(ILazyView),
+            false);
+
         public LazyView()
         {
-            Content = new ActivityIndicator
-            {
-                Color = AccentColor,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center,
-                IsRunning = true,
-            };
         }
 
         public Color AccentColor
         {
             get => (Color)GetValue(AccentColorProperty);
             set => SetValue(AccentColorProperty, value);
+        }
+
+        public bool UseActivityIndicator
+        {
+            get => (bool)GetValue(UseActivityIndicatorProperty);
+            set => SetValue(UseActivityIndicatorProperty, value);
+        }
+
+        public bool Animate
+        {
+            get => (bool)GetValue(AnimateProperty);
+            set => SetValue(AnimateProperty, value);
         }
 
         public bool IsLoaded { get; private set; }
@@ -64,6 +84,23 @@ namespace Sharpnado.Presentation.Forms.CustomViews
             if (lazyView.Content is ActivityIndicator activityIndicator)
             {
                 activityIndicator.Color = (Color)newvalue;
+            }
+        }
+
+        private static void UseActivityIndicatorChanged(BindableObject bindable, object oldvalue, object newvalue)
+        {
+            var lazyView = (ILazyView)bindable;
+            bool useActivityIndicator = (bool)newvalue;
+
+            if (useActivityIndicator)
+            {
+                lazyView.Content = new ActivityIndicator
+                {
+                    Color = lazyView.AccentColor,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center,
+                    IsRunning = true,
+                };
             }
         }
     }

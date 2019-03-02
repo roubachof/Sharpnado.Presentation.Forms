@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 
-<tabs:TabItem x:Class="Sharpnado.Presentation.Forms.CustomViews.Tabs.UnderlinedTabItem"
-              xmlns="http://xamarin.com/schemas/2014/forms"
-              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-              xmlns:tabs="clr-namespace:Sharpnado.Presentation.Forms.CustomViews.Tabs;assembly=Sharpnado.Presentation.Forms"
-              x:Name="RootLayout">
+<tabs:TabItem
+    x:Class="Sharpnado.Presentation.Forms.CustomViews.Tabs.UnderlinedTabItem"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:tabs="clr-namespace:Sharpnado.Presentation.Forms.CustomViews.Tabs;assembly=Sharpnado.Presentation.Forms"
+    x:Name="RootLayout">
 
     <ContentView.Resources>
         <ResourceDictionary>
@@ -12,7 +13,6 @@
             <Color x:Key="HeaderTextColor">#acacac</Color>
 
             <Style x:Key="TabTextHeader" TargetType="Label">
-                <Setter Property="FontSize" Value="14" />
                 <Setter Property="TextColor" Value="{StaticResource HeaderTextColor}" />
                 <Setter Property="LineBreakMode" Value="WordWrap" />
                 <Setter Property="HorizontalTextAlignment" Value="Center" />
@@ -28,24 +28,31 @@
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
 
-            <BoxView HeightRequest="1"
-                     Margin="-2,0"
-                     VerticalOptions="End"
-                     BackgroundColor="{StaticResource TabHeaderBorderColor}">
+            <BoxView
+                Margin="-2,0"
+                BackgroundColor="{StaticResource TabHeaderBorderColor}"
+                HeightRequest="1"
+                VerticalOptions="End">
                 <BoxView.Triggers>
-                    <DataTrigger Binding="{Binding Source={x:Reference RootLayout}, Path=IsSelected}"
-                                 TargetType="BoxView"
-                                 Value="true">
+                    <DataTrigger
+                        Binding="{Binding Source={x:Reference RootLayout}, Path=IsSelected}"
+                        TargetType="BoxView"
+                        Value="true">
                         <Setter Property="BackgroundColor" Value="{Binding Source={x:Reference RootLayout}, Path=SelectedTabColor}" />
                         <Setter Property="HeightRequest" Value="3" />
                     </DataTrigger>
                 </BoxView.Triggers>
             </BoxView>
-            <Label Style="{StaticResource TabTextHeader}" Text="{Binding Source={x:Reference RootLayout}, Path=Label}">
+            <Label
+                FontFamily="{Binding Source={x:Reference RootLayout}, Path=FontFamily}"
+                FontSize="{Binding Source={x:Reference RootLayout}, Path=LabelSize}"
+                Style="{StaticResource TabTextHeader}"
+                Text="{Binding Source={x:Reference RootLayout}, Path=Label}">
                 <Label.Triggers>
-                    <DataTrigger Binding="{Binding Source={x:Reference RootLayout}, Path=IsSelected}"
-                                 TargetType="Label"
-                                 Value="true">
+                    <DataTrigger
+                        Binding="{Binding Source={x:Reference RootLayout}, Path=IsSelected}"
+                        TargetType="Label"
+                        Value="true">
                         <Setter Property="TextColor" Value="{Binding Source={x:Reference RootLayout}, Path=SelectedTabColor}" />
                     </DataTrigger>
                 </Label.Triggers>
