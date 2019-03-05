@@ -3,7 +3,7 @@
     <metadata>
     
     	<id>Sharpnado.Forms.HorizontalListView</id>
-        <version>0.9.10</version>
+        <version>0.9.11</version>
         <copyright>Sharpnado 2019</copyright>
         <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
         <authors>Jean-Marie Alfonsi</authors>
@@ -15,10 +15,9 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview</tags>
-        <releaseNotes> Numerous fixes:
-* #25 Views are not visible without scrolling away and back again: regression due to internal changes in XF 3.5
-* #19 Singleton already set: removed singleton check
-* #22 Adding items to HorizontalListView ItemSource adds extra space in Android
+        <releaseNotes>Critical fixes:
+* #30 Guard exception is raised whereas ItemWidth is not set by the user
+* #29 Crash when reseting the Adapter: NullReferenceException thrown by _dataSource
         </releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):
