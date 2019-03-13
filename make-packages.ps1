@@ -15,8 +15,11 @@ $replaceString = "`$1 $formsVersion `$3"
 
 echo "  building Sharpnado.Presentation.Forms solution -- normal mode"
 msbuild .\Sharpnado.Presentation.Forms.sln /t:Clean,Restore,Build /p:Configuration=Release > build.txt
-echo "  packaging Sharpnado.Presentation.Forms.nuspec"
-nuget pack .\Sharpnado.Presentation.Forms.nuspec > $null
+
+$version = (Get-Item Sharpnado.Presentation.Forms\bin\Release\netstandard2.0\Sharpnado.Presentation.Forms.dll).VersionInfo.FileVersion
+
+echo "  packaging Sharpnado.Presentation.Forms.nuspec (v$version)"
+nuget pack .\Sharpnado.Presentation.Forms.nuspec -Version $version > $null
 
 echo "  backuping Sharpnado.Presentation.Forms.csproj"
 cp Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj.bak
@@ -25,8 +28,8 @@ cp Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.HorizontalListView.
 
 echo "  building Sharpnado.Presentation.Forms solution -- only HorizontalListView"
 msbuild .\Sharpnado.Presentation.Forms.sln /t:Clean,Restore,Build /p:Configuration=Release > build.HorizontalListView.txt
-echo "  packaging Sharpnado.Forms.HorizontalListView.nuspec"
-nuget pack .\Sharpnado.Forms.HorizontalListView.nuspec > $null
+echo "  packaging Sharpnado.Forms.HorizontalListView.nuspec (v$version)"
+nuget pack .\Sharpnado.Forms.HorizontalListView.nuspec -Version $version > $null
 
 echo "  restoring Sharpnado.Presentation.Forms.csproj"
 cp Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj.bak Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj

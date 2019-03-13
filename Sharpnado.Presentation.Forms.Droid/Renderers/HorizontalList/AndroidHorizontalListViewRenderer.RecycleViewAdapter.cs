@@ -31,6 +31,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             private readonly ViewCell _viewCell;
 
+            public ViewHolder(IntPtr javaReference, JniHandleOwnership transfer)
+                : base(javaReference, transfer)
+            {
+            }
+
             public ViewHolder(View itemView, ViewCell viewCell)
                 : base(itemView)
             {
@@ -45,6 +50,19 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
                 _viewCell.BindingContext = context;
                 _viewCell.Parent = parent;
+            }
+        }
+
+        private class EmptyViewHolder : RecyclerView.ViewHolder
+        {
+            public EmptyViewHolder(IntPtr javaReference, JniHandleOwnership transfer)
+                : base(javaReference, transfer)
+            {
+            }
+
+            public EmptyViewHolder(Context context)
+                : base(new View(context))
+            {
             }
         }
 
@@ -142,6 +160,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
             {
+                if (_isDisposed)
+                {
+                    return new EmptyViewHolder(_context);
+                }
+
                 if (_element.ItemTemplate is DataTemplateSelector)
                 {
                     return CreateViewHolder(viewType);

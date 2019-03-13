@@ -3,10 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <CodeAnalysisRuleSet>..\Sharpnado.Infrastructure\StyleCopRules.ruleset</CodeAnalysisRuleSet>
-    <Version>0.9.8</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Copyright>Sharpnado 2019</Copyright>
-    <AssemblyName>Sharpnado.Presentation.Forms</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,14 +21,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
+    <PackageReference Include="MSBuildTasks">
+      <Version>1.5.0.235</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-rc.114">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>2.5.1.444934</Version>
+      <Version>3.6.0.220655</Version>
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj" />
   </ItemGroup>
+
+  <Import Project="..\AssemblyInfo.targets" />
 
 </Project>

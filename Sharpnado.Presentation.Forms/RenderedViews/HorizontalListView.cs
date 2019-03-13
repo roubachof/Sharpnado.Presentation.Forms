@@ -272,13 +272,6 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public void CheckConsistency()
         {
-            if (ItemWidth > 0 && ColumnCount > 0)
-            {
-                throw new InvalidOperationException(
-                    "You cannot set at the same time the item width and the column count:"
-                    + " ItemWidth will be automatically calculated from padding and margin to fit in the number of columns specified ");
-            }
-
             if (ListLayout == HorizontalListViewLayout.Carousel
                 && (ColumnCount != 1 || SnapStyle != SnapStyle.Center))
             {

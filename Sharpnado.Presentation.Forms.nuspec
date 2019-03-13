@@ -3,7 +3,7 @@
     <metadata>
     
       <id>Sharpnado.Presentation.Forms</id>
-        <version>0.9.11</version>
+        <version>$version$</version>
         <copyright>Sharpnado 2019</copyright>
         <title>A Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</title>
         <authors>Jean-Marie Alfonsi</authors>
@@ -15,9 +15,8 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview</tags>        
-        <releaseNotes>Critical fixes:
+        <releaseNotes>Critical fix, attempt #2:
 * #30 Guard exception is raised whereas ItemWidth is not set by the user
-* #29 Crash when reseting the Adapter: NullReferenceException thrown by _dataSource
         </releaseNotes>
         <description>
 Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView.
