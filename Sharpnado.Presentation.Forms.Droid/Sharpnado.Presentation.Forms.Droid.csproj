@@ -79,8 +79,13 @@
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MSBuildTasks">
+      <Version>1.5.0.235</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="StyleCop.Analyzers">
-      <Version>1.1.1-rc.94</Version>
+      <Version>1.1.1-rc.114</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -98,7 +103,7 @@
       <Version>28.0.0.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.5.0.129452</Version>
+      <Version>3.6.0.220655</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -126,4 +131,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Import Project="..\AssemblyInfo.targets" />
 </Project>
