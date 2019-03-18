@@ -116,17 +116,27 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             _isInitialized = true;
 
-            if (ShadowType == ShadowType.Top)
+            if (ShadowType != ShadowType.None)
             {
-                Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
-
-                RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
-                RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
-
                 _shadow = new ShadowBoxView { ShadowType = ShadowType };
-                Grid.SetRow(_shadow, 0);
 
-                _childRow = 1;
+                if (ShadowType == ShadowType.Top)
+                {
+                    Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
+                    RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
+                    Grid.SetRow(_shadow, 0);
+                    _childRow = 1;
+                }
+
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
+                
+                if (ShadowType == ShadowType.Bottom)
+                {
+                    Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
+                    RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
+                    _childRow = 0;
+                    Grid.SetRow(_shadow, 1);
+                }
 
                 _contentBackgroundView = new BoxView { BackgroundColor = BackgroundColor };
                 Grid.SetRow(_contentBackgroundView, _childRow);

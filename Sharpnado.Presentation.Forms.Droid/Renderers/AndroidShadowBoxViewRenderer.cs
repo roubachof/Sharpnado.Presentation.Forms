@@ -31,6 +31,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
                 case ShadowType.Top:
                     SetBackgroundResource(Resource.Drawable.top_shadow);
                     break;
+
+                case ShadowType.Bottom:
+                    SetBackgroundResource(Resource.Drawable.bottom_shadow);
+                    break;
             }
         }
     }

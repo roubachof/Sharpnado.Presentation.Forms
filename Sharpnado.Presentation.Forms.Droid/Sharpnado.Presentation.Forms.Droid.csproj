@@ -109,7 +109,12 @@
   <ItemGroup>
     <AndroidResource Include="Resources\values\strings.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\bottom_shadow.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj">
       <Project>{12598875-3E4F-4859-80C1-A76229E9303A}</Project>

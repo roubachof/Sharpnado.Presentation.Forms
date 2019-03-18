@@ -28,6 +28,11 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             typeof(double),
             typeof(TabItem));
 
+        public static readonly BindableProperty UnselectedLabelColorProperty = BindableProperty.Create(
+            nameof(UnselectedLabelColor),
+            typeof(Color),
+            typeof(TabItem));
+
         public static readonly BindableProperty SelectedTabColorProperty = BindableProperty.Create(
             nameof(SelectedTabColor),
             typeof(Color),
@@ -49,6 +54,12 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             get => (double)GetValue(LabelSizeProperty);
             set => SetValue(LabelSizeProperty, value);
+        }
+
+        public Color UnselectedLabelColor
+        {
+            get => (Color)GetValue(UnselectedLabelColorProperty);
+            set => SetValue(UnselectedLabelColorProperty, value);
         }
 
         public Color SelectedTabColor

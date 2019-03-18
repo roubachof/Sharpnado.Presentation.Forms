@@ -51,6 +51,7 @@
     <Compile Include="Helpers\PlatformHelper.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Renderers\iOSShadowBoxViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\CenteredCollectionViewFlowLayout.cs" />
     <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\iOSHorizontalListViewRenderer.DragAndDrop.cs" />

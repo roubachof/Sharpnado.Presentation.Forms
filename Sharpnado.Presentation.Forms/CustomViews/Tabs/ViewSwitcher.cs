@@ -107,7 +107,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         private void HideView(View view, int viewIndex)
         {
             view.IsVisible = false;
-            if (Animate && view is IAnimatable animatable && animatable.Animate)
+            if (Animate && view is IAnimatableReveal animatable && animatable.Animate)
             {
                 view.TranslationY = -200;
                 view.Opacity = 0;
@@ -137,7 +137,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
             view.IsVisible = true;
 
-            if (Animate && view is IAnimatable animatable && animatable.Animate && view.Opacity == 0)
+            if (Animate && view is IAnimatableReveal animatable && animatable.Animate && view.Opacity == 0)
             {
                 var localView = view;
                 NotifyTask.Create(

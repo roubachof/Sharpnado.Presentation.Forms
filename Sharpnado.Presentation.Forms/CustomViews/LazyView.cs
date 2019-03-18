@@ -14,8 +14,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews
         void LoadView();
     }
 
-    public class LazyView<TView> : ContentView, ILazyView, IDisposable, IAnimatable
-        where TView : View, new()
+    public abstract class ALazyView : ContentView, ILazyView, IDisposable, IAnimatableReveal
     {
         public static readonly BindableProperty AccentColorProperty = BindableProperty.Create(
             nameof(AccentColor),
@@ -37,10 +36,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews
             typeof(ILazyView),
             false);
 
-        public LazyView()
-        {
-        }
-
         public Color AccentColor
         {
             get => (Color)GetValue(AccentColorProperty);
@@ -59,22 +54,23 @@ namespace Sharpnado.Presentation.Forms.CustomViews
             set => SetValue(AnimateProperty, value);
         }
 
-        public bool IsLoaded { get; private set; }
+        public bool IsLoaded { get; protected set; }
 
-        public void LoadView()
-        {
-            IsLoaded = true;
-
-            View view = new TView { BindingContext = BindingContext };
-
-            Content = view;
-        }
+        public abstract void LoadView();
 
         public void Dispose()
         {
             if (Content is IDisposable disposable)
             {
                 disposable.Dispose();
+            }
+        }
+
+        protected override void OnBindingContextChanged()
+        {
+            if (Content != null && !(Content is ActivityIndicator))
+            {
+                Content.BindingContext = BindingContext;
             }
         }
 
@@ -102,6 +98,19 @@ namespace Sharpnado.Presentation.Forms.CustomViews
                     IsRunning = true,
                 };
             }
+        }
+    }
+
+    public class LazyView<TView> : ALazyView
+        where TView : View, new()
+    {
+        public override void LoadView()
+        {
+            IsLoaded = true;
+
+            View view = new TView { BindingContext = BindingContext };
+
+            Content = view;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Sharpnado.Presentation.Forms.CustomViews
 {
-    public interface IAnimatable
+    public interface IAnimatableReveal
     {
         bool Animate { get; }
     }
