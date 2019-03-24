@@ -1,99 +1,110 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
+using System.Drawing;
+
 using CoreAnimation;
+
 using CoreGraphics;
+
 using Foundation;
-using Sharpnado.Infrastructure.Tasks;
+
 using Sharpnado.Presentation.Forms.iOS.Renderers;
 using Sharpnado.Presentation.Forms.RenderedViews;
+
 using UIKit;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ExportRenderer(typeof(MaterialFrame), typeof(iOSMaterialFrameRenderer))]
+
 namespace Sharpnado.Presentation.Forms.iOS.Renderers
 {
     /// <summary>
-    /// Renderer to update all frames with better shadows matching material design standards.
+    ///     Renderer to update all frames with better shadows matching material design standards.
     /// </summary>
     [Preserve]
-    public class iOSMaterialFrameRenderer : FrameRenderer
+    public class iOSMaterialFrameRenderer : VisualElementRenderer<MaterialFrame>
     {
-        private bool _isDisposed;
-
-        private MaterialFrame MaterialFrame => (MaterialFrame)Element;
-
-        public static void Initialize()
+        protected override void OnElementChanged(ElementChangedEventArgs<MaterialFrame> e)
         {
-        }
-
-        public static void AddShadow(CALayer layer, float elevation)
-        {
-            layer.ShadowColor = UIColor.Black.CGColor;
-            layer.ShadowRadius = Math.Abs(elevation);
-            layer.ShadowOffset = new CGSize(0, elevation);
-            layer.ShadowOpacity = 0.24f;
-            layer.ShadowPath = UIBezierPath.FromRect(layer.Bounds).CGPath;
-            layer.MasksToBounds = false;
-        }
-
-        public override void Draw(CGRect rect)
-        {
-            base.Draw(rect);
-
-            float elevation = MaterialFrame.Elevation / 2f;
-            if (elevation == 0)
+            base.OnElementChanged(e);
+            if (e.NewElement == null)
             {
                 return;
             }
 
-            // Update shadow to match better material design standards of elevation
-            AddShadow(Layer, elevation);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-
-            _isDisposed = true;
-        }
-
-        protected override void OnElementChanged(ElementChangedEventArgs<Frame> e)
-        {
-            base.OnElementChanged(e);
-
-            if (e.NewElement != null)
-            {
-                NotifyTask.Create(async () =>
-                {
-                    await Task.Delay(100);
-                    if (Element == null || _isDisposed)
-                    {
-                        return;
-                    }
-
-                    SetNeedsDisplay();
-                    LayoutIfNeeded();
-                });
-            }
+            SetupLayer();
         }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             base.OnElementPropertyChanged(sender, e);
-
-            if (e.PropertyName == nameof(MaterialFrame.Elevation))
+            if (e.PropertyName != VisualElement.BackgroundColorProperty.PropertyName
+                && e.PropertyName != Xamarin.Forms.Frame.BorderColorProperty.PropertyName
+                && e.PropertyName != Xamarin.Forms.Frame.HasShadowProperty.PropertyName
+                && e.PropertyName != Xamarin.Forms.Frame.CornerRadiusProperty.PropertyName
+                && e.PropertyName != MaterialFrame.ElevationProperty.PropertyName)
             {
-                UpdateElevation();
+                return;
             }
+
+            SetupLayer();
         }
 
-        private void UpdateElevation()
+        private void SetupLayer()
         {
-            System.Diagnostics.Debug.WriteLine($">>>>> UpdateElevation( elevation: {MaterialFrame.Elevation} )");
-            SetNeedsDisplay();
-            LayoutIfNeeded();
+            float num = Element.CornerRadius;
+            if (num == -1.0)
+            {
+                num = 5f;
+            }
+
+            Layer.CornerRadius = num;
+            Layer.BackgroundColor = Element.BackgroundColor == Color.Default
+                ? UIColor.White.CGColor
+                : Element.BackgroundColor.ToCGColor();
+
+            if (Element.HasShadow)
+            {
+                Layer.ShadowRadius = 5;
+                Layer.ShadowColor = UIColor.Black.CGColor;
+                Layer.ShadowOpacity = 0.8f;
+                Layer.ShadowOffset = new SizeF();
+            }
+            else
+            {
+                Layer.ShadowOpacity = 0.0f;
+            }
+
+            if (Element.BorderColor == Color.Default)
+            {
+                Layer.BorderColor = UIColor.Clear.CGColor;
+            }
+            else
+            {
+                Layer.BorderColor = Element.BorderColor.ToCGColor();
+                Layer.BorderWidth = 1;
+            }
+
+            if (Element.Elevation > 0)
+            {
+                float adaptedElevation = Element.Elevation / 2;
+
+                Layer.ShadowColor = UIColor.Black.CGColor;
+                Layer.ShadowRadius = Math.Abs(adaptedElevation);
+                Layer.ShadowOffset = new CGSize(0, adaptedElevation);
+                Layer.ShadowOpacity = 0.24f;
+                // Layer.ShadowPath = UIBezierPath.FromRect(Layer.Bounds).CGPath;
+                Layer.MasksToBounds = false;
+            }
+            else
+            {
+                Layer.ShadowOpacity = 0.0f;
+            }
+
+            Layer.RasterizationScale = UIScreen.MainScreen.Scale;
+            Layer.ShouldRasterize = true;
         }
     }
 }

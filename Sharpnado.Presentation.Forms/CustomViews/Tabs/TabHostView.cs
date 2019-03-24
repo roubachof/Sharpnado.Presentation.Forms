@@ -40,7 +40,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
             TabItemTappedCommand = new TapCommand(OnTabItemTapped);
 
-            // ChildAdded += OnChildAdded;
+            ChildAdded += OnChildAdded;
             ChildRemoved += OnChildRemoved;
         }
 
@@ -161,9 +161,9 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             }
         }
 
-        protected override void OnChildAdded(Element child)
+        protected void OnChildAdded(object sender, ElementEventArgs elementEventArgs)
         {
-            if (!(child is TabItem tabItem))
+            if (!(elementEventArgs.Element is TabItem tabItem))
             {
                 return;
             }

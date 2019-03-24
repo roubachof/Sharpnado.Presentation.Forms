@@ -17,8 +17,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             typeof(BottomTabItem),
             defaultValue: (double)30);
 
-        public static readonly BindableProperty IconUnselectedColorProperty = BindableProperty.Create(
-            nameof(IconUnselectedColor),
+        public static readonly BindableProperty UnselectedIconColorProperty = BindableProperty.Create(
+            nameof(UnselectedIconColor),
             typeof(Color),
             typeof(BottomTabItem));
 
@@ -41,10 +41,10 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             set => SetValue(IconSizeProperty, value);
         }
 
-        public Color IconUnselectedColor
+        public Color UnselectedIconColor
         {
-            get => (Color)GetValue(IconUnselectedColorProperty);
-            set => SetValue(IconUnselectedColorProperty, value);
+            get => (Color)GetValue(UnselectedIconColorProperty);
+            set => SetValue(UnselectedIconColorProperty, value);
         }
     }
 }
