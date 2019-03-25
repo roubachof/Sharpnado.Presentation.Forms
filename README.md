@@ -101,7 +101,7 @@ We'll see two different examples of layout with the Silly! App (https://github.c
 Let's consider this view:
 
 <p align="center">
-  <img src="__DOCS__/android_top_tabs.png" width="250" />
+  <img src="__Docs__/android_top_tabs.png" width="250" />
 </p>
 
 And let's have a look at its code:
