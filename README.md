@@ -7,7 +7,7 @@
 
 Xamarin Forms custom components and renderers starring:
 
-### ["Pure" ```Xamarin.Forms``` Tabs (no renderers)](#pure-xamarin.forms-tabs)
+### ["Pure" ```Xamarin.Forms``` Tabs (no renderers)](#pure-xamarinforms-tabs)
 * Fully customizable
 * Stylable
 * Component oriented architecture

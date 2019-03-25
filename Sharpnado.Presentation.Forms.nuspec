@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-    
+
       <id>Sharpnado.Presentation.Forms</id>
         <version>$version$</version>
         <copyright>Sharpnado 2019</copyright>
@@ -14,12 +14,21 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</summary>
-        <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview</tags>        
-        <releaseNotes>Critical fix, attempt #2:
-* #30 Guard exception is raised whereas ItemWidth is not set by the user
+        <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview</tags>
+        <releaseNotes>Pure Xamarin.Forms tabs:
+  * Top tabs (android tabs style)
+  * Bottom bar tabs (ios tabs style)
+  * Custom tabs (be creative just implement TabItem)
+  * Independent ```ViewSwitcher```
         </releaseNotes>
         <description>
-Collection of Xamarin.Forms components including HorizontalListView and TaskLoaderView.
+Collection of Xamarin.Forms components.
+
+Pure Xamarin.Forms tabs:
+  * Top tabs (android tabs style)
+  * Bottom bar tabs (ios tabs style)
+  * Custom tabs (be creative just implement TabItem)
+  * Independent ```ViewSwitcher```
 
 The TaskLoaderView displays an ActivityLoader while loading then:
   * Handles error with custom messages and icons
@@ -46,15 +55,15 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
         </description>
-            
-        <dependencies>        
+
+        <dependencies>
           <group>
             <dependency id="Xamarin.Forms" version="2.5.1" exclude="Build,Analyzers"/>
-          </group>      
+          </group>
         </dependencies>
-       
+
   </metadata>
-  
+
     <files>
 
         <!--Net Standard-->
@@ -86,5 +95,5 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
         <file src="Sharpnado.Presentation.Forms.iOS\bin\Release\Sharpnado.Infrastructure.pdb" target="lib\Xamarin.iOS10\Sharpnado.Infrastructure.pdb" />
 
     </files>
-    
+
 </package>

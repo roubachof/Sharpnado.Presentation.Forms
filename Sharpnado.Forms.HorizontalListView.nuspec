@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-    
+
     	<id>Sharpnado.Forms.HorizontalListView</id>
         <version>$version$</version>
         <copyright>Sharpnado 2019</copyright>
@@ -15,8 +15,7 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview</tags>
-        <releaseNotes>Critical fix, attempt #2:
-* #30 Guard exception is raised whereas ItemWidth is not set by the user
+        <releaseNotes>Version 1.0.0
         </releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):
@@ -38,15 +37,15 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
        	</description>
-        
-        <dependencies>        
+
+        <dependencies>
           <group>
             <dependency id="Xamarin.Forms" version="2.5.1" exclude="Build,Analyzers"/>
-          </group>		  
+          </group>
         </dependencies>
-       
+
 	</metadata>
-	
+
     <files>
 
         <!--Net Standard-->
@@ -78,5 +77,5 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
         <file src="Sharpnado.Presentation.Forms.iOS\bin\Release\Sharpnado.Infrastructure.pdb" target="lib\Xamarin.iOS10\Sharpnado.Infrastructure.pdb" />
 
     </files>
-    
+
 </package>

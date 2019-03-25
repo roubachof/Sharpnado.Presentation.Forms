@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <Copyright>Copyright © Sharpnado 2019</Copyright>
-    <Version>0.9.12</Version>
+    <Version>1.0.0</Version>
     <Company>Sharpnado</Company>
     <Product>Sharpnado Toolkit</Product>
     <Description>Xamarin Forms custom components and renderers</Description>
@@ -13,11 +13,11 @@
     <Message Text="Updating AssemblyInfo to Version $(Version)"></Message>
     <AssemblyInfo CodeLanguage="CS"
                   OutputFile="Properties\AssemblyInfo.cs"
-                  AssemblyTitle="$(AssemblyName)" 
+                  AssemblyTitle="$(AssemblyName)"
                   AssemblyCompany="$(Company)"
                   AssemblyDescription="$(Description)"
                   AssemblyProduct="$(Product)"
-                  AssemblyCopyright="$(Copyright)" 
+                  AssemblyCopyright="$(Copyright)"
                   AssemblyVersion="$(Version)"
                   AssemblyFileVersion="$(Version)">
     </AssemblyInfo>
