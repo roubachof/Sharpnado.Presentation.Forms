@@ -5,9 +5,37 @@
 | Android  | [![Build status](https://build.appcenter.ms/v0.1/apps/23f44cf3-7656-4932-9d82-f654db6afc82/branches/master/badge)](https://appcenter.ms) |
 | iOS      | [![Build status](https://build.appcenter.ms/v0.1/apps/ddd14409-1f42-4521-ae8d-6f9891de2714/branches/master/badge)](https://appcenter.ms) |
 
-Xamarin Forms custom components and renderers including:
+Xamarin Forms custom components and renderers starring:
 
-```HorizontalListView``` for Xamarin Forms:
+### ["Pure" ```Xamarin.Forms``` Tabs (no renderers)](#pure-xamarin.forms-tabs)
+* Fully customizable
+* Stylable
+* Component oriented architecture
+* Layout your tabs and ```ViewSwitcher``` as you want
+
+<table>
+	<thead>
+		<tr>
+			<th>Top tabs</th>
+			<th>Bottom bar tabs</th>
+      <th>Custom tabs</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+      <td><img src="__Docs__/top_tabs.gif" width="250" /></td>
+  		<td><img src="__Docs__/bottom_tabs.gif" width="250" /></td>
+			<td><img src="__Docs__/spam_tabs.gif" width="250" /></td>
+		</tr>
+    <tr>
+      <td>```UnderlinedTabItem```</td>
+			<td>```BottomTabItem```</td>
+      <td>inherit from ```TabItem```</td>
+    </tr>
+  </tbody>
+</table>
+
+### [```HorizontalListView``` for Xamarin Forms](#horizontallistview-and-grid-mode)
   * Carousel layout
   * Column count
   * Infinite loading with ```Paginator``` component
@@ -24,7 +52,7 @@ Xamarin Forms custom components and renderers including:
   <img src="__Docs__/carousel-ios.gif" width="250" hspace="20"/>
 </p>
 
-```Grid``` collection view (```HorizontalListView``` with ```ListLayout``` set to ```Grid```):
+### [```Grid``` collection view (```ListLayout``` = ```Grid```)](#grid-Layout)
   * Column count (if equal to 1 then you have a classic ```ListView``` ;)
   * Infinite loading with ```Paginator``` component
   * Drag and Drop
@@ -37,7 +65,7 @@ Xamarin Forms custom components and renderers including:
   <img src="__Docs__/listview-dragandrop.gif" width="250" hspace="20"/>
 </p>
 
-```TaskLoaderView``` displays an ```ActivityLoader``` while loading then:
+### [```TaskLoaderView``` displays an ```ActivityLoader``` while loading](#taskloaderview)
   * Handles error with custom messages and icons
   * Handles empty states
   * Don't show activity loader for refresh scenarios (if data is already shown)
@@ -59,7 +87,281 @@ It's available in 2 Nuget flavors:
 
 Those components are used and tested in the Silly! app:  https://github.com/roubachof/Xamarin-Forms-Practices.
 
-## HorizontalListView (and Grid mode)
+
+## Pure Xamarin.Forms tabs
+
+Please read the full article on tabs here:
+
+https://www.sharpnado.com/pure-xamarin-forms-tabs/
+
+We'll see two different examples of layout with the Silly! App (https://github.com/roubachof/Xamarin-Forms-Practices).
+
+### UnderlinedTabItem with ViewSwitcher
+
+Let's consider this view:
+
+<p align="center">
+  <img src="__DOCS__/android_top_tabs.png" width="250" />
+</p>
+
+And let's have a look at its code:
+
+```xml
+<Grid Padding="{StaticResource StandardThickness}"
+      ColumnSpacing="0"
+      RowSpacing="0">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="200" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="30" />
+        <RowDefinition Height="30" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- first 4 rows then... -->
+
+    <tabs:TabHostView x:Name="TabHost"
+                      Grid.Row="4"
+                      Margin="-16,0"
+                      BackgroundColor="White"
+                      SelectedIndex="{Binding Source={x:Reference Switcher}, Path=SelectedIndex, Mode=TwoWay}"
+                      ShadowType="Bottom">
+        <tabs:UnderlinedTabItem Style="{StaticResource TabStyle}" Label="{loc:Translate Tabs_Quote}" />
+        <tabs:UnderlinedTabItem Style="{StaticResource TabStyle}" Label="{loc:Translate Tabs_Filmography}" />
+        <tabs:UnderlinedTabItem Style="{StaticResource TabStyle}" Label="{loc:Translate Tabs_Meme}" />
+    </tabs:TabHostView>
+
+    <ScrollView Grid.Row="5">
+        <tabs:ViewSwitcher x:Name="Switcher"
+                           Animate="True"
+                           SelectedIndex="{Binding SelectedViewModelIndex, Mode=TwoWay}">
+            <details:Quote Animate="True" BindingContext="{Binding Quote}" />
+            <details:Filmo Animate="True" BindingContext="{Binding Filmo}" />
+            <details:Meme Animate="True" BindingContext="{Binding Meme}" />
+        </tabs:ViewSwitcher>
+    </ScrollView>
+</Grid>
+```
+
+The ```TabHostView``` and the ```ViewSwitcher``` are really two independent components, and you can place them anywhere. They don't need to be next to each other (even if it would be weird I must admit).
+
+Since they don't know each other, you just need to link them through their ```SelectedIndex``` property. You will bind the ```ViewSwitcher``` to your view model, and the ```TabHostView``` to the ```ViewSwitcher```'s ```SelectedIndex``` property.
+
+You can see a ```ShadowType``` property. It adds a nice little shadow "à la Material" to bring you the nice and fancy elevation effect.
+<br>For top tabs, we want the shadow at the ```Bottom``` of our tabs.
+
+You can also see a mysterious ```Animate``` property. It just adds a nice appearing effect. It's really just a little bonus.
+
+<p align="center">
+  <img src="__Docs__/top_tabs.gif" width="250" />
+</p>
+
+### View model
+
+```csharp
+    public ViewModelLoader<SillyDudeVmo> SillyDudeLoader { get; }
+
+    public QuoteVmo Quote { get; private set; }
+
+    public FilmoVmo Filmo { get; private set; }
+
+    public MemeVmo Meme { get; private set; }
+
+    public int SelectedViewModelIndex
+    {
+        get => _selectedViewModelIndex;
+        set => SetAndRaise(ref _selectedViewModelIndex, value);
+    }
+
+    public override void Load(object parameter)
+    {
+        SillyDudeLoader.Load(() => LoadSillyDude((int)parameter));
+    }
+
+    private async Task<SillyDudeVmo> LoadSillyDude(int id)
+    {
+        var dude = await _dudeService.GetSilly(id);
+
+        Quote = new QuoteVmo(
+            dude.SourceUrl,
+            dude.Description,
+            new TapCommand(url => Device.OpenUri(new Uri((string)url))));
+        Filmo = new FilmoVmo(dude.FilmoMarkdown);
+        Meme = new MemeVmo(dude.MemeUrl);
+        RaisePropertyChanged(nameof(Quote));
+        RaisePropertyChanged(nameof(Filmo));
+        RaisePropertyChanged(nameof(Meme));
+
+        return new SillyDudeVmo(dude, null);
+    }
+```
+
+Well I won't go into details it's pretty obvious.
+If you want to know more about the mystery ```ViewModelLoader```, please read this post (https://www.sharpnado.com/taskloaderview-async-init-made-easy/).
+
+#### Styling
+
+The tab style is defined in the content page resources, but we could put it the App.xaml since most of the time we will have one type of top tabs (well it's up to your crazy designer really :)
+
+```xml
+<ContentPage.Resources>
+    <ResourceDictionary>
+        <Style x:Key="TabStyle" TargetType="tabs:UnderlinedTabItem">
+            <Setter Property="SelectedTabColor" Value="{StaticResource White}" />
+            <Setter Property="FontFamily" Value="{StaticResource FontSemiBold}" />
+            <Setter Property="LabelSize" Value="14" />
+            <Setter Property="BackgroundColor" Value="{StaticResource Accent}" />
+            <Setter Property="UnselectedLabelColor" Value="White" />
+        </Style>
+    </ResourceDictionary>
+</ContentPage.Resources>
+```
+
+### BottomTabItem with ViewSwitcher
+
+Now let's consider this view:
+
+<p align="center">
+  <img src="__Docs__/ios_bottom_tabs.png" width="250" />
+</p>
+
+And let's have a look at its xaml:
+
+```xml
+<Grid ColumnSpacing="0" RowSpacing="0">
+    <Grid.RowDefinitions>
+        <RowDefinition Height="{StaticResource ToolbarHeight}" />
+        <RowDefinition Height="*" />
+        <RowDefinition x:Name="BottomBarRowDefinition" Height="{StaticResource BottomBarHeight}" />
+    </Grid.RowDefinitions>
+
+    <tb:Toolbar Title="Silly App!"
+                BackgroundColor="{StaticResource Accent}"
+                ForegroundColor="White"
+                HasShadow="True" />
+
+    <tabs:ViewSwitcher x:Name="Switcher"
+                       Grid.Row="1"
+                       Animate="False"
+                       SelectedIndex="{Binding SelectedViewModelIndex, Mode=TwoWay}">
+        <customViews:LazyView x:TypeArguments="tabsLayout:HomeView" BindingContext="{Binding HomePageViewModel}" />
+        <customViews:LazyView x:TypeArguments="tabsLayout:ListView" BindingContext="{Binding ListPageViewModel}" />
+        <customViews:LazyView x:TypeArguments="tabsLayout:GridView" BindingContext="{Binding GridPageViewModel}" />
+    </tabs:ViewSwitcher>
+
+    <tabs:TabHostView x:Name="TabHost"
+                      Grid.Row="2"
+                      BackgroundColor="White"
+                      SelectedIndex="{Binding Source={x:Reference Switcher}, Path=SelectedIndex, Mode=TwoWay}"
+                      ShadowType="Top">
+        <tabs:BottomTabItem Style="{StaticResource BottomTabStyle}"
+                            IconImageSource="house_96"
+                            Label="{localization:Translate Tabs_Home}" />
+        <tabs:BottomTabItem Style="{StaticResource BottomTabStyle}"
+                            IconImageSource="list_96"
+                            Label="{localization:Translate Tabs_List}" />
+        <tabs:BottomTabItem Style="{StaticResource BottomTabStyle}"
+                            IconImageSource="grid_view_96"
+                            Label="{localization:Translate Tabs_Grid}" />
+    </tabs:TabHostView>
+
+</Grid>
+```
+
+<p align="center">
+  <img src="__Docs__/bottom_tabs.gif" width="250" />
+</p>
+
+#### Styling
+
+```xml
+<ContentPage.Resources>
+    <ResourceDictionary>
+        <Style x:Key="BottomTabStyle" TargetType="tabs:BottomTabItem">
+            <Setter Property="SelectedTabColor" Value="{StaticResource Accent}" />
+            <Setter Property="UnselectedLabelColor" Value="Gray" />
+            <Setter Property="UnselectedIconColor" Value="LightGray" />
+            <Setter Property="FontFamily" Value="{StaticResource FontLight}" />
+            <Setter Property="LabelSize" Value="14" />
+            <Setter Property="IconSize" Value="28" />
+        </Style>
+    </ResourceDictionary>
+</ContentPage.Resources>
+```
+
+### Custom SPAM tabs !
+
+As I said, your designer can go cuckoo and you won't even sweat it.
+<br>Just extend the abstract ```TabItem``` and fulfill the wildest dreams of your colleagues.
+
+<p align="center">
+  <img src="__Docs__/spam_tabs.gif" width="250" />
+</p>
+
+```xml
+<tabs:TabItem x:Class="SillyCompany.Mobile.Practices.Presentation.CustomViews.SpamTab"
+              xmlns="http://xamarin.com/schemas/2014/forms"
+              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+              xmlns:tabs="clr-namespace:Sharpnado.Presentation.Forms.CustomViews.Tabs;assembly=Sharpnado.Presentation.Forms"
+              x:Name="RootLayout">
+    <ContentView.Content>
+        <Grid ColumnSpacing="0" RowSpacing="0">
+            <Image x:Name="Spam"
+                   VerticalOptions="End"
+                   Aspect="Fill"
+                   Source="{Binding Source={x:Reference RootLayout}, Path=SpamImage}" />
+            <Image x:Name="Foot"
+                   Aspect="Fill"
+                   Source="monty_python_foot" />
+        </Grid>
+    </ContentView.Content>
+</tabs:TabItem>
+
+...
+
+<tabs:TabHostView x:Name="TabHost"
+                  Grid.Row="2"
+                  BackgroundColor="White"
+                  SelectedIndex="{Binding Source={x:Reference Switcher}, Path=SelectedIndex, Mode=TwoWay}"
+                  ShadowType="Top">
+    <tb:SpamTab SpamImage="spam_classic_home" />
+    <tb:SpamTab SpamImage="spam_classic_list" />
+    <tb:SpamTab SpamImage="spam_classic_grid" />
+
+...
+
+```
+
+Please don't be shy with ```Xamarin.Forms``` animations, it's so easy to use and so powerful thanks to the amazing C# ```Task``` api.
+<br>**USE.**
+<br>**THEM.**
+
+```csharp
+private void Animate(bool isSelected)
+{
+    double targetFootOpacity = isSelected ? 1 : 0;
+    double targetFootTranslationY = isSelected ? 0 : -_height;
+    double targetHeightSpam = isSelected ? 0 : _height;
+
+    NotifyTask.Create(
+        async () =>
+        {
+            Task fadeFootTask = Foot.FadeTo(targetFootOpacity, 500);
+            Task translateFootTask = Foot.TranslateTo(0, targetFootTranslationY, 250, Easing.CubicOut);
+            Task heightSpamTask = Spam.HeightRequestTo(targetHeightSpam, 250, Easing.CubicOut);
+
+            await Task.WhenAll(fadeFootTask, translateFootTask, heightSpamTask);
+
+            Spam.HeightRequest = targetHeightSpam;
+            Foot.TranslationY = targetFootTranslationY;
+            Foot.Opacity = targetFootOpacity;
+        });
+}
+```
+
+
+## HorizontalListView and Grid mode
 
 You can find the blog post on www.sharpnado.com/a-real-horizontal-list-view/.
 
