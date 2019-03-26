@@ -41,7 +41,6 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
         {
             base.OnElementPropertyChanged(sender, e);
             if (e.PropertyName != VisualElement.BackgroundColorProperty.PropertyName
-                && e.PropertyName != Xamarin.Forms.Frame.BorderColorProperty.PropertyName
                 && e.PropertyName != Xamarin.Forms.Frame.HasShadowProperty.PropertyName
                 && e.PropertyName != Xamarin.Forms.Frame.CornerRadiusProperty.PropertyName
                 && e.PropertyName != MaterialFrame.ElevationProperty.PropertyName)
@@ -75,16 +74,6 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
             else
             {
                 Layer.ShadowOpacity = 0.0f;
-            }
-
-            if (Element.BorderColor == Color.Default)
-            {
-                Layer.BorderColor = UIColor.Clear.CGColor;
-            }
-            else
-            {
-                Layer.BorderColor = Element.BorderColor.ToCGColor();
-                Layer.BorderWidth = 1;
             }
 
             if (Element.Elevation > 0)

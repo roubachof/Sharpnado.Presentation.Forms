@@ -9,7 +9,7 @@
     <Description>Xamarin Forms custom components and renderers</Description>
   </PropertyGroup>
 
-  <Target Name="GenerateAssemblyInfo" BeforeTargets="BeforeBuild">
+  <Target Name="GenerateCustomAssemblyInfo" BeforeTargets="BeforeBuild">
     <Message Text="Updating AssemblyInfo to Version $(Version)"></Message>
     <AssemblyInfo CodeLanguage="CS"
                   OutputFile="Properties\AssemblyInfo.cs"
