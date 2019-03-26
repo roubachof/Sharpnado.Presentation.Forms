@@ -8,16 +8,18 @@ using CoreGraphics;
 using Foundation;
 
 using Sharpnado.Infrastructure;
+using Sharpnado.Presentation.Forms.iOS.Helpers;
 using Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(iOSHorizontalListViewRenderer))]
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
-    [Preserve]
+    [Foundation.Preserve]
     public partial class iOSHorizontalListViewRenderer : ViewRenderer<HorizontalListView, UICollectionView>
     {
         private IEnumerable _itemsSource;
@@ -296,16 +298,17 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             _itemsSource = Element.ItemsSource;
 
-            Control.DataSource = new iOSViewSource(Element);
-
-            if (Element.ItemTemplate is DataTemplateSelector)
+            HashSet<DataTemplate> dataTemplates = null;
+            if (Element.ItemTemplate is DataTemplateSelector dataTemplateSelector)
             {
-                RegisterCellDataTemplates();
+                dataTemplates = RegisterCellDataTemplates(dataTemplateSelector);
             }
             else
             {
                 Control.RegisterClassForCell(typeof(iOSViewCell), nameof(iOSViewCell));
             }
+
+            Control.DataSource = new iOSViewSource(Element, dataTemplates);
 
             oldDataSource?.Dispose();
 
@@ -315,22 +318,26 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
         }
 
-        private void RegisterCellDataTemplates()
+        private HashSet<DataTemplate> RegisterCellDataTemplates(DataTemplateSelector dataTemplateSelector)
         {
-            HashSet<Type> templateTypes = new HashSet<Type>();
+            HashSet<DataTemplate> dataTemplates = new HashSet<DataTemplate>();
             foreach (var item in _itemsSource)
             {
-                Type itemType = item.GetType();
-                if (!templateTypes.Contains(itemType))
+                var dataTemplate = dataTemplateSelector.SelectTemplate(item, Element);
+                int itemViewType = dataTemplates.IndexOf(dataTemplate);
+                if (itemViewType == -1)
                 {
-                    templateTypes.Add(itemType);
+                    itemViewType = dataTemplates.Count;
+                    dataTemplates.Add(dataTemplate);
                 }
             }
 
-            foreach (var itemType in templateTypes)
+            for (int i = 0; i < dataTemplates.Count; i++)
             {
-                Control.RegisterClassForCell(typeof(iOSViewCell), itemType.Name);
+                Control.RegisterClassForCell(typeof(iOSViewCell), IdentifierFormatter.FormatDataTemplateCellIdentifier(i));
             }
+
+            return dataTemplates;
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

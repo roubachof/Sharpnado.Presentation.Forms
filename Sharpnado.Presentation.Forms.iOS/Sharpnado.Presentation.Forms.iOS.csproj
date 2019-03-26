@@ -59,6 +59,7 @@
     <Compile Include="Renderers\HorizontalList\SnappingCollectionViewLayout.cs" />
     <Compile Include="Renderers\HorizontalList\UIViewCellHolderQueue.cs" />
     <Compile Include="Renderers\iOSMaterialFrameRenderer.cs" />
+    <Compile Include="Helpers\IdentifierFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MSBuildTasks">

@@ -4,9 +4,11 @@ using System.Collections.Specialized;
 using System.Linq;
 
 using Foundation;
+using Sharpnado.Presentation.Forms.iOS.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.iOS;
 
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
@@ -107,12 +109,14 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private readonly List<object> _dataSource;
         private readonly UIViewCellHolderQueue _viewCellHolderCellHolderQueue;
         private readonly Dictionary<long, WeakReference<iOSViewCell>> _createdCells;
+        private readonly HashSet<DataTemplate> _dataTemplates;
         private readonly bool _multipleCellTemplates;
 
-        public iOSViewSource(HorizontalListView element)
+        public iOSViewSource(HorizontalListView element, HashSet<DataTemplate> dataTemplates)
         {
             _weakElement = new WeakReference<HorizontalListView>(element);
             _createdCells = new Dictionary<long, WeakReference<iOSViewCell>>();
+            _dataTemplates = dataTemplates;
 
             var elementItemsSource = element.ItemsSource;
             _dataSource = elementItemsSource?.Cast<object>().ToList();
@@ -122,7 +126,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return;
             }
 
-            _multipleCellTemplates = element.ItemTemplate is DataTemplateSelector;
+            _multipleCellTemplates = _dataTemplates?.Any() ?? false;
 
             if (!_multipleCellTemplates)
             {
@@ -185,8 +189,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
             else
             {
-                var itemType = GetItemType(indexPath);
-                nativeCell = (iOSViewCell)collectionView.DequeueReusableCell(itemType.Name, indexPath);
+                var cellType = GetItemTemplateIdentifier(indexPath);
+                nativeCell = (iOSViewCell)collectionView.DequeueReusableCell(cellType, indexPath);
             }
 
             if (!_createdCells.ContainsKey(nativeCell.GetHashCode()))
@@ -239,9 +243,16 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             base.Dispose(disposing);
         }
 
-        private Type GetItemType(NSIndexPath indexPath)
+        private string GetItemTemplateIdentifier(NSIndexPath indexPath)
         {
-            return _dataSource[(int)indexPath.Item].GetType();
+            if (_weakElement.TryGetTarget(out var element) && element.ItemTemplate is DataTemplateSelector dataTemplateSelector)
+            {
+                var item = _dataSource[(int)indexPath.Item];
+                var template = dataTemplateSelector.SelectTemplate(item, element);
+                var templateIndex = _dataTemplates.IndexOf(template);
+                return IdentifierFormatter.FormatDataTemplateCellIdentifier(templateIndex);
+            }
+            return nameof(iOSViewCell);
         }
 
         private UIViewCellHolder CreateViewCellHolder(int itemIndex = -1)
