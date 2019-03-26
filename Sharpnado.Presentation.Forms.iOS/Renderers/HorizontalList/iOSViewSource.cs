@@ -107,6 +107,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private readonly List<object> _dataSource;
         private readonly UIViewCellHolderQueue _viewCellHolderCellHolderQueue;
         private readonly Dictionary<long, WeakReference<iOSViewCell>> _createdCells;
+        private readonly bool _multipleCellTemplates;
 
         public iOSViewSource(HorizontalListView element)
         {
@@ -121,7 +122,9 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return;
             }
 
-            if (!(element.ItemTemplate is DataTemplateSelector))
+            _multipleCellTemplates = element.ItemTemplate is DataTemplateSelector;
+
+            if (!_multipleCellTemplates)
             {
                 // Cache only support single DataTemplate
                 _viewCellHolderCellHolderQueue = new UIViewCellHolderQueue(
@@ -175,7 +178,16 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         public override UICollectionViewCell GetCell(UICollectionView collectionView, NSIndexPath indexPath)
         {
-            var nativeCell = (iOSViewCell)collectionView.DequeueReusableCell(nameof(iOSViewCell), indexPath);
+            iOSViewCell nativeCell;
+            if (!_multipleCellTemplates)
+            {
+                nativeCell = (iOSViewCell)collectionView.DequeueReusableCell(nameof(iOSViewCell), indexPath);
+            }
+            else
+            {
+                var itemType = GetItemType(indexPath);
+                nativeCell = (iOSViewCell)collectionView.DequeueReusableCell(itemType.Name, indexPath);
+            }
 
             if (!_createdCells.ContainsKey(nativeCell.GetHashCode()))
             {
@@ -185,7 +197,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             if (!nativeCell.IsInitialized)
             {
                 UIViewCellHolder holder;
-                if (_weakElement.TryGetTarget(out var element) && element.ItemTemplate is DataTemplateSelector)
+                if (_weakElement.TryGetTarget(out var element) && _multipleCellTemplates)
                 {
                     holder = CreateViewCellHolder(indexPath.Row);
                 }
@@ -225,6 +237,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             _createdCells.Clear();
 
             base.Dispose(disposing);
+        }
+
+        private Type GetItemType(NSIndexPath indexPath)
+        {
+            return _dataSource[(int)indexPath.Item].GetType();
         }
 
         private UIViewCellHolder CreateViewCellHolder(int itemIndex = -1)

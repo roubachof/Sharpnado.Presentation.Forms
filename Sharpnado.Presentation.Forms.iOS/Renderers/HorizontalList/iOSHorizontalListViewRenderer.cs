@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -296,13 +297,39 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             _itemsSource = Element.ItemsSource;
 
             Control.DataSource = new iOSViewSource(Element);
-            Control.RegisterClassForCell(typeof(iOSViewCell), nameof(iOSViewCell));
+
+            if (Element.ItemTemplate is DataTemplateSelector)
+            {
+                RegisterCellDataTemplates();
+            }
+            else
+            {
+                Control.RegisterClassForCell(typeof(iOSViewCell), nameof(iOSViewCell));
+            }
 
             oldDataSource?.Dispose();
 
             if (_itemsSource is INotifyCollectionChanged newNotifyCollection)
             {
                 newNotifyCollection.CollectionChanged += OnCollectionChanged;
+            }
+        }
+
+        private void RegisterCellDataTemplates()
+        {
+            HashSet<Type> templateTypes = new HashSet<Type>();
+            foreach (var item in _itemsSource)
+            {
+                Type itemType = item.GetType();
+                if (!templateTypes.Contains(itemType))
+                {
+                    templateTypes.Add(itemType);
+                }
+            }
+
+            foreach (var itemType in templateTypes)
+            {
+                Control.RegisterClassForCell(typeof(iOSViewCell), itemType.Name);
             }
         }
 
