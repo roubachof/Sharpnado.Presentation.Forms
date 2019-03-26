@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -7,16 +8,18 @@ using CoreGraphics;
 using Foundation;
 
 using Sharpnado.Infrastructure;
+using Sharpnado.Presentation.Forms.iOS.Helpers;
 using Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(iOSHorizontalListViewRenderer))]
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
-    [Preserve]
+    [Foundation.Preserve]
     public partial class iOSHorizontalListViewRenderer : ViewRenderer<HorizontalListView, UICollectionView>
     {
         private IEnumerable _itemsSource;
@@ -295,8 +298,17 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             _itemsSource = Element.ItemsSource;
 
-            Control.DataSource = new iOSViewSource(Element);
-            Control.RegisterClassForCell(typeof(iOSViewCell), nameof(iOSViewCell));
+            HashSet<DataTemplate> dataTemplates = null;
+            if (Element.ItemTemplate is DataTemplateSelector dataTemplateSelector)
+            {
+                dataTemplates = RegisterCellDataTemplates(dataTemplateSelector);
+            }
+            else
+            {
+                Control.RegisterClassForCell(typeof(iOSViewCell), nameof(iOSViewCell));
+            }
+
+            Control.DataSource = new iOSViewSource(Element, dataTemplates);
 
             oldDataSource?.Dispose();
 
@@ -304,6 +316,28 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             {
                 newNotifyCollection.CollectionChanged += OnCollectionChanged;
             }
+        }
+
+        private HashSet<DataTemplate> RegisterCellDataTemplates(DataTemplateSelector dataTemplateSelector)
+        {
+            HashSet<DataTemplate> dataTemplates = new HashSet<DataTemplate>();
+            foreach (var item in _itemsSource)
+            {
+                var dataTemplate = dataTemplateSelector.SelectTemplate(item, Element);
+                int itemViewType = dataTemplates.IndexOf(dataTemplate);
+                if (itemViewType == -1)
+                {
+                    itemViewType = dataTemplates.Count;
+                    dataTemplates.Add(dataTemplate);
+                }
+            }
+
+            for (int i = 0; i < dataTemplates.Count; i++)
+            {
+                Control.RegisterClassForCell(typeof(iOSViewCell), IdentifierFormatter.FormatDataTemplateCellIdentifier(i));
+            }
+
+            return dataTemplates;
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
