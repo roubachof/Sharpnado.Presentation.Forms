@@ -310,6 +310,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             var oldAdapter = Control.GetAdapter();
 
+            Control.GetRecycledViewPool().Clear();
             var adapter = new RecycleViewAdapter(Element, Control, Context);
             Control.SetAdapter(adapter);
 

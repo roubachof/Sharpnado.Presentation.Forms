@@ -315,6 +315,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                     case NotifyCollectionChangedAction.Reset:
                         _dataSource.Clear();
+                        if (_weakParentView.TryGetTarget(out parentView))
+                        {
+                            parentView.GetRecycledViewPool().Clear();
+                        }
+
                         NotifyDataSetChanged();
                         break;
                 }
