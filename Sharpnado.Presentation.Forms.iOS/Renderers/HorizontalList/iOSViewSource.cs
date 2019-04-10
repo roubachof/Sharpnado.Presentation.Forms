@@ -228,17 +228,20 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         protected override void Dispose(bool disposing)
         {
-            _viewCellHolderCellHolderQueue?.Clear();
-
-            foreach (var weakCreatedCell in _createdCells.Values)
+            if (disposing)
             {
-                if (weakCreatedCell.TryGetTarget(out var createdCell))
-                {
-                    createdCell.Reset();
-                }
-            }
+                _viewCellHolderCellHolderQueue?.Clear();
 
-            _createdCells.Clear();
+                foreach (var weakCreatedCell in _createdCells.Values)
+                {
+                    if (weakCreatedCell.TryGetTarget(out var createdCell))
+                    {
+                        createdCell.Reset();
+                    }
+                }
+
+                _createdCells.Clear();
+            }
 
             base.Dispose(disposing);
         }
