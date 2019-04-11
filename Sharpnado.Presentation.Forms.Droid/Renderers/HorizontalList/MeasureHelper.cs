@@ -6,6 +6,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
     public static class MeasureHelper
     {
+        public const int RecyclerViewItemVerticalMarginDp = 2;
+
         public static int ComputeSpan(int availableWidth, HorizontalListView element)
         {
             int itemSpace = PlatformHelper.Instance.DpToPixels(element.ItemSpacing);

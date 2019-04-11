@@ -4,12 +4,8 @@ using Android.Content;
 using Android.Graphics;
 using Android.Runtime;
 using Android.Support.V7.Widget;
-using Android.Util;
 
-using Sharpnado.Infrastructure;
-using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
-using Xamarin.Forms;
 
 using View = Android.Views.View;
 
@@ -18,158 +14,69 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
     public class SpaceItemDecoration : RecyclerView.ItemDecoration
     {
         private readonly int _space;
-        private readonly int _leftPadding;
-        private readonly int _topPadding;
-        private readonly int _rightPadding;
-        private readonly int _bottomPadding;
 
+        private readonly int _verticalMargin;
 
         public SpaceItemDecoration(IntPtr javaReference, JniHandleOwnership transfer)
             : base(javaReference, transfer)
         {
         }
 
-        public SpaceItemDecoration(int spaceDp, Thickness paddingDp)
+        public SpaceItemDecoration(int spaceDp)
         {
             _space = PlatformHelper.Instance.DpToPixels(spaceDp);
-            _leftPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Left);
-            _topPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Top);
-            _rightPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Right);
-            _bottomPadding = PlatformHelper.Instance.DpToPixels(paddingDp.Bottom);
+            _verticalMargin = PlatformHelper.Instance.DpToPixels(MeasureHelper.RecyclerViewItemVerticalMarginDp);
         }
 
         public override void GetItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
         {
-            int right = _space / 2;
-            int left = _space / 2;
-
-            bool isViewEdgeLeft = false;
-            bool isViewEdgeRight = false;
-
             int viewPosition = parent.GetChildAdapterPosition(view);
             int viewCount = parent.GetAdapter().ItemCount;
 
-            if (parent.GetLayoutManager() is ResponsiveGridLayoutManager responsiveGridLayout)
+            switch (parent.GetLayoutManager())
             {
-                int top = _space / 2;
-                int bottom = _space / 2;
+                case ResponsiveGridLayoutManager responsiveGridLayout:
+                    int adaptedSpace = (int)((_space - _verticalMargin * 2) * 0.66);
+                    int top = adaptedSpace / 2;
+                    int bottom = adaptedSpace / 2;
+                    int spanCount = responsiveGridLayout.SpanCount;
 
-                bool isAutoComputedItemWidth = responsiveGridLayout.IsAutoComputedItemWidth();
+                    bool isViewEdgeTop = viewPosition < spanCount;
+                    if (isViewEdgeTop)
+                    {
+                        top = 0;
+                    }
 
-                int spanCount = responsiveGridLayout.SpanCount;
-                isViewEdgeLeft = viewPosition % spanCount == 0;
-                bool isViewEdgeTop = viewPosition < spanCount;
-                isViewEdgeRight = viewPosition % spanCount == spanCount - 1;
-                bool isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
+                    bool isViewEdgeBottom = viewPosition / spanCount == viewCount - 1 / spanCount;
+                    if (isViewEdgeBottom)
+                    {
+                        bottom = 0;
+                    }
 
-                if (isViewEdgeTop)
-                {
-                    top = isAutoComputedItemWidth ? 0 : _topPadding;
-                }
-
-                if (isViewEdgeBottom)
-                {
-                    bottom = isAutoComputedItemWidth ? 0 : _bottomPadding;
-                }
-
-                bool isHorizontalEdge = isViewEdgeLeft || isViewEdgeRight;
-
-                if (!responsiveGridLayout.TryGetItemWidth(out int itemWidth))
-                {
-                    base.GetItemOffsets(outRect, view, parent, state);
+                    outRect.Set(0, top, 0, bottom);
                     return;
-                }
 
-                int gridLeftPadding = _leftPadding;
-                int gridRightPadding = _rightPadding;
-                if (spanCount == 1)
-                {
-                    // If there is only one column we want our items centered
-                    gridLeftPadding = 0;
-                    gridRightPadding = 0;
-                }
+                case LinearLayoutManager linearLayout:
+                    int right = _space / 2;
+                    int left = _space / 2;
+                    bool isViewEdgeLeft = viewPosition == 0;
+                    bool isViewEdgeRight = viewPosition == viewCount - 1;
 
-                //InternalLogger.Info(
-                //    $"interSpacing computation:{Environment.NewLine}    parent.MeasuredWidth: {parent.MeasuredWidth}{Environment.NewLine}    parent.Width: {parent.Width}{Environment.NewLine}    spanCount: {spanCount}{Environment.NewLine}    itemWidth:{itemWidth}{Environment.NewLine}    gridLeftPadding: {gridLeftPadding}{Environment.NewLine}    gridRightPadding: {gridRightPadding}");
-
-                int availableWidthSpace =
-                    parent.MeasuredWidth - gridLeftPadding - gridRightPadding - spanCount * itemWidth;
-
-                //InternalLogger.Info($"availableWidthSpace: {availableWidthSpace}");
-
-                if (spanCount == 1)
-                {
-                    if (isAutoComputedItemWidth)
+                    if (isViewEdgeLeft)
                     {
                         left = 0;
+                    }
+
+                    if (isViewEdgeRight)
+                    {
                         right = 0;
                     }
-                    else
-                    {
-                        left = right = availableWidthSpace / 2;
-                    }
-                }
-                else
-                {
-                    int interItemSpace = availableWidthSpace / (spanCount - 1);
-                    int halfInterItemSpace = interItemSpace / 2;
-                    left = interItemSpace / 2;
-                    right = interItemSpace / 2;
 
-                    if (isHorizontalEdge)
-                    {
-                        int remaining = availableWidthSpace - halfInterItemSpace * 2 * (spanCount - 1);
-
-                        // InternalLogger.Info($"halfInterItemSpace: {halfInterItemSpace}, remaining: {remaining}");
-
-                        if (isViewEdgeLeft)
-                        {
-                            left = _leftPadding + remaining;
-                        }
-
-                        if (isViewEdgeRight)
-                        {
-                            right = _rightPadding;
-                        }
-                    }
-                }
-
-                if (isAutoComputedItemWidth)
-                {
-                    base.GetItemOffsets(outRect, view, parent, state);
-                    outRect.Set(outRect.Left, top, outRect.Right, bottom);
-
-                    // InternalLogger.Info(
-                    //    $"view n°{viewPosition + 1} => left: {outRect.Left}, top: {outRect.Top}, right: {outRect.Right}, bottom: {outRect.Bottom}");
+                    outRect.Set(left, 0, right, 0);
                     return;
-                }
-
-                outRect.Set(left, top, right, bottom);
-                // InternalLogger.Info(
-                //    $"view n°{viewPosition + 1} => left: {outRect.Left}, top: {outRect.Top}, right: {outRect.Right}, bottom: {outRect.Bottom}");
-                return;
             }
 
-            if (!(parent.GetLayoutManager() is LinearLayoutManager))
-            {
-                base.GetItemOffsets(outRect, view, parent, state);
-                return;
-            }
-
-            isViewEdgeLeft = viewPosition == 0;
-            isViewEdgeRight = viewPosition == viewCount - 1;
-
-            if (isViewEdgeLeft)
-            {
-                left = 0;
-            }
-
-            if (isViewEdgeRight)
-            {
-                right = 0;
-            }
-
-            outRect.Set(left, 0, right, 0);
+            base.GetItemOffsets(outRect, view, parent, state);
 
             //InternalLogger.Info(
             //    $"view n°{viewPosition + 1} => left: {left}, right: {right}");

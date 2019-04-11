@@ -258,16 +258,31 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 var renderer = Platform.CreateRendererWithContext(view, _context);
                 Platform.SetRenderer(view, renderer);
 
-                renderer.Element.Layout(new Rectangle(0, 0, _element.ItemWidth, _element.ItemHeight));
+                renderer.Element.Layout(
+                    new Rectangle(
+                        0,
+                        0,
+                        _element.ItemWidth,
+                        _element.ItemHeight));
                 renderer.UpdateLayout();
 
                 var itemView = renderer.View;
-                itemView.LayoutParameters = new FrameLayout.LayoutParams(
-                    (int)(_element.ItemWidth * Resources.System.DisplayMetrics.Density),
-                    (int)(_element.ItemHeight * Resources.System.DisplayMetrics.Density))
-                {
-                    Gravity = GravityFlags.CenterHorizontal,
-                };
+
+                int topMargin = PlatformHelper.Instance.DpToPixels(MeasureHelper.RecyclerViewItemVerticalMarginDp);
+                int bottomMargin = PlatformHelper.Instance.DpToPixels(MeasureHelper.RecyclerViewItemVerticalMarginDp);
+
+                int width = PlatformHelper.Instance.DpToPixels(_element.ItemWidth);
+                int height = PlatformHelper.Instance.DpToPixels(_element.ItemHeight);
+
+                itemView.LayoutParameters =
+                    new FrameLayout.LayoutParams(
+                        width,
+                        height)
+                    {
+                        Gravity = GravityFlags.CenterHorizontal,
+                        TopMargin = topMargin,
+                        BottomMargin = bottomMargin,
+                    };
 
                 if (_element.IsLayoutLinear)
                 {
@@ -278,7 +293,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 {
                     LayoutParameters = new FrameLayout.LayoutParams(
                         LayoutParams.MatchParent,
-                        LayoutParams.WrapContent),
+                        height + (topMargin + bottomMargin)),
                 };
 
                 container.AddView(itemView);
