@@ -58,7 +58,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             propertyChanged: OnItemsSourceChanged);
 
         public static readonly BindableProperty InfiniteListLoaderProperty = BindableProperty.Create(
-            nameof(ItemsSource),
+            nameof(InfiniteListLoader),
             typeof(IInfiniteListLoader),
             typeof(HorizontalListView));
 
