@@ -62,8 +62,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     treeViewObserver.PreDraw -= OnPreDraw;
                 }
 
-                _dragHelper.AttachToRecyclerView(null);
-                _dragHelper = null;
+                if (_dragHelper != null)
+                {
+                    _dragHelper.AttachToRecyclerView(null);
+                    _dragHelper = null;
+                }
             }
 
             if (e.NewElement != null)
