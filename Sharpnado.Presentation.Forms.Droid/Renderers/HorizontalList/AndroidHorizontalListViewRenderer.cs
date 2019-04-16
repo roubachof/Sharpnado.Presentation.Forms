@@ -30,6 +30,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         private ItemTouchHelper _dragHelper;
 
+        private SpaceItemDecoration _itemDecoration;
+
         public AndroidHorizontalListViewRenderer(Context context)
             : base(context)
         {
@@ -87,6 +89,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     break;
                 case nameof(HorizontalListView.DisableScroll):
                     ProcessDisableScroll();
+                    break;
+                case nameof(HorizontalListView.ListLayout):
+                    UpdateListLayout();
                     break;
             }
         }
@@ -166,29 +171,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 _isFirstInitialization = false;
             }
 
-            var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed) { HasFixedSize = true };
+            var recyclerView = new SlowRecyclerView(Context, Element.ScrollSpeed) { HasFixedSize = false };
 
-            if (Element.ListLayout == HorizontalListViewLayout.Grid)
-            {
-                recyclerView.SetLayoutManager(new ResponsiveGridLayoutManager(Context, Element));
-            }
-            else
-            {
-                recyclerView.SetLayoutManager(new CustomLinearLayoutManager(Context, OrientationHelper.Horizontal, false));
-            }
-
-            if (Element.ItemSpacing > 0 || Element.CollectionPadding != new Thickness(0))
-            {
-                recyclerView.AddItemDecoration(new SpaceItemDecoration(Element.ItemSpacing));
-
-                recyclerView.SetPadding(
-                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Left),
-                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Top),
-                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Right),
-                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Bottom));
-
-                recyclerView.SetClipToPadding(false);
-            }
+            SetListLayout(recyclerView);
 
             SetNativeControl(recyclerView);
 
@@ -220,6 +205,37 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             }
 
             Control.ViewTreeObserver.PreDraw += OnPreDraw;
+        }
+
+        private void SetListLayout(RecyclerView recyclerView)
+        {
+            if (Element.ListLayout == HorizontalListViewLayout.Grid)
+            {
+                recyclerView.SetLayoutManager(new ResponsiveGridLayoutManager(Context, Element));
+            }
+            else
+            {
+                recyclerView.SetLayoutManager(new CustomLinearLayoutManager(Context, OrientationHelper.Horizontal, false));
+            }
+
+            if (Element.ItemSpacing > 0 || Element.CollectionPadding != new Thickness(0))
+            {
+                if (!_itemDecoration.IsNullOrDisposed())
+                {
+                    recyclerView.RemoveItemDecoration(_itemDecoration);
+                    _itemDecoration = null;
+                }
+
+                _itemDecoration = new SpaceItemDecoration(Element.ItemSpacing);
+                recyclerView.AddItemDecoration(_itemDecoration);
+                recyclerView.SetPadding(
+                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Left),
+                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Top),
+                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Right),
+                    PlatformHelper.Instance.DpToPixels(Element.CollectionPadding.Bottom));
+
+                recyclerView.SetClipToPadding(false);
+            }
         }
 
         private void OnPreDraw(object sender, ViewTreeObserver.PreDrawEventArgs e)
@@ -325,6 +341,19 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     new DragAnDropItemTouchHelperCallback(Element, adapter, Element.DragAndDropEndedCommand));
                 _dragHelper.AttachToRecyclerView(Control);
             }
+        }
+
+        private void UpdateListLayout()
+        {
+            if (Control.IsNullOrDisposed())
+            {
+                return;
+            }
+
+            SetListLayout(Control);
+            UpdateItemsSource();
+            ProcessDisableScroll();
+            ScrollToCurrentItem();
         }
     }
 }

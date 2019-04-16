@@ -103,7 +103,7 @@
       <Version>28.0.0.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>3.6.0.220655</Version>
+      <Version>3.6.0.293080</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

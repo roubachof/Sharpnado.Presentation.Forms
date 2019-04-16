@@ -49,6 +49,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
     public class HorizontalListView : View
     {
+        public static readonly BindableProperty ListLayoutProperty = BindableProperty.Create(
+            nameof(ListLayout),
+            typeof(HorizontalListViewLayout),
+            typeof(HorizontalListView),
+            HorizontalListViewLayout.Linear,
+            propertyChanged: OnListLayoutChanged);
+
         public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(
             nameof(ItemsSource),
             typeof(IEnumerable),
@@ -248,17 +255,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public HorizontalListViewLayout ListLayout
         {
-            get => _layout;
-            set
-            {
-                _layout = value;
-                if (_layout == HorizontalListViewLayout.Carousel)
-                {
-                    SnapStyle = SnapStyle.Center;
-                    ColumnCount = 1;
-                    ScrollSpeed = ScrollSpeed.Slowest;
-                }
-            }
+            get => (HorizontalListViewLayout)GetValue(ListLayoutProperty);
+            set => SetValue(ListLayoutProperty, value);
         }
 
         public SnapStyle SnapStyle { get; set; } = SnapStyle.None;
@@ -324,6 +322,17 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             double spaceHeightLeft = availableHeight - totalHeightSpacing;
 
             return PlatformHelper.Instance.PixelsToDp((int)spaceHeightLeft);
+        }
+
+        private static void OnListLayoutChanged(BindableObject bindable, object oldvalue, object newvalue)
+        {
+            var horizontalListView = (HorizontalListView)bindable;
+            if (horizontalListView._layout == HorizontalListViewLayout.Carousel)
+            {
+                horizontalListView.SnapStyle = SnapStyle.Center;
+                horizontalListView.ColumnCount = 1;
+                horizontalListView.ScrollSpeed = ScrollSpeed.Slowest;
+            }
         }
 
         private static void OnItemsSourceChanged(BindableObject bindable, object oldvalue, object newvalue)
