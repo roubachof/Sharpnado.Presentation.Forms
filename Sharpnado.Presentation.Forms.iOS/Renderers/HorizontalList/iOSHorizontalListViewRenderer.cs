@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using CoreGraphics;
 using Foundation;
 
@@ -76,6 +75,9 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     break;
                 case nameof(HorizontalListView.DisableScroll):
                     ProcessDisableScroll();
+                    break;
+                case nameof(HorizontalListView.ListLayout):
+                    UpdateListLayout();
                     break;
             }
         }
@@ -166,29 +168,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             Control?.CollectionViewLayout?.Dispose();
             Control?.Dispose();
 
-            var sectionInset = new UIEdgeInsets(
-                (nfloat)Element.CollectionPadding.Top,
-                (nfloat)Element.CollectionPadding.Left,
-                (nfloat)Element.CollectionPadding.Bottom,
-                (nfloat)Element.CollectionPadding.Right);
-
-            var layout = Element.ListLayout == HorizontalListViewLayout.Grid
-                ? new UICollectionViewFlowLayout
-                {
-                    ScrollDirection = UICollectionViewScrollDirection.Vertical,
-                    ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),
-                    MinimumInteritemSpacing = Element.ItemSpacing,
-                    MinimumLineSpacing = Element.ItemSpacing,
-                    SectionInset = sectionInset,
-                }
-                : new SnappingCollectionViewLayout(Element.SnapStyle)
-                {
-                    ScrollDirection = UICollectionViewScrollDirection.Horizontal,
-                    ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),
-                    MinimumInteritemSpacing = Element.ItemSpacing,
-                    MinimumLineSpacing = Element.ItemSpacing,
-                    SectionInset = sectionInset,
-                };
+            var layout = BuildListLayout();
 
             // Otherwise the UICollectionView doesn't seem to take enough space
             if (Element.ItemHeight > 0)
@@ -233,6 +213,33 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             ScrollToCurrentItem();
             ProcessDisableScroll();
+        }
+
+        private UICollectionViewFlowLayout BuildListLayout()
+        {
+            var sectionInset = new UIEdgeInsets(
+                (nfloat)Element.CollectionPadding.Top,
+                (nfloat)Element.CollectionPadding.Left,
+                (nfloat)Element.CollectionPadding.Bottom,
+                (nfloat)Element.CollectionPadding.Right);
+
+            return Element.ListLayout == HorizontalListViewLayout.Grid
+                       ? new UICollectionViewFlowLayout
+                           {
+                               ScrollDirection = UICollectionViewScrollDirection.Vertical,
+                               ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),
+                               MinimumInteritemSpacing = Element.ItemSpacing,
+                               MinimumLineSpacing = Element.ItemSpacing,
+                               SectionInset = sectionInset,
+                           }
+                       : new SnappingCollectionViewLayout(Element.SnapStyle)
+                           {
+                               ScrollDirection = UICollectionViewScrollDirection.Horizontal,
+                               ItemSize = new CGSize(Element.ItemWidth, Element.ItemHeight),
+                               MinimumInteritemSpacing = Element.ItemSpacing,
+                               MinimumLineSpacing = Element.ItemSpacing,
+                               SectionInset = sectionInset,
+                           };
         }
 
         private void ScrollToCurrentItem()
@@ -318,16 +325,34 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
         }
 
+        private void UpdateListLayout()
+        {
+            if (_collectionView == null)
+            {
+                return;
+            }
+
+            var oldCollectionViewLayout = _collectionView.CollectionViewLayout;
+            var newLayout = BuildListLayout();
+
+            _collectionView.CollectionViewLayout = newLayout;
+
+            oldCollectionViewLayout?.Dispose();
+
+            UpdateItemsSource();
+            ProcessDisableScroll();
+            ScrollToCurrentItem();
+        }
+
         private HashSet<DataTemplate> RegisterCellDataTemplates(DataTemplateSelector dataTemplateSelector)
         {
-            HashSet<DataTemplate> dataTemplates = new HashSet<DataTemplate>();
+            var dataTemplates = new HashSet<DataTemplate>();
             foreach (var item in _itemsSource)
             {
                 var dataTemplate = dataTemplateSelector.SelectTemplate(item, Element);
                 int itemViewType = dataTemplates.IndexOf(dataTemplate);
                 if (itemViewType == -1)
                 {
-                    itemViewType = dataTemplates.Count;
                     dataTemplates.Add(dataTemplate);
                 }
             }
