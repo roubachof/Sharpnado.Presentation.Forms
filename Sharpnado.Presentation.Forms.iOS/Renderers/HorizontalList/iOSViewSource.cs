@@ -109,10 +109,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private readonly List<object> _dataSource;
         private readonly UIViewCellHolderQueue _viewCellHolderCellHolderQueue;
         private readonly Dictionary<long, WeakReference<iOSViewCell>> _createdCells;
-        private readonly HashSet<DataTemplate> _dataTemplates;
+        private readonly List<DataTemplate> _dataTemplates;
         private readonly bool _multipleCellTemplates;
 
-        public iOSViewSource(HorizontalListView element, HashSet<DataTemplate> dataTemplates)
+        public iOSViewSource(HorizontalListView element, List<DataTemplate> dataTemplates)
         {
             _weakElement = new WeakReference<HorizontalListView>(element);
             _createdCells = new Dictionary<long, WeakReference<iOSViewCell>>();
@@ -126,7 +126,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 return;
             }
 
-            _multipleCellTemplates = _dataTemplates?.Any() ?? false;
+            _multipleCellTemplates = element.ItemTemplate is DataTemplateSelector;
 
             if (!_multipleCellTemplates)
             {
@@ -189,7 +189,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             }
             else
             {
-                var cellType = GetItemTemplateIdentifier(indexPath);
+                var cellType = GetItemTemplateIdentifier(collectionView, indexPath);
                 nativeCell = (iOSViewCell)collectionView.DequeueReusableCell(cellType, indexPath);
             }
 
@@ -246,15 +246,26 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             base.Dispose(disposing);
         }
 
-        private string GetItemTemplateIdentifier(NSIndexPath indexPath)
+        private string GetItemTemplateIdentifier(UICollectionView collectionView, NSIndexPath indexPath)
         {
             if (_weakElement.TryGetTarget(out var element) && element.ItemTemplate is DataTemplateSelector dataTemplateSelector)
             {
                 var item = _dataSource[(int)indexPath.Item];
                 var template = dataTemplateSelector.SelectTemplate(item, element);
                 var templateIndex = _dataTemplates.IndexOf(template);
+                if (templateIndex == -1)
+                {
+                    // Rare cases where DataTemplate of the DataTemplateSelectors are not public properties
+                    _dataTemplates.Add(template);
+                    templateIndex = _dataTemplates.Count - 1;
+                    collectionView.RegisterClassForCell(
+                        typeof(iOSViewCell),
+                        IdentifierFormatter.FormatDataTemplateCellIdentifier(templateIndex));
+                }
+
                 return IdentifierFormatter.FormatDataTemplateCellIdentifier(templateIndex);
             }
+
             return nameof(iOSViewCell);
         }
 

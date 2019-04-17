@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using CoreGraphics;
 using Foundation;
 
@@ -28,6 +30,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private bool _isCurrentIndexUpdateBackfire;
         private bool _isInternalScroll;
         private bool _isMovedBackfire;
+
+        private List<DataTemplate> _registeredDataTemplates = new List<DataTemplate>();
         private bool _isFirstInitialization = true;
 
         private int _lastVisibleItemIndex = -1;
@@ -109,6 +113,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 {
                     oldNotifyCollection.CollectionChanged -= OnCollectionChanged;
                 }
+
+                _registeredDataTemplates.Clear();
             }
 
             if (e.NewElement != null)
@@ -305,7 +311,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             _itemsSource = Element.ItemsSource;
 
-            HashSet<DataTemplate> dataTemplates = null;
+            List<DataTemplate> dataTemplates = null;
             if (Element.ItemTemplate is DataTemplateSelector dataTemplateSelector)
             {
                 dataTemplates = RegisterCellDataTemplates(dataTemplateSelector);
@@ -344,25 +350,28 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             ScrollToCurrentItem();
         }
 
-        private HashSet<DataTemplate> RegisterCellDataTemplates(DataTemplateSelector dataTemplateSelector)
+        private List<DataTemplate> RegisterCellDataTemplates(DataTemplateSelector dataTemplateSelector)
         {
-            var dataTemplates = new HashSet<DataTemplate>();
-            foreach (var item in _itemsSource)
+            var selectorTypeInfo = dataTemplateSelector.GetType().GetTypeInfo();
+            var selectorDataTemplatesProperties =
+                selectorTypeInfo
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                    .Where(p => typeof(DataTemplate).IsAssignableFrom(p.PropertyType));
+
+            foreach (var selectorDataTemplateProperty in selectorDataTemplatesProperties)
             {
-                var dataTemplate = dataTemplateSelector.SelectTemplate(item, Element);
-                int itemViewType = dataTemplates.IndexOf(dataTemplate);
-                if (itemViewType == -1)
+                var dataTemplate = (DataTemplate)selectorDataTemplateProperty.GetValue(dataTemplateSelector);
+
+                if (!_registeredDataTemplates.Contains(dataTemplate))
                 {
-                    dataTemplates.Add(dataTemplate);
+                    _registeredDataTemplates.Add(dataTemplate);
+                    Control.RegisterClassForCell(
+                        typeof(iOSViewCell),
+                        IdentifierFormatter.FormatDataTemplateCellIdentifier(_registeredDataTemplates.Count - 1));
                 }
             }
 
-            for (int i = 0; i < dataTemplates.Count; i++)
-            {
-                Control.RegisterClassForCell(typeof(iOSViewCell), IdentifierFormatter.FormatDataTemplateCellIdentifier(i));
-            }
-
-            return dataTemplates;
+            return _registeredDataTemplates;
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
