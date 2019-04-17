@@ -12,10 +12,9 @@
         <projectUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</projectUrl>
         <iconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</iconUrl>
        	<requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview</tags>
-        <releaseNotes>Version 1.0.0
+        <releaseNotes>ListLayout is a now bindable property. That means you can now change dynamically the layout.
         </releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):

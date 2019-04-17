@@ -15,11 +15,7 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview</tags>
-        <releaseNotes>Pure Xamarin.Forms tabs:
-  * Top tabs (android tabs style)
-  * Bottom bar tabs (ios tabs style)
-  * Custom tabs (be creative just implement TabItem)
-  * Independent ```ViewSwitcher```
+        <releaseNotes>HorizontalListView.ListLayout is a now bindable property. That means you can now change dynamically the layout.
         </releaseNotes>
         <description>
 Collection of Xamarin.Forms components.
