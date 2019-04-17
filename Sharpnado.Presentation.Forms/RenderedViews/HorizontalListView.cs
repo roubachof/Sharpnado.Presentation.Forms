@@ -327,7 +327,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         private static void OnListLayoutChanged(BindableObject bindable, object oldvalue, object newvalue)
         {
             var horizontalListView = (HorizontalListView)bindable;
-            if (horizontalListView._layout == HorizontalListViewLayout.Carousel)
+            var newLayout = (HorizontalListViewLayout)newvalue;
+            if (newLayout == HorizontalListViewLayout.Carousel)
             {
                 horizontalListView.SnapStyle = SnapStyle.Center;
                 horizontalListView.ColumnCount = 1;
