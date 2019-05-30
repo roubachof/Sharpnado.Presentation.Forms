@@ -38,7 +38,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
 
         public static void Delete(UIView view, Action<UIGestureRecognizerState> action)
         {
-            if (Collection.ContainsKey(view))
+            if (view != null && Collection.ContainsKey(view))
             {
                 var ci = Collection[view];
                 ci.Actions.Remove(action);
