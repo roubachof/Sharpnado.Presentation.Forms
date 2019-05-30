@@ -64,7 +64,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Effects
             var renderer = Container as IVisualElementRenderer;
             if (renderer?.Element != null) // Check disposed
             {
-                _viewOverlay.Touch -= OnTouch;
+                if (_viewOverlay != null)
+                {
+                    _viewOverlay.Touch -= OnTouch;
+                }
 
                 ViewOverlayCollector.Delete(Container, this);
 
@@ -220,7 +223,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Effects
 
         private void RemoveRipple()
         {
-            _viewOverlay.Foreground = null;
+            if (_viewOverlay != null)
+            {
+                _viewOverlay.Foreground = null;
+            }
+
             _ripple?.Dispose();
             _ripple = null;
         }
