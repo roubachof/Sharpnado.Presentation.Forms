@@ -1,5 +1,10 @@
 # Sharpnado.Presentation.Forms
 
+| Lib | Version                                                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Sharpnado.Presentation.Forms  | ![Sharpnado.Presentation.Forms](https://img.shields.io/nuget/v/Sharpnado.Presentation.Forms.svg) |
+| Sharpnado.Forms.HorizontalListView      | ![Sharpnado.Forms.HorizontalListView](https://img.shields.io/nuget/v/Sharpnado.Forms.HorizontalListView.svg) |
+
 | Platform | Build Status                                                                                                                             |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Android  | [![Build status](https://build.appcenter.ms/v0.1/apps/23f44cf3-7656-4932-9d82-f654db6afc82/branches/master/badge)](https://appcenter.ms) |
