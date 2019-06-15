@@ -14,7 +14,7 @@
        	<requireLicenseAcceptance>false</requireLicenseAcceptance>
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview</tags>
-        <releaseNotes>ListLayout is a now bindable property. That means you can now change dynamically the layout.
+        <releaseNotes>Added TapCommand to be used when DrapAndDrop is enabled.
         </releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):

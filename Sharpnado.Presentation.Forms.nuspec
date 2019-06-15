@@ -5,7 +5,7 @@
       <id>Sharpnado.Presentation.Forms</id>
         <version>$version$</version>
         <copyright>Sharpnado 2019</copyright>
-        <title>A Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</title>
+        <title>A Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView (mvvm async loading view)</title>
         <authors>Jean-Marie Alfonsi</authors>
         <owners></owners>
         <licenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</licenseUrl>
@@ -13,9 +13,9 @@
         <iconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
-        <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView</summary>
-        <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview</tags>
-        <releaseNotes>HorizontalListView.ListLayout is a now bindable property. That means you can now change dynamically the layout.
+        <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView (mvvm async loading view)</summary>
+        <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview mvvm async</tags>
+        <releaseNotes>Added TapCommand to be used when DrapAndDrop is enabled.
         </releaseNotes>
         <description>
 Collection of Xamarin.Forms components.
@@ -26,7 +26,7 @@ Pure Xamarin.Forms tabs:
   * Custom tabs (be creative just implement TabItem)
   * Independent ```ViewSwitcher```
 
-The TaskLoaderView displays an ActivityLoader while loading then:
+The TaskLoaderView displays an ActivityIndicator while loading then:
   * Handles error with custom messages and icons
   * Handles empty states
   * Don't show activity loader for refresh scenarios (if data is already shown)

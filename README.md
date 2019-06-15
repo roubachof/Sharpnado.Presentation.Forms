@@ -543,11 +543,27 @@ All is explained here:
 
 https://www.sharpnado.com/paginator-platform-independent/
 
+### Drag and drop
+
+If you want to have both drag and drop enabled and still be able to tap the item, you need to use the ```TapCommand``` instead of the ```TapCommandEffect```.
+It's less nice since you won't have the nice color ripple, but it will work :)
+
 ### Others properties
 
 #### Properties available with both layout mode
 
 ```csharp
+public static readonly BindableProperty ListLayoutProperty = BindableProperty.Create(
+    nameof(ListLayout),
+    typeof(HorizontalListViewLayout),
+    typeof(HorizontalListView),
+    HorizontalListViewLayout.Linear);
+
+public static readonly BindableProperty TapCommandProperty = BindableProperty.Create(
+    nameof(TapCommand),
+    typeof(ICommand),
+    typeof(HorizontalListView));
+
 public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(
     nameof(ItemsSource),
     typeof(IEnumerable),
