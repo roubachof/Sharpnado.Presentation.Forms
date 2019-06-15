@@ -80,6 +80,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     }
                 });
 
+            
+
             // Add the custom recognizer to the collection view
             Control.AddGestureRecognizer(longPressGesture);
         }

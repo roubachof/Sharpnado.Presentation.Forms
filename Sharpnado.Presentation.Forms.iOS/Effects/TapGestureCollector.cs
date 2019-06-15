@@ -32,6 +32,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
             else
             {
                 var gest = new UITapGestureRecognizer(ActionActivator);
+                gest.CancelsTouchesInView = false;
                 Collection.Add(view, new GestureActionsContainer
                 {
                     Recognizer = gest,

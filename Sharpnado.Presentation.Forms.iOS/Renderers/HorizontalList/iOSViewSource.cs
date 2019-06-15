@@ -2,25 +2,32 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-
+using System.Windows.Input;
 using Foundation;
 using Sharpnado.Presentation.Forms.iOS.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.iOS;
 
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public struct UIViewCellHolder
     {
-        public static UIViewCellHolder Empty = new UIViewCellHolder(null, null);
+        public static UIViewCellHolder Empty = new UIViewCellHolder(null, null, null);
 
-        public UIViewCellHolder(ViewCell formsCell, UIView view)
+        private readonly ICommand _tapCommand;
+
+        public UIViewCellHolder(ViewCell formsCell, UIView view, ICommand tapCommand)
         {
             FormsCell = formsCell;
             CellContent = view;
+            _tapCommand = tapCommand;
+
+            if (tapCommand != null)
+            {
+                view.AddGestureRecognizer(new UITapGestureRecognizer(OnTap));
+            }
         }
 
         public ViewCell FormsCell { get; }
@@ -57,6 +64,14 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             unchecked
             {
                 return ((FormsCell != null ? FormsCell.GetHashCode() : 0) * 397) ^ (CellContent != null ? CellContent.GetHashCode() : 0);
+            }
+        }
+
+        private void OnTap()
+        {
+            if (_tapCommand.CanExecute(null))
+            {
+                _tapCommand.Execute(FormsCell.BindingContext);
             }
         }
     }
@@ -305,7 +320,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             var nativeView = Platform.GetRenderer(formsCell.View).NativeView;
             nativeView.ContentMode = UIViewContentMode.ScaleAspectFit;
 
-            return new UIViewCellHolder(formsCell, nativeView);
+            return new UIViewCellHolder(formsCell, nativeView, element.TapCommand);
         }
     }
 }

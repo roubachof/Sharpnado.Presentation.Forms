@@ -46,13 +46,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
             UpdateLongTapParameter();
 
             TapGestureCollector.Add(_view, TapAction);
-            LongTapGestureCollector.Add(_view, LongTapAction);
+            // LongTapGestureCollector.Add(_view, LongTapAction);
         }
 
         protected override void OnDetached()
         {
             TapGestureCollector.Delete(_view, TapAction);
-            LongTapGestureCollector.Delete(_view, LongTapAction);
+            // LongTapGestureCollector.Delete(_view, LongTapAction);
         }
 
         protected override void OnElementPropertyChanged(PropertyChangedEventArgs args)

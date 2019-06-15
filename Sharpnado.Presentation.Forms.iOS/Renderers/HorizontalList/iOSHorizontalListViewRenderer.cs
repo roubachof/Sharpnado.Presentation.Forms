@@ -25,6 +25,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
     {
         private IEnumerable _itemsSource;
         private UICollectionView _collectionView;
+        private UIGestureRecognizer _tapGestureRecognizer;
 
         private bool _isScrolling;
         private bool _isCurrentIndexUpdateBackfire;

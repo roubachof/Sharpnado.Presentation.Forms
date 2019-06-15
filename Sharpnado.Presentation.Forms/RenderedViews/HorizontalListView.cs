@@ -103,6 +103,11 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             defaultValue: 0,
             defaultBindingMode: BindingMode.OneWayToSource);
 
+        public static readonly BindableProperty TapCommandProperty = BindableProperty.Create(
+            nameof(TapCommand),
+            typeof(ICommand),
+            typeof(HorizontalListView));
+
         public static readonly BindableProperty ScrollBeganCommandProperty = BindableProperty.Create(
             nameof(ScrollBeganCommand),
             typeof(ICommand),
@@ -217,6 +222,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             get => (IInfiniteListLoader)GetValue(InfiniteListLoaderProperty);
             set => SetValue(InfiniteListLoaderProperty, value);
+        }
+
+        public ICommand TapCommand
+        {
+            get => (ICommand)GetValue(TapCommandProperty);
+            set => SetValue(TapCommandProperty, value);
         }
 
         public ICommand ScrollBeganCommand

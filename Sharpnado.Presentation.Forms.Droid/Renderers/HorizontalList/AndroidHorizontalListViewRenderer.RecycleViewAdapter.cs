@@ -3,18 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-
+using System.Windows.Input;
 using Android.Content;
-using Android.Content.Res;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.V7.Widget;
+using Android.Util;
 using Android.Views;
 using Android.Widget;
 
 using Sharpnado.Infrastructure;
-using Sharpnado.Presentation.Forms.Droid.Helpers;
-using Sharpnado.Presentation.Forms.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;
@@ -30,16 +28,25 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         private class ViewHolder : RecyclerView.ViewHolder
         {
             private readonly ViewCell _viewCell;
+            private readonly ICommand _tapCommand;
 
             public ViewHolder(IntPtr javaReference, JniHandleOwnership transfer)
                 : base(javaReference, transfer)
             {
             }
 
-            public ViewHolder(View itemView, ViewCell viewCell)
+            public ViewHolder(View itemView, ViewCell viewCell, ICommand tapCommand)
                 : base(itemView)
             {
                 _viewCell = viewCell;
+                _tapCommand = tapCommand;
+
+                if (_tapCommand != null)
+                {
+                    ItemView.Clickable = true;
+                    ItemView.Click += OnItemViewClick;
+                    AddRiple();
+                }
             }
 
             public ViewCell ViewCell => _viewCell;
@@ -50,6 +57,22 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
                 _viewCell.BindingContext = context;
                 _viewCell.Parent = parent;
+            }
+
+            private void OnItemViewClick(object sender, EventArgs e)
+            {
+                if (_tapCommand.CanExecute(null))
+                {
+                    _tapCommand.Execute(BindingContext);
+                }
+            }
+
+            private void AddRiple()
+            {
+                var outValue = new TypedValue();
+                var context = ItemView.Context;
+                context.Theme.ResolveAttribute(Android.Resource.Attribute.SelectableItemBackground, outValue, true);
+                ItemView.SetBackgroundResource(outValue.ResourceId);
             }
         }
 
@@ -235,7 +258,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             private ViewHolder CreateViewHolder(int itemViewType = -1)
             {
                 var view = CreateView(out var viewCell, itemViewType);
-                return new ViewHolder(view, viewCell);
+                return new ViewHolder(view, viewCell, _element.TapCommand);
             }
 
             private View CreateView(out ViewCell viewCell, int itemViewType)

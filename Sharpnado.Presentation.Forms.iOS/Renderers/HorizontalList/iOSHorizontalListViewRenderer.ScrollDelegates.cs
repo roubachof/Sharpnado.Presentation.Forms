@@ -40,6 +40,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private void SnapToCenter()
         {
+            if (Control == null)
+            {
+                return;
+            }
+
             var firstIndex = NSIndexPath.FromItemSection(0, 0);
             if (IsCellFullyVisible(firstIndex))
             {
@@ -73,15 +78,18 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             {
                 // Point is right between two cells: picking one
                 var indexes = Control.IndexPathsForVisibleItems.OrderBy(i => i.Item).ToArray();
-                int middleIndex = (indexes.Count() - 1) / 2;
-                var candidateIndexPath = indexes[middleIndex];
-                if (candidateIndexPath.Row < Element.CurrentIndex)
+                if (indexes.Length > 0)
                 {
-                    indexPath = candidateIndexPath;
-                }
-                else
-                {
-                    indexPath = indexes[middleIndex + 1 > indexes.Length ? middleIndex : middleIndex + 1];
+                    int middleIndex = (indexes.Count() - 1) / 2;
+                    var candidateIndexPath = indexes[middleIndex];
+                    if (candidateIndexPath.Row < Element.CurrentIndex)
+                    {
+                        indexPath = candidateIndexPath;
+                    }
+                    else
+                    {
+                        indexPath = indexes[middleIndex + 1 > indexes.Length ? middleIndex : middleIndex + 1];
+                    }
                 }
             }
 
@@ -167,6 +175,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private void OnScrolled(object sender, EventArgs e)
         {
+            if (Control == null)
+            {
+                return;
+            }
+
             var infiniteListLoader = Element?.InfiniteListLoader;
             if (infiniteListLoader != null)
             {
@@ -204,6 +217,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
         private void OnStopScrolling(object sender, EventArgs e)
         {
+            if (Control == null)
+            {
+                return;
+            }
+
             if (!_isScrolling)
             {
                 return;

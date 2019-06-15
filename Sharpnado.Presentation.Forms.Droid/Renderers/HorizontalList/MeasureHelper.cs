@@ -1,5 +1,5 @@
 using System;
-
+using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
@@ -31,8 +31,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             if (--columnCount == 0)
             {
-                throw new InvalidOperationException(
+                InternalLogger.Error(
                     "The CollectionPadding, ItemSpacing and ItemWidth specified doesn't allow a single column to be displayed");
+                return 1;
             }
 
             return columnCount;
