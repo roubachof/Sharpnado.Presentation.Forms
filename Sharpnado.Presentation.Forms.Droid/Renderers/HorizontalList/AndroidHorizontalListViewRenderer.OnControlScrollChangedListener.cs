@@ -99,7 +99,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                         if (nativeView.IsSnapHelperBusy)
                         {
                             return;
-                         }
+                        }
 
                         nativeView.IsScrolling = false;
 

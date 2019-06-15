@@ -55,19 +55,25 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             base.OnElementChanged(e);
 
-            if (e.OldElement != null && !Control.IsNullOrDisposed())
+            if (e.OldElement != null)
             {
-                Control.ClearOnScrollListeners();
-                var treeViewObserver = Control.ViewTreeObserver;
-                if (treeViewObserver != null)
-                {
-                    treeViewObserver.PreDraw -= OnPreDraw;
-                }
-
                 if (_dragHelper != null)
                 {
                     _dragHelper.AttachToRecyclerView(null);
                     _dragHelper = null;
+                }
+
+                if (!Control.IsNullOrDisposed())
+                {
+                    Control.ClearOnScrollListeners();
+                    var treeViewObserver = Control.ViewTreeObserver;
+                    if (treeViewObserver != null)
+                    {
+                        treeViewObserver.PreDraw -= OnPreDraw;
+                    }
+
+                    Control.GetAdapter()?.Dispose();
+                    Control.GetLayoutManager()?.Dispose();
                 }
             }
 

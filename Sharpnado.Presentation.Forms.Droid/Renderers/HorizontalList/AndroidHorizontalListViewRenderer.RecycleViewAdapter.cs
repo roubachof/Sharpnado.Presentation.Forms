@@ -13,6 +13,7 @@ using Android.Views;
 using Android.Widget;
 
 using Sharpnado.Infrastructure;
+using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;
@@ -330,34 +331,27 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     return;
                 }
 
-                RecyclerView parentView;
+                if (!_weakParentView.TryGetTarget(out var parentView) || parentView.IsNullOrDisposed())
+                {
+                    Dispose();
+                    return;
+                }
+
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                         OnItemAdded(e.NewStartingIndex, e.NewItems);
-                        if (_weakParentView.TryGetTarget(out parentView))
-                        {
-                            parentView.InvalidateItemDecorations();
-                        }
-
+                        parentView.InvalidateItemDecorations();
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
                         OnItemRemoved(e.OldStartingIndex, e.OldItems.Count);
-                        if (_weakParentView.TryGetTarget(out parentView))
-                        {
-                            parentView.InvalidateItemDecorations();
-                        }
-
+                        parentView.InvalidateItemDecorations();
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
                         _dataSource.Clear();
-                        if (_weakParentView.TryGetTarget(out parentView))
-                        {
-                            parentView.GetRecycledViewPool().Clear();
-                        }
-
+                        parentView.GetRecycledViewPool().Clear();
                         NotifyDataSetChanged();
                         break;
                 }
