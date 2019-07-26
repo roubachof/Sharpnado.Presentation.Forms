@@ -103,7 +103,7 @@
       <Version>28.0.0.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.0.0.497661</Version>
+      <Version>4.1.0.618606</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -116,17 +116,17 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj">
-      <Project>{12598875-3E4F-4859-80C1-A76229E9303A}</Project>
-      <Name>Sharpnado.Infrastructure</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj">
-      <Project>{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}</Project>
-      <Name>Sharpnado.Presentation.Forms</Name>
-    </ProjectReference>
+    <AndroidResource Include="Resources\drawable\top_shadow.xml" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\top_shadow.xml" />
+    <ProjectReference Include="..\Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj">
+      <Project>{029d5218-dd3d-4ee4-bd96-8e96f75c4cf9}</Project>
+      <Name>Sharpnado.Infrastructure</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.HorizontalListView.csproj">
+      <Project>{f20b7209-f285-4e8d-936d-ca94c882ce86}</Project>
+      <Name>Sharpnado.Presentation.Forms.HorizontalListView</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

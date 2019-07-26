@@ -8,12 +8,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Reflection.AssemblyTitle("Sharpnado.Presentation.Forms")]
+[assembly: System.Reflection.AssemblyTitle("Sharpnado.Presentation.Forms.HorizontalListView")]
 [assembly: System.Reflection.AssemblyCompany("Sharpnado")]
 [assembly: System.Reflection.AssemblyDescription("Xamarin Forms custom components and renderers")]
 [assembly: System.Reflection.AssemblyProduct("Sharpnado Toolkit")]
 [assembly: System.Reflection.AssemblyCopyright("Copyright © Sharpnado 2019")]
-[assembly: System.Reflection.AssemblyVersion("1.1.0")]
-[assembly: System.Reflection.AssemblyFileVersion("1.1.0")]
+[assembly: System.Reflection.AssemblyVersion("1.2.0")]
+[assembly: System.Reflection.AssemblyFileVersion("1.2.0")]
 
 

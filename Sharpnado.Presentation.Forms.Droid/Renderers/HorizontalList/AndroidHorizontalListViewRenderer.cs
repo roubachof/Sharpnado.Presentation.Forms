@@ -331,13 +331,12 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
             InternalLogger.Info($"UpdateItemsSource()");
 
-            var oldAdapter = Control.GetAdapter();
-
             Control.GetRecycledViewPool().Clear();
+
+            Control.GetAdapter()?.Dispose();
+
             var adapter = new RecycleViewAdapter(Element, Control, Context);
             Control.SetAdapter(adapter);
-
-            oldAdapter?.Dispose();
 
             if (Element.EnableDragAndDrop)
             {

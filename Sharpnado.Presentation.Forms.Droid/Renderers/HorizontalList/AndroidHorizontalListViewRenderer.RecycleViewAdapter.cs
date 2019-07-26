@@ -140,7 +140,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 }
             }
 
-            public override int ItemCount => _isDisposed ? 0 : _dataSource.Count;
+            public override int ItemCount => _isDisposed ? 0 : (_dataSource != null ? _dataSource.Count : 0);
 
             public override long GetItemId(int position)
             {
@@ -349,6 +349,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                         parentView.InvalidateItemDecorations();
                         break;
 
+                    case NotifyCollectionChangedAction.Replace:
+                        OnItemReplace(e.NewStartingIndex, e.NewItems);
+                        parentView.InvalidateItemDecorations();
+                        break;
+
                     case NotifyCollectionChangedAction.Reset:
                         _dataSource.Clear();
                         parentView.GetRecycledViewPool().Clear();
@@ -362,19 +367,22 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 InternalLogger.Info($"OnItemAdded( newIndex: {newIndex}, itemCount: {items.Count} )");
                 using (var h = new Handler(Looper.MainLooper))
                 {
-                    h.Post(
-                        () =>
+                    h.Post(() =>
+                    {
+                        if (_isDisposed)
+                            return;
+
+                        _dataSource.InsertRange(newIndex, items.Cast<object>());
+
+                        if (items.Count == 1)
                         {
-                            _dataSource.InsertRange(newIndex, items.Cast<object>());
-                            if (items.Count == 1)
-                            {
-                                NotifyItemInserted(newIndex);
-                            }
-                            else
-                            {
-                                NotifyItemRangeInserted(newIndex, items.Count);
-                            }
-                        });
+                            NotifyItemInserted(newIndex);
+                        }
+                        else
+                        {
+                            NotifyItemRangeInserted(newIndex, items.Count);
+                        }
+                    });
                 }
             }
 
@@ -386,6 +394,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     h.Post(
                         () =>
                         {
+                            if (_isDisposed)
+                                return;
+
                             for (int index = removedIndex; index < removedIndex + itemCount; index++)
                             {
                                 var data = _dataSource[index];
@@ -402,6 +413,21 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                                 NotifyItemRangeRemoved(removedIndex, itemCount);
                             }
                         });
+                }
+            }
+
+            private void OnItemReplace(int index, IList items)
+            {
+                using (var h = new Handler(Looper.MainLooper))
+                {
+                    h.Post(() =>
+                    {
+                        if (_isDisposed)
+                            return;
+
+                        _dataSource[index] = items[0];
+                        NotifyItemChanged(index);
+                    });
                 }
             }
 
