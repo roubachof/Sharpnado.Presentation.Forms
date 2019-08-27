@@ -77,16 +77,16 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public static readonly BindableProperty ItemHeightProperty = BindableProperty.Create(
             nameof(ItemHeight),
-            typeof(int),
+            typeof(double),
             typeof(HorizontalListView),
-            defaultValue: 0,
+            defaultValue: 0D,
             defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty ItemWidthProperty = BindableProperty.Create(
             nameof(ItemWidth),
-            typeof(int),
+            typeof(double),
             typeof(HorizontalListView),
-            defaultValue: 0,
+            defaultValue: 0D,
             defaultBindingMode: BindingMode.OneWayToSource);
 
         public static readonly BindableProperty CollectionPaddingProperty = BindableProperty.Create(
@@ -164,9 +164,9 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         /// The platform renderers doesn't handle changes on this property: this is OneWayToSource binding.
         /// This property is only bindable to allow styling.
         /// </summary>
-        public int ItemHeight
+        public double ItemHeight
         {
-            get => (int)GetValue(ItemHeightProperty);
+            get => (double)GetValue(ItemHeightProperty);
             set => SetValue(ItemHeightProperty, value);
         }
 
@@ -174,9 +174,9 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         /// The platform renderers doesn't handle changes on this property: this is OneWayToSource binding.
         /// This property is only bindable to allow styling.
         /// </summary>
-        public int ItemWidth
+        public double ItemWidth
         {
-            get => (int)GetValue(ItemWidthProperty);
+            get => (double)GetValue(ItemWidthProperty);
             set => SetValue(ItemWidthProperty, value);
         }
 
@@ -294,7 +294,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         /// </summary>
         /// <remarks>This method is Pure.</remarks>
         [Pure]
-        public int ComputeItemWidth(double availableWidth)
+        public double ComputeItemWidth(double availableWidth)
         {
             if (ColumnCount == 0)
             {
@@ -309,7 +309,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
             double spaceWidthLeft = availableWidth - totalWidthSpacing;
 
-            return PlatformHelper.Instance.PixelsToDp((int)(spaceWidthLeft / ColumnCount));
+            return PlatformHelper.Instance.PixelsToDp(Math.Floor((spaceWidthLeft / ColumnCount) * 100) / 100);
         }
 
         /// <summary>
@@ -317,7 +317,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         /// </summary>
         /// <remarks>This method is Pure.</remarks>
         [Pure]
-        public int ComputeItemHeight(double availableHeight)
+        public double ComputeItemHeight(double availableHeight)
         {
             if (ListLayout == HorizontalListViewLayout.Grid || ItemHeight > 0)
             {
@@ -332,7 +332,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
             double spaceHeightLeft = availableHeight - totalHeightSpacing;
 
-            return PlatformHelper.Instance.PixelsToDp((int)spaceHeightLeft);
+            return PlatformHelper.Instance.PixelsToDp(spaceHeightLeft);
         }
 
         private static void OnListLayoutChanged(BindableObject bindable, object oldvalue, object newvalue)

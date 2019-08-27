@@ -139,7 +139,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             bool heightChanged = false;
             if (Element.ColumnCount > 0)
             {
-                int newItemWidth = Element.ComputeItemWidth(width);
+                double newItemWidth = Element.ComputeItemWidth(width);
                 if (Element.ItemWidth != newItemWidth)
                 {
                     Element.ItemWidth = newItemWidth;
@@ -158,7 +158,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             if (Element.IsLayoutLinear && Element.ItemHeight == 0)
             {
-                int newItemHeight = Element.ComputeItemHeight(height);
+                double newItemHeight = Element.ComputeItemHeight(height);
                 if (Element.ItemHeight != newItemHeight)
                 {
                     Element.ItemHeight = newItemHeight;

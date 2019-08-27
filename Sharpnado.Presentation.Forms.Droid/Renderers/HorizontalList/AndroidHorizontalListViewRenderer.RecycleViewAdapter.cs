@@ -292,10 +292,15 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                 var itemView = renderer.View;
 
-                int topMargin = PlatformHelper.Instance.DpToPixels(MeasureHelper.RecyclerViewItemVerticalMarginDp);
-                int bottomMargin = PlatformHelper.Instance.DpToPixels(MeasureHelper.RecyclerViewItemVerticalMarginDp);
+                int topMargin = _element.IsLayoutLinear
+                    ? 0
+                    : PlatformHelper.Instance.DpToPixels(MeasureHelper.RecyclerViewItemVerticalMarginDp);
 
-                int width = PlatformHelper.Instance.DpToPixels(_element.ItemWidth);
+                int bottomMargin = _element.IsLayoutLinear
+                    ? 0
+                    : PlatformHelper.Instance.DpToPixels(MeasureHelper.RecyclerViewItemVerticalMarginDp);
+
+                int width = PlatformHelper.Instance.DpToPixels(_element.ItemWidth, PlatformHelper.Rounding.Floor);
                 int height = PlatformHelper.Instance.DpToPixels(_element.ItemHeight);
 
                 itemView.LayoutParameters =

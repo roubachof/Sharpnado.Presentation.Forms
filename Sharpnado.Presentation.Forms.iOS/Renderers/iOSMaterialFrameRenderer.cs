@@ -15,6 +15,7 @@ using UIKit;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using Color = Xamarin.Forms.Color;
 
 [assembly: ExportRenderer(typeof(MaterialFrame), typeof(iOSMaterialFrameRenderer))]
 

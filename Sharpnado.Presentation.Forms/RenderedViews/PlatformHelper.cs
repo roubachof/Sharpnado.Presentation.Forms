@@ -13,10 +13,17 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             _instance = instance;
         }
 
-        public abstract int DpToPixels(int dp);
+        public abstract int DpToPixels(int dp, Rounding rounding = Rounding.Round);
 
-        public abstract int DpToPixels(double dp);
+        public abstract int DpToPixels(double dp, Rounding rounding = Rounding.Round);
 
-        public abstract int PixelsToDp(int pixels);
+        public abstract double PixelsToDp(double pixels);
+
+        public enum Rounding
+        {
+            Round = 0,
+            Floor = 1,
+            Ceil = 2,
+        }
     }
 }

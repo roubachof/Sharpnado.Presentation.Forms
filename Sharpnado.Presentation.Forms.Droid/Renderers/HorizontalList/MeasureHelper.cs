@@ -14,7 +14,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             int leftPadding = PlatformHelper.Instance.DpToPixels(element.CollectionPadding.Left);
             int rightPadding = PlatformHelper.Instance.DpToPixels(element.CollectionPadding.Right);
 
-            int itemWidth = PlatformHelper.Instance.DpToPixels(element.ItemWidth);
+            int itemWidth = PlatformHelper.Instance.DpToPixels(element.ItemWidth, PlatformHelper.Rounding.Floor);
 
             int columnCount = 0;
             while (true)
