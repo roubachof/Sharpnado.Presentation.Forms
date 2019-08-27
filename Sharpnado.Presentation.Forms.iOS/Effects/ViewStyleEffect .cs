@@ -59,8 +59,15 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
         protected override void OnDetached()
         {
             var view = Control ?? Container;
-            view.Layer.MasksToBounds = _DefaultMaskToBounds;
-            view.BackgroundColor = _DefaultBackgroundColor;
+            if (view != null)
+            {
+                view.BackgroundColor = _DefaultBackgroundColor;
+                if (view.Layer != null)
+                {
+                    view.Layer.MasksToBounds = _DefaultMaskToBounds;
+                }
+            }
+
             _BorderLayer?.RemoveFromSuperLayer();
             _BorderLayer = null;
 
