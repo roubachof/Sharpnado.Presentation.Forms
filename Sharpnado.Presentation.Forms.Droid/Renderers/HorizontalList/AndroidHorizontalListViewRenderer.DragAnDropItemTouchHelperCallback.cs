@@ -117,8 +117,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                 if (_from > -1 && _to > -1)
                 {
-                    _onDragAndDropdEnded?.Execute(null);
                     _recycleViewAdapter.OnItemMoved(_from, _to);
+                    _onDragAndDropdEnded?.Execute(null);
                     _from = _to = -1;
                 }
             }
