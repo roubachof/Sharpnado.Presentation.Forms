@@ -140,7 +140,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 }
             }
 
-            public override int ItemCount => _isDisposed ? 0 : _dataSource.Count;
+            public override int ItemCount => _isDisposed || _dataSource == null ? 0 : _dataSource.Count;
 
             public override long GetItemId(int position)
             {
@@ -223,6 +223,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     h.Post(
                         () =>
                         {
+                            if (_isDisposed)
+                            {
+                                return;
+                            }
+
                             if (from < to)
                             {
                                 for (int i = from; i < to; i++)
@@ -370,6 +375,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     h.Post(
                         () =>
                         {
+                            if (_isDisposed)
+                            {
+                                return;
+                            }
+
                             _dataSource.InsertRange(newIndex, items.Cast<object>());
                             if (items.Count == 1)
                             {
@@ -391,6 +401,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     h.Post(
                         () =>
                         {
+                            if (_isDisposed)
+                            {
+                                return;
+                            }
+
                             for (int index = removedIndex; index < removedIndex + itemCount; index++)
                             {
                                 var data = _dataSource[index];
