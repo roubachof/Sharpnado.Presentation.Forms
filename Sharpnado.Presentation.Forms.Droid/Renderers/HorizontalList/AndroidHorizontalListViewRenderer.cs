@@ -313,7 +313,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             int offset = 0;
             if (HorizontalLinearLayoutManager != null)
             {
-                int itemWidth = PlatformHelper.Instance.DpToPixels(Element.ItemWidth + Element.ItemSpacing);
+                int itemWidth = PlatformHelper.Instance.DpToPixels(
+                    Element.ItemWidth
+                    + Element.ItemSpacing
+                    + Element.CollectionPadding.HorizontalThickness);
+
                 int width = Control.MeasuredWidth;
 
                 switch (Element.SnapStyle)
@@ -347,6 +351,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     new DragAnDropItemTouchHelperCallback(Element, adapter, Element.DragAndDropEndedCommand));
                 _dragHelper.AttachToRecyclerView(Control);
             }
+
+            ScrollToCurrentItem();
         }
 
         private void UpdateListLayout()
