@@ -1,5 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Sharpnado.Presentation.Forms.Commands;
 using Sharpnado.Presentation.Forms.Effects;
@@ -8,8 +11,27 @@ using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 {
-    public class TabHostView : Grid
+    public enum TabType
     {
+        Fixed = 0,
+        Scrollable,
+    }
+
+    public class TabHostView : ContentView
+    {
+        public static readonly BindableProperty TabsProperty = BindableProperty.Create(
+            nameof(Tabs),
+            typeof(ObservableCollection<TabItem>),
+            typeof(TabHostView),
+            defaultValue: new ObservableCollection<TabItem>());
+
+        public static readonly BindableProperty TabTypeProperty = BindableProperty.Create(
+            nameof(TabType),
+            typeof(TabType),
+            typeof(TabHostView),
+            defaultValue: TabType.Fixed,
+            defaultBindingMode: BindingMode.OneWayToSource);
+
         public static readonly BindableProperty SelectedIndexProperty = BindableProperty.Create(
             nameof(SelectedIndex),
             typeof(int),
@@ -21,30 +43,50 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             nameof(ShadowType),
             typeof(ShadowType),
             typeof(TabHostView),
-            propertyChanged: ShadowTypePropertyChanged);
+            defaultBindingMode: BindingMode.OneWayToSource);
 
         private const int ShadowHeight = 6;
 
-        private readonly List<TabItem> _tabs = new List<TabItem>();
+        private readonly Grid _grid;
 
         private int _childRow = 0;
         private bool _isInitialized = false;
 
+        private bool _isTabTypeSet = false;
+        private bool _isShadowTypeSet = false;
+
+        private ScrollView _scrollView;
         private BoxView _contentBackgroundView;
         private ShadowBoxView _shadow;
 
         public TabHostView()
         {
-            RowSpacing = 0;
-            ColumnSpacing = 0;
-
             TabItemTappedCommand = new TapCommand(OnTabItemTapped);
 
-            ChildAdded += OnChildAdded;
-            ChildRemoved += OnChildRemoved;
+            Tabs.CollectionChanged += OnTabsCollectionChanged;
+
+            _grid = new Grid
+            {
+                RowSpacing = 0,
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+            };
         }
 
         public event EventHandler<SelectedPositionChangedEventArgs> SelectedTabIndexChanged;
+
+        public ObservableCollection<TabItem> Tabs
+        {
+            get => (ObservableCollection<TabItem>)GetValue(TabsProperty);
+            set => SetValue(TabsProperty, value);
+        }
+
+        public TabType TabType
+        {
+            get => (TabType)GetValue(TabTypeProperty);
+            set => SetValue(TabTypeProperty, value);
+        }
 
         public int SelectedIndex
         {
@@ -60,6 +102,49 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private ICommand TabItemTappedCommand { get; }
 
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            switch (propertyName)
+            {
+                case nameof(TabType):
+                    _isTabTypeSet = true;
+                    break;
+                case nameof(ShadowType):
+                    _isShadowTypeSet = true;
+                    break;
+            }
+
+            if (_isInitialized && _isShadowTypeSet && _isTabTypeSet)
+            {
+                Initialize();
+            }
+        }
+
+        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
+        {
+            return base.OnMeasure(widthConstraint, heightConstraint);
+        }
+
+        protected override void InvalidateMeasure()
+        {
+            base.InvalidateMeasure();
+        }
+
+        protected override void OnParentSet()
+        {
+            if (!_isInitialized)
+            {
+                Initialize();
+            }
+
+            base.OnParentSet();
+        }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+        }
+
         private static void SelectedIndexPropertyChanged(BindableObject bindable, object oldvalue, object newvalue)
         {
             var tabHostView = (TabHostView)bindable;
@@ -74,39 +159,28 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             tabHostView.RaiseSelectedTabIndexChanged(new SelectedPositionChangedEventArgs(selectedIndex));
         }
 
-        private static void ShadowTypePropertyChanged(BindableObject bindable, object oldvalue, object newvalue)
-        {
-            var tabHostView = (TabHostView)bindable;
-
-            if (!tabHostView._isInitialized)
-            {
-                tabHostView.Initialize();
-            }
-        }
-
-
         private void OnTabItemTapped(object tappedItem)
         {
-            int selectedIndex = _tabs.IndexOf((TabItem)tappedItem);
+            int selectedIndex = Tabs.IndexOf((TabItem)tappedItem);
             UpdateSelectedIndex(selectedIndex);
             RaiseSelectedTabIndexChanged(new SelectedPositionChangedEventArgs(selectedIndex));
         }
 
         private void UpdateSelectedIndex(int selectedIndex)
         {
-            if (_tabs.Count == 0)
+            if (Tabs.Count == 0)
             {
                 selectedIndex = 0;
             }
 
-            if (selectedIndex > _tabs.Count)
+            if (selectedIndex > Tabs.Count)
             {
-                selectedIndex = _tabs.Count - 1;
+                selectedIndex = Tabs.Count - 1;
             }
 
-            for (int index = 0; index < _tabs.Count; index++)
+            for (int index = 0; index < Tabs.Count; index++)
             {
-                _tabs[index].IsSelected = selectedIndex == index;
+                Tabs[index].IsSelected = selectedIndex == index;
             }
 
             SelectedIndex = selectedIndex;
@@ -116,24 +190,52 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             _isInitialized = true;
 
+            if (TabType == TabType.Scrollable)
+            {
+                Content = _scrollView = new ScrollView() { Orientation = ScrollOrientation.Horizontal };
+                _scrollView.Content = _grid;
+
+                switch (ShadowType)
+                {
+                    case ShadowType.Top:
+                        _scrollView.Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
+                        break;
+                    case ShadowType.Bottom:
+                        _scrollView.Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
+                        break;
+                }
+            }
+            else
+            {
+                Content = _grid;
+
+                switch (ShadowType)
+                {
+                    case ShadowType.Top:
+                        _grid.Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
+                        break;
+                    case ShadowType.Bottom:
+                        _grid.Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
+                        break;
+                }
+            }
+
             if (ShadowType != ShadowType.None)
             {
                 _shadow = new ShadowBoxView { ShadowType = ShadowType };
 
                 if (ShadowType == ShadowType.Top)
                 {
-                    Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
-                    RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
+                    _grid.RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
                     Grid.SetRow(_shadow, 0);
                     _childRow = 1;
                 }
 
-                RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
-                
+                _grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
+
                 if (ShadowType == ShadowType.Bottom)
                 {
-                    Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
-                    RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
+                    _grid.RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
                     _childRow = 0;
                     Grid.SetRow(_shadow, 1);
                 }
@@ -142,7 +244,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                 Grid.SetRow(_contentBackgroundView, _childRow);
                 BackgroundColor = Color.Transparent;
 
-                foreach (var element in Children)
+                foreach (var element in _grid.Children)
                 {
                     if (element is TabItem tabItem)
                     {
@@ -150,28 +252,51 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                     }
                 }
 
-                if (ColumnDefinitions.Count > 0)
+                if (_grid.ColumnDefinitions.Count > 0)
                 {
-                    Grid.SetColumnSpan(_shadow, ColumnDefinitions.Count);
-                    Grid.SetColumnSpan(_contentBackgroundView, ColumnDefinitions.Count);
+                    Grid.SetColumnSpan(_shadow, _grid.ColumnDefinitions.Count);
+                    Grid.SetColumnSpan(_contentBackgroundView, _grid.ColumnDefinitions.Count);
                 }
 
-                Children.Add(_shadow);
-                Children.Add(_contentBackgroundView);
+                _grid.Children.Add(_shadow);
+                _grid.Children.Add(_contentBackgroundView);
             }
         }
 
-        protected void OnChildAdded(object sender, ElementEventArgs elementEventArgs)
+        private void OnTabsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (!(elementEventArgs.Element is TabItem tabItem))
+            switch (e.Action)
             {
-                return;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var tab in e.NewItems)
+                    {
+                        OnChildAdded((TabItem)tab);
+                    }
+
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var tab in e.OldItems)
+                    {
+                        OnChildRemoved((TabItem)tab);
+                    }
+
+                    break;
+
+                case NotifyCollectionChangedAction.Move:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Reset:
+                default:
+                    throw new NotSupportedException();
             }
+        }
 
-            _tabs.Add(tabItem);
+        private void OnChildAdded(TabItem tabItem)
+        {
+            _grid.Children.Add(tabItem);
 
-            ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
-            Grid.SetColumn(tabItem, ColumnDefinitions.Count - 1);
+            _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = TabType == TabType.Fixed ? GridLength.Star : GridLength.Auto });
+            Grid.SetColumn(tabItem, _grid.ColumnDefinitions.Count - 1);
             Grid.SetRow(tabItem, _childRow);
 
             ViewEffect.SetTouchFeedbackColor(tabItem, tabItem.SelectedTabColor);
@@ -181,23 +306,49 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             tabItem.Effects.Add(new ViewStyleEffect());
             tabItem.Effects.Add(new TapCommandRoutingEffect());
 
+            if (TabType == TabType.Fixed)
+            {
+                tabItem.PropertyChanged += OnTabItemPropertyChanged;
+                UpdateTabVisibility(tabItem);
+            }
+
             if (_shadow != null)
             {
-                Grid.SetColumnSpan(_shadow, ColumnDefinitions.Count);
-                Grid.SetColumnSpan(_contentBackgroundView, ColumnDefinitions.Count);
+                Grid.SetColumnSpan(_shadow, _grid.ColumnDefinitions.Count);
+                Grid.SetColumnSpan(_contentBackgroundView, _grid.ColumnDefinitions.Count);
             }
 
             UpdateSelectedIndex(SelectedIndex);
         }
 
-        private void OnChildRemoved(object sender, ElementEventArgs e)
+        private void OnTabItemPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (ColumnDefinitions.Count == 0)
+            var tabItem = (TabItem)sender;
+            if (e.PropertyName == nameof(TabItem.IsVisible))
+            {
+                UpdateTabVisibility(tabItem);
+            }
+        }
+
+        private void UpdateTabVisibility(TabItem tabItem)
+        {
+            int columnIndex = Grid.GetColumn(tabItem);
+            var columnDefinition = _grid.ColumnDefinitions[columnIndex];
+            columnDefinition.Width = tabItem.IsVisible ? GridLength.Star : 0;
+        }
+
+        private void OnChildRemoved(TabItem tabItem)
+        {
+            if (_grid.ColumnDefinitions.Count == 0)
             {
                 return;
             }
 
-            ColumnDefinitions.RemoveAt(ColumnDefinitions.Count - 1);
+            _grid.Children.Remove(tabItem);
+
+            _grid.ColumnDefinitions.RemoveAt(_grid.ColumnDefinitions.Count - 1);
+
+            tabItem.PropertyChanged -= OnTabItemPropertyChanged;
 
             UpdateSelectedIndex(SelectedIndex);
         }
