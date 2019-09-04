@@ -179,7 +179,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private void UpdateShadow()
         {
-            if (ShadowType == ShadowType.None)
+            if (ShadowType == ShadowType.None || Device.RuntimePlatform == Device.UWP)
             {
                 return;
             }
@@ -282,6 +282,24 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             }
         }
 
+        private void AddTapCommand(TabItem tabItem)
+        {
+            if (Device.RuntimePlatform == Device.UWP)
+            {
+                tabItem.GestureRecognizers.Add(
+                    new TapGestureRecognizer() { Command = TabItemTappedCommand, CommandParameter = tabItem });
+            }
+            else
+            {
+                ViewEffect.SetTouchFeedbackColor(tabItem, tabItem.SelectedTabColor);
+                TapCommandEffect.SetTap(tabItem, TabItemTappedCommand);
+                TapCommandEffect.SetTapParameter(tabItem, tabItem);
+
+                tabItem.Effects.Add(new ViewStyleEffect());
+                tabItem.Effects.Add(new TapCommandRoutingEffect());
+            }
+        }
+
         private void OnChildAdded(TabItem tabItem)
         {
             _grid.Children.Add(tabItem);
@@ -306,12 +324,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             Grid.SetColumn(tabItem, Tabs.Count - 1);
             Grid.SetRow(tabItem, _childRow);
 
-            ViewEffect.SetTouchFeedbackColor(tabItem, tabItem.SelectedTabColor);
-            TapCommandEffect.SetTap(tabItem, TabItemTappedCommand);
-            TapCommandEffect.SetTapParameter(tabItem, tabItem);
-
-            tabItem.Effects.Add(new ViewStyleEffect());
-            tabItem.Effects.Add(new TapCommandRoutingEffect());
+            AddTapCommand(tabItem);
 
             if (TabType == TabType.Fixed)
             {
