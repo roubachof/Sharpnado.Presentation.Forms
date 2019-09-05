@@ -27,7 +27,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <BoxView HeightRequest="0"
+            <BoxView x:Name="Underline"
+                     HeightRequest="0"
                      Margin="0,0"
                      VerticalOptions="End"
                      BackgroundColor="Transparent">
