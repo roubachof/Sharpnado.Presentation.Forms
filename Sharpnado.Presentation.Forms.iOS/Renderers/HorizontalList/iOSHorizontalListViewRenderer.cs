@@ -14,7 +14,6 @@ using Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using UIKit;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(iOSHorizontalListViewRenderer))]
@@ -25,15 +24,14 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
     {
         private IEnumerable _itemsSource;
         private UICollectionView _collectionView;
-        private UIGestureRecognizer _tapGestureRecognizer;
 
         private bool _isScrolling;
         private bool _isCurrentIndexUpdateBackfire;
         private bool _isInternalScroll;
         private bool _isMovedBackfire;
+        private bool _isFirstInitialization = true;
 
         private List<DataTemplate> _registeredDataTemplates = new List<DataTemplate>();
-        private bool _isFirstInitialization = true;
 
         private int _lastVisibleItemIndex = -1;
 
@@ -397,30 +395,33 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    var addedIndexPathes = new NSIndexPath[e.NewItems.Count];
+                    var addedIndexPaths = new NSIndexPath[e.NewItems.Count];
                     for (int addedIndex = e.NewStartingIndex, index = 0;
-                        index < addedIndexPathes.Length;
+                        index < addedIndexPaths.Length;
                         addedIndex++, index++)
                     {
-                        addedIndexPathes[index] = NSIndexPath.FromRowSection(addedIndex, 0);
+                        addedIndexPaths[index] = NSIndexPath.FromRowSection(addedIndex, 0);
                     }
 
-                    Control.InsertItems(addedIndexPathes);
+                    Control.InsertItems(addedIndexPaths);
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
-                    var removedIndexPathes = new NSIndexPath[e.OldItems.Count];
+                    var removedIndexPaths = new NSIndexPath[e.OldItems.Count];
                     for (int removedIndex = e.OldStartingIndex, index = 0;
-                        index < removedIndexPathes.Length;
+                        index < removedIndexPaths.Length;
                         removedIndex++, index++)
                     {
-                        removedIndexPathes[index] = NSIndexPath.FromRowSection(removedIndex, 0);
+                        removedIndexPaths[index] = NSIndexPath.FromRowSection(removedIndex, 0);
                     }
 
-                    Control.DeleteItems(removedIndexPathes);
+                    Control.DeleteItems(removedIndexPaths);
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
-                    Control.ReloadData();
+                    UpdateItemsSource();
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     Control.MoveItem(
                         NSIndexPath.FromRowSection(e.OldStartingIndex, 0),

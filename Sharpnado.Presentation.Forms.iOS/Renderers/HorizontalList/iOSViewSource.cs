@@ -164,7 +164,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     _dataSource.RemoveRange(eventArgs.OldStartingIndex, eventArgs.OldItems.Count);
                     break;
                 case NotifyCollectionChangedAction.Reset:
-                    _dataSource.Clear();
+                    // Handled in the iOSHorizontalListViewRenderer class, will just create a new adapter
                     break;
                 case NotifyCollectionChangedAction.Move:
                     var item = _dataSource[eventArgs.OldStartingIndex];

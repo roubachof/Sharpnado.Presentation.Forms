@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Specialized;
 using System.ComponentModel;
 
 using Android.Content;
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 using Android.Views;
-using Android.Widget;
 
 using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
@@ -23,13 +24,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
     public partial class AndroidHorizontalListViewRenderer : ViewRenderer<HorizontalListView, RecyclerView>
     {
         private bool _isCurrentIndexUpdateBackfire;
-
         private bool _isLandscape;
-
         private bool _isFirstInitialization = true;
-
+        private IEnumerable _itemsSource;
         private ItemTouchHelper _dragHelper;
-
         private SpaceItemDecoration _itemDecoration;
 
         public AndroidHorizontalListViewRenderer(Context context)
@@ -74,6 +72,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                     Control.GetAdapter()?.Dispose();
                     Control.GetLayoutManager()?.Dispose();
+                }
+
+                if (_itemsSource is INotifyCollectionChanged oldNotifyCollection)
+                {
+                    oldNotifyCollection.CollectionChanged -= OnCollectionChanged;
                 }
             }
 
@@ -337,11 +340,23 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             var oldAdapter = Control.GetAdapter();
 
+            if (_itemsSource is INotifyCollectionChanged oldNotifyCollection)
+            {
+                oldNotifyCollection.CollectionChanged -= OnCollectionChanged;
+            }
+
+            _itemsSource = Element.ItemsSource;
+
             Control.GetRecycledViewPool().Clear();
             var adapter = new RecycleViewAdapter(Element, Control, Context);
             Control.SetAdapter(adapter);
 
             oldAdapter?.Dispose();
+
+            if (_itemsSource is INotifyCollectionChanged newNotifyCollection)
+            {
+                newNotifyCollection.CollectionChanged += OnCollectionChanged;
+            }
 
             if (Element.EnableDragAndDrop)
             {
@@ -353,6 +368,14 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             }
 
             ScrollToCurrentItem();
+        }
+
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                UpdateItemsSource();
+            }
         }
 
         private void UpdateListLayout()

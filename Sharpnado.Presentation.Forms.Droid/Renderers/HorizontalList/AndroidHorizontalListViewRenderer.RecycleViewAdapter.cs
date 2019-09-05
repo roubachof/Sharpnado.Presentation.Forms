@@ -360,9 +360,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
-                        _dataSource.Clear();
-                        parentView.GetRecycledViewPool().Clear();
-                        NotifyDataSetChanged();
+                        // Handled in the AndroidHorizontalListViewRenderer class, will just create a new adapter
                         break;
                 }
             }
