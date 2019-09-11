@@ -2,13 +2,13 @@
 <ContentView x:Class="Sharpnado.Presentation.Forms.CustomViews.TaskLoaderView"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:behaviors="clr-namespace:Sharpnado.Presentation.Forms.Behaviors;assembly=Sharpnado.Presentation.Forms"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:behaviors="clr-namespace:Sharpnado.Presentation.Forms.Behaviors;assembly=Sharpnado.Presentation.Forms"
              xmlns:viewModels="clr-namespace:Sharpnado.Presentation.Forms.ViewModels;assembly=Sharpnado.Presentation.Forms"
              x:Name="LoaderView"
-             d:DataContext="{d:DesignInstance viewModels:IViewModelLoader}"
-             mc:Ignorable="d">
+             d:DataContext="{d:DesignInstance viewModels:IViewModelLoader}">
 
     <ContentView.Resources>
         <ResourceDictionary>
@@ -40,20 +40,20 @@
     <ContentView.Content>
         <AbsoluteLayout x:Name="Grid">
             <ContentView x:Name="ContainerView"
-                         HorizontalOptions="FillAndExpand"
-                         VerticalOptions="FillAndExpand"
+                         AbsoluteLayout.LayoutFlags="All"
                          AbsoluteLayout.LayoutBounds="1, 1, 1, 1"
-                         AbsoluteLayout.LayoutFlags="All" />
+                         HorizontalOptions="FillAndExpand"
+                         VerticalOptions="FillAndExpand" />
             <ActivityIndicator x:Name="Loader"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"
+                               AbsoluteLayout.LayoutFlags="All"
                                AbsoluteLayout.LayoutBounds="1, 1, 1, 1"
-                               AbsoluteLayout.LayoutFlags="All" />
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
             <StackLayout x:Name="ErrorView"
+                         AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1, 1, 1, 1"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
-                         AbsoluteLayout.LayoutBounds="1, 1, 1, 1"
-                         AbsoluteLayout.LayoutFlags="All"
                          Orientation="Vertical">
                 <Image x:Name="ErrorViewImage"
                        WidthRequest="80"
@@ -71,10 +71,10 @@
                         Text="Retry" />
             </StackLayout>
             <StackLayout x:Name="EmptyStateView"
+                         AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1, 1, 1, 1"
                          HorizontalOptions="Center"
                          VerticalOptions="Center"
-                         AbsoluteLayout.LayoutBounds="1, 1, 1, 1"
-                         AbsoluteLayout.LayoutFlags="All"
                          Orientation="Vertical">
                 <Image x:Name="EmptyStateImage"
                        WidthRequest="80"
@@ -89,9 +89,9 @@
 
             <!--  Snackbar like error notification  -->
             <Frame x:Name="ErrorNotificationView"
-                   Padding="10,5,10,5"
-                   AbsoluteLayout.LayoutBounds="0, 1, 1, 50"
                    AbsoluteLayout.LayoutFlags="PositionProportional,WidthProportional"
+                   AbsoluteLayout.LayoutBounds="0, 1, 1, 50"
+                   Padding="10,5,10,5"
                    BackgroundColor="#99F57C00">
                 <Frame.Behaviors>
                     <behaviors:TimedVisibilityBehavior VisibilityInSeconds="3" />

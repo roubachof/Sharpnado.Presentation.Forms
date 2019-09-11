@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 
-<tabs:TabItem x:Class="Sharpnado.Presentation.Forms.CustomViews.Tabs.UnderlinedTabItem"
+<tabs:TabTextItem x:Class="Sharpnado.Presentation.Forms.CustomViews.Tabs.UnderlinedTabItem"
               xmlns="http://xamarin.com/schemas/2014/forms"
               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
               xmlns:tabs="clr-namespace:Sharpnado.Presentation.Forms.CustomViews.Tabs;assembly=Sharpnado.Presentation.Forms"
@@ -56,4 +56,4 @@
             </Label>
         </Grid>
     </ContentView.Content>
-</tabs:TabItem>
+</tabs:TabTextItem>

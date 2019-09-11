@@ -5,12 +5,12 @@ using Xamarin.Forms.Xaml;
 namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class UnderlinedTabItem : TabItem
+    public partial class UnderlinedTabItem : TabTextItem
     {
         public static readonly BindableProperty UnderlineAllTabProperty = BindableProperty.Create(
             nameof(UnderlineAllTab),
             typeof(bool),
-            typeof(TabItem),
+            typeof(TabTextItem),
             true);
 
         public UnderlinedTabItem()

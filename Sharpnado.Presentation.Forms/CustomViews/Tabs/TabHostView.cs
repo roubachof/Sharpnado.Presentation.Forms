@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Sharpnado.Presentation.Forms.Commands;
@@ -51,6 +53,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         private readonly Grid _grid;
 
         private int _childRow = 0;
+
+        private List<TabItem> _selectableTabs = new List<TabItem>();
 
         private ScrollView _scrollView;
         private BoxView _contentBackgroundView;
@@ -152,19 +156,19 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private void UpdateSelectedIndex(int selectedIndex)
         {
-            if (Tabs.Count == 0)
+            if (_selectableTabs.Count == 0)
             {
                 selectedIndex = 0;
             }
 
-            if (selectedIndex > Tabs.Count)
+            if (selectedIndex > _selectableTabs.Count)
             {
-                selectedIndex = Tabs.Count - 1;
+                selectedIndex = _selectableTabs.Count - 1;
             }
 
-            for (int index = 0; index < Tabs.Count; index++)
+            for (int index = 0; index < _selectableTabs.Count; index++)
             {
-                Tabs[index].IsSelected = selectedIndex == index;
+                _selectableTabs[index].IsSelected = selectedIndex == index;
             }
 
             SelectedIndex = selectedIndex;
@@ -172,7 +176,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private void OnTabItemTapped(object tappedItem)
         {
-            int selectedIndex = Tabs.IndexOf((TabItem)tappedItem);
+            int selectedIndex = _selectableTabs.IndexOf((TabItem)tappedItem);
+
             UpdateSelectedIndex(selectedIndex);
             RaiseSelectedTabIndexChanged(new SelectedPositionChangedEventArgs(selectedIndex));
         }
@@ -324,7 +329,11 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             Grid.SetColumn(tabItem, Tabs.Count - 1);
             Grid.SetRow(tabItem, _childRow);
 
-            AddTapCommand(tabItem);
+            if (tabItem.IsSelectable)
+            {
+                AddTapCommand(tabItem);
+                _selectableTabs.Add(tabItem);
+            }
 
             if (TabType == TabType.Fixed)
             {
@@ -354,6 +363,11 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                 {
                     _grid.ColumnDefinitions.Remove(_lastFillingColumn);
                 }
+            }
+
+            if (tabItem.IsSelectable)
+            {
+                _selectableTabs.Remove(tabItem);
             }
 
             _grid.Children.Remove(tabItem);

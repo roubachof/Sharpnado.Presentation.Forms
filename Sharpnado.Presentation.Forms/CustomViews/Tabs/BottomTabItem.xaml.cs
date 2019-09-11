@@ -1,10 +1,11 @@
-﻿using Xamarin.Forms;
+﻿using System.Runtime.CompilerServices;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class BottomTabItem : TabItem
+    public partial class BottomTabItem : TabTextItem
     {
         public static readonly BindableProperty IconImageSourceProperty = BindableProperty.Create(
             nameof(IconImageSource),
@@ -15,18 +16,26 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             nameof(IconSize),
             typeof(double),
             typeof(BottomTabItem),
-            defaultValue: (double)30);
+            defaultValue: 30D);
 
         public static readonly BindableProperty UnselectedIconColorProperty = BindableProperty.Create(
             nameof(UnselectedIconColor),
             typeof(Color),
             typeof(BottomTabItem));
 
+        public static readonly BindableProperty IsTextVisibleProperty = BindableProperty.Create(
+            nameof(IsTextVisible),
+            typeof(bool),
+            typeof(BottomTabItem),
+            defaultValue: true);
+
         public BottomTabItem()
         {
             LabelSize = 12;
 
             InitializeComponent();
+
+            UpdateTextVisibility();
         }
 
         public string IconImageSource
@@ -45,6 +54,38 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             get => (Color)GetValue(UnselectedIconColorProperty);
             set => SetValue(UnselectedIconColorProperty, value);
+        }
+
+        public bool IsTextVisible
+        {
+            get => (bool)GetValue(IsTextVisibleProperty);
+            set => SetValue(IsTextVisibleProperty, value);
+        }
+
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            base.OnPropertyChanged(propertyName);
+
+            switch (propertyName)
+            {
+                case nameof(IsTextVisible):
+                    UpdateTextVisibility();
+                    break;
+            }
+        }
+
+        private void UpdateTextVisibility()
+        {
+            if (IsTextVisible)
+            {
+                TextRowDefinition.Height = new GridLength(5, GridUnitType.Star);
+                Icon.VerticalOptions = LayoutOptions.End;
+            }
+            else
+            {
+                TextRowDefinition.Height = new GridLength(0);
+                Icon.VerticalOptions = LayoutOptions.Center;
+            }
         }
     }
 }

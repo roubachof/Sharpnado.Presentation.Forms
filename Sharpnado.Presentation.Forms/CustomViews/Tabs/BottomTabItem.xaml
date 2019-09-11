@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 
-<tabs:TabItem x:Class="Sharpnado.Presentation.Forms.CustomViews.Tabs.BottomTabItem"
-              xmlns="http://xamarin.com/schemas/2014/forms"
-              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-              xmlns:effects="clr-namespace:Sharpnado.Presentation.Forms.Effects;assembly=Sharpnado.Presentation.Forms"
-              xmlns:tabs="clr-namespace:Sharpnado.Presentation.Forms.CustomViews.Tabs;assembly=Sharpnado.Presentation.Forms"
-              x:Name="RootLayout">
+<tabs:TabTextItem x:Class="Sharpnado.Presentation.Forms.CustomViews.Tabs.BottomTabItem"
+                  xmlns="http://xamarin.com/schemas/2014/forms"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                  xmlns:effects="clr-namespace:Sharpnado.Presentation.Forms.Effects;assembly=Sharpnado.Presentation.Forms"
+                  xmlns:tabs="clr-namespace:Sharpnado.Presentation.Forms.CustomViews.Tabs;assembly=Sharpnado.Presentation.Forms"
+                  x:Name="RootLayout">
 
     <ContentView.Resources>
         <ResourceDictionary>
@@ -29,14 +29,14 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="8*" />
-                <RowDefinition Height="5*" />
+                <RowDefinition x:Name="TextRowDefinition" Height="5*" />
             </Grid.RowDefinitions>
 
             <Image x:Name="Icon"
                    Grid.Row="0"
+                   Style="{StaticResource TabIcon}"
                    WidthRequest="{Binding Source={x:Reference RootLayout}, Path=IconSize}"
                    HeightRequest="{Binding Source={x:Reference RootLayout}, Path=IconSize}"
-                   Style="{StaticResource TabIcon}"
                    effects:ImageEffect.TintColor="{Binding Source={x:Reference RootLayout}, Path=UnselectedIconColor}"
                    Source="{Binding Source={x:Reference RootLayout}, Path=IconImageSource}">
                 <Image.Triggers>
@@ -65,4 +65,4 @@
             </Label>
         </Grid>
     </ContentView.Content>
-</tabs:TabItem>
+</tabs:TabTextItem>
