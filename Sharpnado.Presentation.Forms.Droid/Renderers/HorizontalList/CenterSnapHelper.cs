@@ -10,11 +10,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
     public class CenterSnapHelper : LinearSnapHelper
     {
-        private readonly WeakReference<AndroidHorizontalListViewRenderer> _weakNativeView;
-
         public CenterSnapHelper(AndroidHorizontalListViewRenderer nativeView)
         {
-            _weakNativeView = new WeakReference<AndroidHorizontalListViewRenderer>(nativeView);
+            WeakNativeView = new WeakReference<AndroidHorizontalListViewRenderer>(nativeView);
         }
 
         public CenterSnapHelper(IntPtr javaReference, JniHandleOwnership transfer)
@@ -22,14 +20,18 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         {
         }
 
+        protected WeakReference<AndroidHorizontalListViewRenderer> WeakNativeView { get; }
+
         public override int FindTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY)
         {
             var targetSnapPosition = base.FindTargetSnapPosition(layoutManager, velocityX, velocityY);
             InternalLogger.Info($"FindTargetSnapPosition() : {targetSnapPosition}");
 
-            if (_weakNativeView.TryGetTarget(out var target))
+            if (WeakNativeView.TryGetTarget(out var target))
             {
                 target.IsSnapHelperBusy = targetSnapPosition == -1;
+                target.CurrentSnapIndex = targetSnapPosition > -1 ? targetSnapPosition : target.CurrentSnapIndex;
+                System.Diagnostics.Debug.WriteLine($">>>>>> CurrentSnapIndex: {target.CurrentSnapIndex}");
             }
 
             return targetSnapPosition;
@@ -40,7 +42,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             InternalLogger.Info($"FindSnapView()");
 
             View snapView = null;
-            if (_weakNativeView.TryGetTarget(out var target))
+            if (WeakNativeView.TryGetTarget(out var target))
             {
                 int firstIndex = target.LinearLayoutManager.FindFirstCompletelyVisibleItemPosition();
                 if (firstIndex == 0)
@@ -64,16 +66,23 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 snapView = base.FindSnapView(layoutManager);
             }
 
-            ReleaseIsBusy();
+            ReleaseIsBusy(snapView);
 
             return snapView;
         }
 
-        protected void ReleaseIsBusy()
+        protected void ReleaseIsBusy(View snapView)
         {
-            if (_weakNativeView.TryGetTarget(out var target) && target.IsSnapHelperBusy)
+            if (WeakNativeView.TryGetTarget(out var target))
             {
                 target.IsSnapHelperBusy = false;
+
+                if (snapView != null)
+                {
+                    var viewHolder = target.Control.FindContainingViewHolder(snapView);
+                    target.CurrentSnapIndex = viewHolder.AdapterPosition;
+                    // System.Diagnostics.Debug.WriteLine($">>>>>> CurrentSnapIndex: {target.CurrentSnapIndex}");
+                }
             }
         }
     }

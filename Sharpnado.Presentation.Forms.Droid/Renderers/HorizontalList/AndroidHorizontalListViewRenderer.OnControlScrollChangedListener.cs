@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 
+using Android.Graphics;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 
@@ -19,6 +20,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             private CancellationTokenSource _cts;
             private int _lastVisibleItemIndex = -1;
 
+            private int _currentOffset = 0;
+
             public OnControlScrollChangedListener(IntPtr handle, JniHandleOwnership transfer)
                 : base(handle, transfer)
             {
@@ -35,6 +38,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             public override void OnScrolled(RecyclerView recyclerView, int dx, int dy)
             {
                 base.OnScrolled(recyclerView, dx, dy);
+
+                _currentOffset += dx;
 
                 var infiniteListLoader = _element?.InfiniteListLoader;
                 if (infiniteListLoader == null)
@@ -59,7 +64,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 InternalLogger.Info($"OnScrollStateChanged( newState: {newState} )");
                 switch (newState)
                 {
-                    case RecyclerView.ScrollStateSettling:
                     case RecyclerView.ScrollStateDragging:
                     {
                         if (!_weakNativeView.TryGetTarget(out AndroidHorizontalListViewRenderer nativeView))
@@ -80,7 +84,19 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                         nativeView.IsScrolling = true;
 
+                        // System.Diagnostics.Debug.WriteLine("DEBUG_SCROLL: BeginScroll command");
                         _element.ScrollBeganCommand?.Execute(null);
+                        break;
+                    }
+
+                    case RecyclerView.ScrollStateSettling:
+                    {
+                        if (!_weakNativeView.TryGetTarget(out AndroidHorizontalListViewRenderer nativeView))
+                        {
+                            return;
+                        }
+
+                        nativeView.IsScrolling = true;
                         break;
                     }
 
@@ -93,11 +109,13 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                         if (!nativeView.IsScrolling)
                         {
+                            // System.Diagnostics.Debug.WriteLine("DEBUG_SCROLL: returning !nativeView.IsScrolling");
                             return;
                         }
 
                         if (nativeView.IsSnapHelperBusy)
                         {
+                            // System.Diagnostics.Debug.WriteLine("DEBUG_SCROLL: returning nativeView.IsSnapHelperBusy");
                             return;
                         }
 
@@ -130,32 +148,17 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 try
                 {
                     int newIndex = -1;
-                    if (_element.SnapStyle == SnapStyle.Center)
+                    if (_element.SnapStyle != SnapStyle.None)
                     {
-                        int firstIndex = nativeView.LinearLayoutManager.FindFirstCompletelyVisibleItemPosition();
-                        if (firstIndex == 0)
-                        {
-                            // Check if first item is fully visible, if true don't snap.
-                            newIndex = 0;
-                        }
-
-                        int lastIndex = nativeView.LinearLayoutManager.FindLastCompletelyVisibleItemPosition();
-                        if (lastIndex == nativeView.Control.GetAdapter().ItemCount - 1)
-                        {
-                            // Check if first item is fully visible, if true don't snap.
-                            newIndex = lastIndex;
-                        }
-
-                        if (newIndex == -1)
-                        {
-                            int firstItemIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
-                            int lastItemIndex = nativeView.LinearLayoutManager.FindLastVisibleItemPosition();
-                            newIndex = firstItemIndex + (lastItemIndex - firstItemIndex) / 2;
-                        }
+                        newIndex = nativeView.CurrentSnapIndex;
                     }
                     else
                     {
-                        newIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
+                        newIndex = nativeView.LinearLayoutManager.FindFirstCompletelyVisibleItemPosition();
+                        if (newIndex == -1)
+                        {
+                            newIndex = nativeView.LinearLayoutManager.FindFirstVisibleItemPosition();
+                        }
                     }
 
                     if (newIndex == -1)

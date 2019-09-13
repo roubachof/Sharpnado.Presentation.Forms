@@ -54,7 +54,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             InternalLogger.Info($"FindSnapView ( viewPosition: {viewPosition} )");
 
-            ReleaseIsBusy();
+            ReleaseIsBusy(startView);
 
             return startView;
         }
@@ -74,7 +74,18 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             bool isLastItem = manager.FindLastCompletelyVisibleItemPosition() == layoutManager.ItemCount - 1;
 
-            if (firstChild == RecyclerView.NoPosition || isLastItem)
+            if (isLastItem)
+            {
+                if (WeakNativeView.TryGetTarget(out var target))
+                {
+                    target.CurrentSnapIndex = layoutManager.ItemCount - 1;
+                    // System.Diagnostics.Debug.WriteLine($">>>>>> CurrentSnapIndex: {target.CurrentSnapIndex}");
+                }
+
+                return null;
+            }
+
+            if (firstChild == RecyclerView.NoPosition)
             {
                 return null;
             }
@@ -86,11 +97,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
                 viewPosition = firstChild;
                 return child;
-            }
-
-            if (manager.FindLastCompletelyVisibleItemPosition() == layoutManager.ItemCount - 1)
-            {
-                return null;
             }
 
             viewPosition = firstChild + 1;

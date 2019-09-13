@@ -45,6 +45,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         public bool IsSnapHelperBusy { get; set; }
 
+        public int CurrentSnapIndex { get; set; }
+
         public static void Initialize()
         {
         }
