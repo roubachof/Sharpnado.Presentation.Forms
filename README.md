@@ -21,22 +21,45 @@ Xamarin Forms custom components and renderers starring:
 <table>
 	<thead>
 		<tr>
-			<th>Top tabs</th>
+			<th>Fixed tabs</th>
 			<th>Bottom bar tabs</th>
+      <th>Scrollable tabs</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/android_top_tabs.png" width="250" height=500/></td>
+  		<td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/bottom_tabs.gif" width="250" height=500/></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/scrollable_tabs_underline_text.gif" width="250" /></td>
+		</tr>
+    <tr>
+      <td>UnderlinedTabItem</td>
+			<td>BottomTabItem</td>
+      <td>TabType.Scrollable</td>
+      
+    </tr>   
+  </tbody>
+</table>
+
+<table>
+	<thead>
+		<tr>			
+      <th>Circle button</th>
+			<th>Underline all</th>
       <th>Custom tabs</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/android_top_tabs.png" width="250" /></td>
-  		<td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/bottom_tabs.gif" width="250" /></td>
-			<td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/spam_tabs.gif" width="250" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/tab_circle_button.png" width="250" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/slide_tabs_whole.gif" width="250" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/spam_tabs.gif" width="250" height=500 /></td>
 		</tr>
     <tr>
-      <td>```UnderlinedTabItem```</td>
-			<td>```BottomTabItem```</td>
-      <td>inherit from ```TabItem```</td>
-    </tr>
+      <td>TabButton</td>
+      <td>UnderlineAllTab=True</td>
+      <td>inherit from TabItem</td>
+    </tr>   
   </tbody>
 </table>
 

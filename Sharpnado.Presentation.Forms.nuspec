@@ -15,13 +15,15 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView (mvvm async loading view)</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview mvvm async</tags>
-        <releaseNotes>Added TapCommand to be used when DrapAndDrop is enabled.
+        <releaseNotes>Scrollable tabs, circle button in tab, numerous fixes...
         </releaseNotes>
         <description>
 Collection of Xamarin.Forms components.
 
 Pure Xamarin.Forms tabs:
-  * Top tabs (android tabs style)
+  * Fixed tabs (android tabs style)
+  * Scrollable tabs
+  * Circle button in tab bar
   * Bottom bar tabs (ios tabs style)
   * Custom tabs (be creative just implement TabItem)
   * Independent ```ViewSwitcher```

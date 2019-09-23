@@ -182,7 +182,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             {
                 _imageButton.HeightRequest = ButtonCircleSize;
                 _imageButton.WidthRequest = ButtonCircleSize;
-                _imageButton.CornerRadius = (int)ButtonCircleSize;
+                _imageButton.CornerRadius = (int)ButtonCircleSize / 2;
 
                 _imageButton.VerticalOptions = LayoutOptions.Center;
                 _imageButton.HorizontalOptions = LayoutOptions.Center;
