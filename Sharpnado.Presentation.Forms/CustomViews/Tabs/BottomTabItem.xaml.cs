@@ -31,9 +31,9 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         public BottomTabItem()
         {
-            LabelSize = 12;
-
             InitializeComponent();
+
+            LabelSize = 12;
 
             UpdateTextVisibility();
         }

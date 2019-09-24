@@ -15,9 +15,9 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         public UnderlinedTabItem()
         {
-            LabelSize = 14;
-
             InitializeComponent();
+
+            LabelSize = 14;
         }
 
         public bool UnderlineAllTab

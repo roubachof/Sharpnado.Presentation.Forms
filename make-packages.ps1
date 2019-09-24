@@ -1,6 +1,7 @@
 $formsVersion = "2.5.1.444934"
 
 $netstandardProject = ".\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj"
+$hlvProject = ".\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj"
 $droidProject = ".\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj"
 $iosProject = ".\Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Forms.iOS.csproj"
 
@@ -10,6 +11,7 @@ $findXFVersion = '(Xamarin.Forms">\s+<Version>)(.+)(</Version>)'
 $replaceString = "`$1 $formsVersion `$3"
 
 (Get-Content $netstandardProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $netstandardProject
+(Get-Content $hlvProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $hlvProject
 (Get-Content $droidProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $droidProject
 (Get-Content $iosProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $iosProject
 
