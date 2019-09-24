@@ -1,7 +1,9 @@
-$formsVersion = "2.5.1.444934"
+$formsVersion = "3.4.0.1039999"
+
+echo "  <<<< WARNING >>>>> You need to launch 2 times this script to make sure Xamarin.Forms version was correctly resolved..."
 
 $netstandardProject = ".\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj"
-$hlvProject = ".\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj"
+$hlvProject = ".\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.HorizontalListView.csproj"
 $droidProject = ".\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj"
 $iosProject = ".\Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Forms.iOS.csproj"
 
