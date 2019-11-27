@@ -8,7 +8,6 @@ using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
 using Android.Views;
 
-using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;

@@ -59,8 +59,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
             var gradientLayer = new CAGradientLayer
             {
                 Frame = rect,
-                StartPoint = gradientsPoints.startPoint.ToPointF(),
-                EndPoint = gradientsPoints.endPoint.ToPointF(),
+                StartPoint = gradientsPoints.StartPoint.ToPointF(),
+                EndPoint = gradientsPoints.EndPoint.ToPointF(),
                 Colors = new[]
                 {
                     startColor.ToCGColor(),

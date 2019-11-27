@@ -12,8 +12,8 @@ using Android.Util;
 using Android.Views;
 using Android.Widget;
 
-using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
+using Sharpnado.Presentation.Forms.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;

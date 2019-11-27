@@ -4,7 +4,6 @@ using CoreGraphics;
 
 using Foundation;
 
-using Sharpnado.Infrastructure;
 using UIKit;
 
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using Sharpnado.Infrastructure;
-using Sharpnado.Infrastructure.Services;
-using Sharpnado.Infrastructure.Tasks;
+
+using Sharpnado.Presentation.Forms.Services;
+using Sharpnado.Tasks;
 
 namespace Sharpnado.Presentation.Forms.Paging
 {
@@ -23,7 +24,7 @@ namespace Sharpnado.Presentation.Forms.Paging
         private readonly object _syncRoot = new object();
         private readonly int _maxItemCount;
         private readonly Func<int, int, bool, Task<PageResult<TResult>>> _pageSourceLoader;
-        private readonly Action<INotifyTask> _onTaskCompleted;
+        private readonly Action<ITaskMonitor> _onTaskCompleted;
         private readonly float _loadingThreshold;
 
         private bool _isDisposed;
@@ -56,7 +57,7 @@ namespace Sharpnado.Presentation.Forms.Paging
         /// </param>
         public Paginator(
             Func<int, int, bool, Task<PageResult<TResult>>> pageSourceLoader,
-            Action<INotifyTask> onTaskCompleted = null,
+            Action<ITaskMonitor> onTaskCompleted = null,
             int pageSize = PageSizeDefault,
             int maxItemCount = MaxItemCountDefault,
             float loadingThreshold = LoadingThresholdDefault)
@@ -78,7 +79,7 @@ namespace Sharpnado.Presentation.Forms.Paging
             Reset();
         }
 
-        public NotifyTask<PageResult<TResult>> LoadingTask { get; private set; }
+        public TaskMonitor<PageResult<TResult>> LoadingTask { get; private set; }
 
         /// <summary>
         /// Number of pages successfully loaded.
@@ -141,7 +142,7 @@ namespace Sharpnado.Presentation.Forms.Paging
         /// </summary>
         public void OnScroll(int lastVisibleIndex)
         {
-            NotifyTask<bool>.Create(
+            TaskMonitor<bool>.Create(
                 ShouldLoadNextPage(lastVisibleIndex),
                 whenSuccessfullyCompleted: (task, shouldLoad) =>
                 {
@@ -202,7 +203,7 @@ namespace Sharpnado.Presentation.Forms.Paging
                     LoadingTask.CancelCallbacks();
                 }
 
-                LoadingTask = new NotifyTask<PageResult<TResult>>.Builder(
+                LoadingTask = new TaskMonitor<PageResult<TResult>>.Builder(
                     () => _pageSourceLoader(pageNumber, PageSize, _refreshRequested))
                         .WithWhenSuccessfullyCompleted(OnPageRetrieved)
                         .WithWhenCompleted(OnTaskCompleted)
@@ -214,7 +215,7 @@ namespace Sharpnado.Presentation.Forms.Paging
             }
         }
 
-        private void OnPageRetrieved(INotifyTask task, PageResult<TResult> result)
+        private void OnPageRetrieved(ITaskMonitor task, PageResult<TResult> result)
         {
             Contract.Requires(() => task != null);
 
@@ -247,7 +248,7 @@ namespace Sharpnado.Presentation.Forms.Paging
             Contract.Ensures(() => result.Items != null && _maxItemCount >= 0);
         }
 
-        private void OnTaskCompleted(INotifyTask task)
+        private void OnTaskCompleted(ITaskMonitor task)
         {
             InternalLogger.Info($"OnTaskCompleted( taskStatus: {task.Status} )");
             if (_isDisposed)

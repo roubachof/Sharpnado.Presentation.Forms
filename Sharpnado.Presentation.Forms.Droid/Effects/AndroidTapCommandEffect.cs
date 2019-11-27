@@ -8,9 +8,10 @@
 using System;
 using System.Threading.Tasks;
 using Android.Widget;
-using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.Droid.Effects;
 using Sharpnado.Presentation.Forms.Effects;
+using Sharpnado.Tasks;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
@@ -50,7 +51,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Effects
 
         private void ViewOnClick(object sender, EventArgs eventArgs)
         {
-            NotifyTask.Create(
+            TaskMonitor.Create(
                 async () =>
                 {
                     await Task.Delay(50);
@@ -68,7 +69,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Effects
                 return;
             }
 
-            NotifyTask.Create(
+            TaskMonitor.Create(
                 async () =>
                 {
                     await Task.Delay(50);

@@ -7,8 +7,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 {
     public static class ComputationHelper
     {
-        private static readonly Dictionary<int, (Point startPoint, Point endPoint)> GradientPointsByAngle =
-            new Dictionary<int, (Point startPoint, Point endPoint)>();
+        private static readonly Dictionary<int, (Point StartPoint, Point EndPoint)> GradientPointsByAngle =
+            new Dictionary<int, (Point StartPoint, Point EndPoint)>();
 
         // Make sure we don't go below zero
         public static double Clamp(double value, double minValue, double maxValue)
@@ -26,9 +26,9 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             return value;
         }
 
-        public static (Point startPoint, Point endPoint) RadiusGradientToPoints(int angle)
+        public static (Point StartPoint, Point EndPoint) RadiusGradientToPoints(int angle)
         {
-            if (GradientPointsByAngle.TryGetValue(angle, out (Point startPoint, Point endPoint) points))
+            if (GradientPointsByAngle.TryGetValue(angle, out (Point StartPoint, Point endPoint) points))
             {
                 return points;
             }

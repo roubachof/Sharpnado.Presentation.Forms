@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Sharpnado.Infrastructure.Tasks;
+using Sharpnado.Tasks;
+
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.ViewModels
@@ -137,9 +138,9 @@ namespace Sharpnado.Presentation.Forms.ViewModels
 
         protected object SyncRoot { get; } = new object();
 
-        protected INotifyTask CurrentLoadingTask { get; set; }
+        protected ITaskMonitor CurrentLoadingTask { get; set; }
 
-        protected void OnTaskCompleted(INotifyTask task)
+        protected void OnTaskCompleted(ITaskMonitor task)
         {
             // Log.Info("Task completed");
             ShowRefresher = ShowLoader = false;
@@ -149,7 +150,7 @@ namespace Sharpnado.Presentation.Forms.ViewModels
             RaisePropertyChanged(nameof(IsNotStarted));
         }
 
-        protected void OnTaskFaulted(INotifyTask faultedTask, bool isRefreshing)
+        protected void OnTaskFaulted(ITaskMonitor faultedTask, bool isRefreshing)
         {
             // Log.Info("Task completed with fault");
             RaisePropertyChanged(nameof(IsFaulted));
@@ -160,7 +161,7 @@ namespace Sharpnado.Presentation.Forms.ViewModels
             ErrorMessage = ToErrorMessage(faultedTask.InnerException);
         }
 
-        protected virtual void OnTaskSuccessfullyCompleted(INotifyTask task)
+        protected virtual void OnTaskSuccessfullyCompleted(ITaskMonitor task)
         {
             // Log.Info("Task successfully completed");
             RaisePropertyChanged(nameof(IsSuccessfullyCompleted));
@@ -204,19 +205,19 @@ namespace Sharpnado.Presentation.Forms.ViewModels
         public ViewModelLoader(Func<Exception, string> errorHandler = null, string emptyStateMessage = null)
             : base(errorHandler, emptyStateMessage)
         {
-            CurrentLoadingTask = NotifyTask.NotStartedTask;
+            CurrentLoadingTask = TaskMonitor.NotStartedTask;
             ReloadCommand = new Command(() => Load(_loadingTaskSource));
             RefreshCommand = new Command(() => Load(_loadingTaskSource, isRefreshing: true));
         }
 
-        public override bool IsNotStarted => CurrentLoadingTask == NotifyTask.NotStartedTask;
+        public override bool IsNotStarted => CurrentLoadingTask == TaskMonitor.NotStartedTask;
 
         public void Load(Func<Task> loadingTaskSource, bool isRefreshing = false)
         {
             // Log.Info("Load");
             lock (SyncRoot)
             {
-                if (CurrentLoadingTask != NotifyTask.NotStartedTask && CurrentLoadingTask.IsNotCompleted)
+                if (CurrentLoadingTask != TaskMonitor.NotStartedTask && CurrentLoadingTask.IsNotCompleted)
                 {
                     // Log.Warn("A loading task is currently running: discarding this call");
                     return;
@@ -225,7 +226,7 @@ namespace Sharpnado.Presentation.Forms.ViewModels
                 _loadingTaskSource = loadingTaskSource;
 
                 CurrentLoadingTask = null;
-                CurrentLoadingTask = new NotifyTask.Builder(_loadingTaskSource)
+                CurrentLoadingTask = new TaskMonitor.Builder(_loadingTaskSource)
                     .WithWhenCompleted(OnTaskCompleted)
                     .WithWhenFaulted(faultedTask => OnTaskFaulted(faultedTask, isRefreshing))
                     .WithWhenSuccessfullyCompleted(OnTaskSuccessfullyCompleted)
@@ -247,12 +248,12 @@ namespace Sharpnado.Presentation.Forms.ViewModels
         public ViewModelLoader(Func<Exception, string> errorHandler = null, string emptyStateMessage = null)
             : base(errorHandler, emptyStateMessage)
         {
-            CurrentLoadingTask = NotifyTask<TData>.NotStartedTask;
+            CurrentLoadingTask = TaskMonitor<TData>.NotStartedTask;
             ReloadCommand = new Command(() => Load(_loadingTaskSource));
             RefreshCommand = new Command(() => Load(_loadingTaskSource, isRefreshing: true));
         }
 
-        public override bool IsNotStarted => CurrentLoadingTask == NotifyTask<TData>.NotStartedTask;
+        public override bool IsNotStarted => CurrentLoadingTask == TaskMonitor<TData>.NotStartedTask;
 
         public TData Result
         {
@@ -265,13 +266,13 @@ namespace Sharpnado.Presentation.Forms.ViewModels
             // Log.Info("Load");
             lock (SyncRoot)
             {
-                if (CurrentLoadingTask != NotifyTask<TData>.NotStartedTask && CurrentLoadingTask.IsNotCompleted)
+                if (CurrentLoadingTask != TaskMonitor<TData>.NotStartedTask && CurrentLoadingTask.IsNotCompleted)
                 {
                     // Log.Warn("A loading task is currently running: discarding this call");
                     return;
                 }
 
-                if (CurrentLoadingTask == NotifyTask<TData>.NotStartedTask && loadingTaskSource == null)
+                if (CurrentLoadingTask == TaskMonitor<TData>.NotStartedTask && loadingTaskSource == null)
                 {
                     // Log.Warn("Refresh requested while not loaded yet, aborting...");
                     return;
@@ -280,7 +281,7 @@ namespace Sharpnado.Presentation.Forms.ViewModels
                 _loadingTaskSource = loadingTaskSource;
 
                 CurrentLoadingTask = null;
-                CurrentLoadingTask = new NotifyTask<TData>.Builder(_loadingTaskSource)
+                CurrentLoadingTask = new TaskMonitor<TData>.Builder(_loadingTaskSource)
                     .WithWhenCompleted(OnTaskCompleted)
                     .WithWhenFaulted(faultedTask => OnTaskFaulted(faultedTask, isRefreshing))
                     .WithWhenSuccessfullyCompleted(
@@ -303,7 +304,7 @@ namespace Sharpnado.Presentation.Forms.ViewModels
             RaisePropertyChanged(nameof(Result));
         }
 
-        protected override void OnTaskSuccessfullyCompleted(INotifyTask task)
+        protected override void OnTaskSuccessfullyCompleted(ITaskMonitor task)
         {
             // Log.Info("Task successfully completed");
             RaisePropertyChanged(nameof(IsSuccessfullyCompleted));

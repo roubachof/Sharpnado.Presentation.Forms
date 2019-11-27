@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Android.Support.V7.Widget;
 using Android.Views;
 
-using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
+using Sharpnado.Tasks;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
@@ -25,7 +25,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
         public void Build()
         {
-            NotifyTask.Create(BuildViewsAsync);
+            TaskMonitor.Create(BuildViewsAsync);
         }
 
         public void Clear()

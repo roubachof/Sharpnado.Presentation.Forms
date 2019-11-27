@@ -5,7 +5,6 @@ using Android.Graphics;
 using Android.Runtime;
 using Android.Support.V7.Widget;
 
-using Sharpnado.Infrastructure;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList

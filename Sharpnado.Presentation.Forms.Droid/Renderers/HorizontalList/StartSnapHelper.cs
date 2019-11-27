@@ -4,8 +4,6 @@ using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
 
-using Sharpnado.Infrastructure;
-
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
     public class StartSnapHelper : CenterSnapHelper

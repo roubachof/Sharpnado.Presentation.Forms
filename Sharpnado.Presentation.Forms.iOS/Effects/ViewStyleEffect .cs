@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.Effects;
 using Sharpnado.Presentation.Forms.iOS.Effects;
+using Sharpnado.Tasks;
+
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
@@ -155,19 +156,19 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
             switch (state)
             {
                 case UIGestureRecognizerState.Began:
-                    NotifyTask.Create(TapAnimationAsync(0.5, 0, _alpha, false));
+                    TaskMonitor.Create(TapAnimationAsync(0.5, 0, _alpha, false));
                     break;
                 case UIGestureRecognizerState.Ended:
                 case UIGestureRecognizerState.Cancelled:
                 case UIGestureRecognizerState.Failed:
-                    NotifyTask.Create(TapAnimationAsync(0.5, _alpha));
+                    TaskMonitor.Create(TapAnimationAsync(0.5, _alpha));
                     break;
             }
         }
 
         private void TapAction()
         {
-            NotifyTask.Create(TapAnimationAsync(0.3, _alpha, 0));
+            TaskMonitor.Create(TapAnimationAsync(0.3, _alpha, 0));
         }
 
         private void UpdateEffectColor()

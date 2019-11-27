@@ -1,5 +1,4 @@
-﻿using Sharpnado.Infrastructure;
-using Sharpnado.Presentation.Forms.Droid.Helpers;
+﻿using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
 

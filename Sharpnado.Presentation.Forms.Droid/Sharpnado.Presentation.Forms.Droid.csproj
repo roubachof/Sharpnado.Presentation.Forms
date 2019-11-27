@@ -17,7 +17,7 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
-    <CodeAnalysisRuleSet>..\Sharpnado.Infrastructure\StyleCopRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\StyleCopRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -103,10 +103,6 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Sharpnado.Infrastructure\Sharpnado.Infrastructure.csproj">
-      <Project>{12598875-3E4F-4859-80C1-A76229E9303A}</Project>
-      <Name>Sharpnado.Infrastructure</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj">
       <Project>{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}</Project>
       <Name>Sharpnado.Presentation.Forms</Name>

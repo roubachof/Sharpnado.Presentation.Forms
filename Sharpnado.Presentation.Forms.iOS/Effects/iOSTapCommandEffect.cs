@@ -8,9 +8,10 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Foundation;
-using Sharpnado.Infrastructure.Tasks;
 using Sharpnado.Presentation.Forms.Effects;
 using Sharpnado.Presentation.Forms.iOS.Effects;
+using Sharpnado.Tasks;
+
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
@@ -79,7 +80,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
 
         private void TapAction()
         {
-            NotifyTask.Create(async () =>
+            TaskMonitor.Create(async () =>
             {
                 await Task.Delay(50);
                 _tapCommand?.Execute(_tapParameter);
@@ -100,7 +101,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
                     }
                     else
                     {
-                        NotifyTask.Create(
+                        TaskMonitor.Create(
                             async () =>
                             {
                                 await Task.Delay(50);

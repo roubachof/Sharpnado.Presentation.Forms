@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Sharpnado.Infrastructure.Tasks;
+
+using Sharpnado.Tasks;
+
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
@@ -140,7 +142,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             if (Animate && view is IAnimatableReveal animatable && animatable.Animate && view.Opacity == 0)
             {
                 var localView = view;
-                NotifyTask.Create(
+                TaskMonitor.Create(
                     async () =>
                     {
                         Task fadeTask = localView.FadeTo(1, 500);

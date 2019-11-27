@@ -1,5 +1,5 @@
 using System;
-using Sharpnado.Infrastructure;
+
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
