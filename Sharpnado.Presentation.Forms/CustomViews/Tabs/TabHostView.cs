@@ -118,7 +118,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             set =>
                 throw new NotSupportedException(
-                    "You can only add TabItem to the TabHostView through the Tabs property");
+                    "Starting from version 1.3, you can only add TabItem to the TabHostView through the Tabs property");
         }
 
         public bool ShowScrollbar { get; set; }
