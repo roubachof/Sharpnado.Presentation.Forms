@@ -61,9 +61,17 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
             }
 
             Layer.CornerRadius = num;
-            Layer.BackgroundColor = Element.BackgroundColor == Color.Default
-                ? UIColor.White.CGColor
-                : Element.BackgroundColor.ToCGColor();
+
+            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
+            {
+                Layer.BackgroundColor = Element.ElevationToColor().ToCGColor();
+            }
+            else
+            {
+                Layer.BackgroundColor = Element.BackgroundColor == Color.Default
+                    ? UIColor.White.CGColor
+                    : Element.BackgroundColor.ToCGColor();
+            }
 
             if (Element.HasShadow)
             {
@@ -77,7 +85,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
                 Layer.ShadowOpacity = 0.0f;
             }
 
-            if (Element.Elevation > 0)
+            if (Element.Elevation > 0 && MaterialFrame.MaterialTheme == MaterialFrame.Theme.Light)
             {
                 float adaptedElevation = Element.Elevation / 2;
 

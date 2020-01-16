@@ -35,7 +35,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
         protected override void OnElementChanged(ElementChangedEventArgs<Frame> e)
         {
             base.OnElementChanged(e);
-
             if (e.NewElement == null)
             {
                 return;
@@ -46,6 +45,13 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
         private void UpdateElevation()
         {
+            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
+            {
+                MaterialFrame.BackgroundColor = MaterialFrame.ElevationToColor();
+                base.OnElementPropertyChanged(this, new PropertyChangedEventArgs(VisualElement.BackgroundColorProperty.PropertyName));
+                return;
+            }
+
             // we need to reset the StateListAnimator to override the setting of Elevation on touch down and release.
             Control.StateListAnimator = new Android.Animation.StateListAnimator();
 
