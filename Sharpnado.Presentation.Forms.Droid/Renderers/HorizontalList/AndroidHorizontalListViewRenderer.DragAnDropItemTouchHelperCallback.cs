@@ -39,6 +39,12 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
             {
+                if (((ViewHolder)viewHolder).ViewCell is DraggableViewCell draggableViewCell
+                    && !draggableViewCell.IsDraggable)
+                {
+                    return 0;
+                }
+
                 return MakeMovementFlags(ItemTouchHelper.Left | ItemTouchHelper.Right | ItemTouchHelper.Up | ItemTouchHelper.Down, 0);
             }
 
@@ -73,6 +79,12 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 RecyclerView.ViewHolder viewHolder,
                 RecyclerView.ViewHolder target)
             {
+                if (((ViewHolder)target).ViewCell is DraggableViewCell draggableViewCell
+                    && !draggableViewCell.IsDraggable)
+                {
+                    return false;
+                }
+
                 if (_from == -1)
                 {
                     _from = viewHolder.AdapterPosition;
