@@ -1,7 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
-
-using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;
 
@@ -55,6 +54,12 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         public TabButton()
         {
             Initialize();
+        }
+
+        public event EventHandler Clicked
+        {
+            add => _imageButton.Clicked += value;
+            remove => _imageButton.Clicked -= value;
         }
 
         public string IconImageSource
