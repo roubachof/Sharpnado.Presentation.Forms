@@ -9,7 +9,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
     {
         public static readonly BindableProperty IconImageSourceProperty = BindableProperty.Create(
             nameof(IconImageSource),
-            typeof(string),
+            typeof(ImageSource),
             typeof(BottomTabItem));
 
         public static readonly BindableProperty IconSizeProperty = BindableProperty.Create(
@@ -42,9 +42,10 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             UpdateTextVisibility();
         }
 
-        public string IconImageSource
+        [TypeConverter(typeof(ImageSourceConverter))]
+        public ImageSource IconImageSource
         {
-            get => (string)GetValue(IconImageSourceProperty);
+            get => (ImageSource)GetValue(IconImageSourceProperty);
             set => SetValue(IconImageSourceProperty, value);
         }
 
