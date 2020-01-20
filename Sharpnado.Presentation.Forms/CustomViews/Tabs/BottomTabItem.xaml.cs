@@ -29,9 +29,13 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             typeof(BottomTabItem),
             defaultValue: true);
 
+        private readonly bool _isInitialized = false;
+
         public BottomTabItem()
         {
             InitializeComponent();
+
+            _isInitialized = true;
 
             LabelSize = 12;
 
@@ -65,6 +69,11 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
+
+            if (!_isInitialized)
+            {
+                return;
+            }
 
             switch (propertyName)
             {

@@ -33,7 +33,7 @@ namespace Sharpnado.Presentation.Forms.Effects
         {
             if (!(bindable is Image))
             {
-                throw new InvalidOperationException("Tint effect is only appliable on CachedImage and Image");
+                throw new InvalidOperationException("Tint effect is only applicable on CachedImage and Image");
             }
 
             AttachEffect((View)bindable, (Color)newValue);
