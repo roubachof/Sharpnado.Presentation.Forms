@@ -48,19 +48,27 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             typeof(TabHostView),
             defaultBindingMode: BindingMode.OneWayToSource);
 
+        public static readonly new BindableProperty BackgroundColorProperty = BindableProperty.Create(
+            nameof(BackgroundColor),
+            typeof(Color),
+            typeof(TabHostView),
+            Color.Transparent);
+
         private const int ShadowHeight = 6;
 
         private readonly Grid _grid;
+        private readonly List<TabItem> _selectableTabs = new List<TabItem>();
 
         private int _childRow = 0;
-
-        private List<TabItem> _selectableTabs = new List<TabItem>();
 
         private ScrollView _scrollView;
         private BoxView _contentBackgroundView;
         private ShadowBoxView _shadow;
+        private RowDefinition _shadowRowDefinition;
 
         private ColumnDefinition _lastFillingColumn;
+
+        private bool _isInnerSetBackgroundColorReturnFire;
 
         public TabHostView()
         {
@@ -77,7 +85,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             };
 
             UpdateTabType();
-            UpdateShadow();
         }
 
         public event EventHandler<SelectedPositionChangedEventArgs> SelectedTabIndexChanged;
@@ -106,6 +113,12 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             set => SetValue(ShadowTypeProperty, value);
         }
 
+        public new Color BackgroundColor
+        {
+            get => (Color)GetValue(BackgroundColorProperty);
+            set => SetValue(BackgroundColorProperty, value);
+        }
+
         public new View Content
         {
             get => base.Content;
@@ -127,6 +140,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            base.OnPropertyChanged(propertyName);
+
             switch (propertyName)
             {
                 case nameof(TabType):
@@ -134,6 +149,9 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                     break;
                 case nameof(ShadowType):
                     UpdateShadow();
+                    break;
+                case nameof(BackgroundColor):
+                    UpdateBackgroundColor();
                     break;
                 case nameof(Tabs):
                     throw new NotSupportedException("Updating Tabs collection reference is not supported");
@@ -182,19 +200,71 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             RaiseSelectedTabIndexChanged(new SelectedPositionChangedEventArgs(selectedIndex));
         }
 
+        private void UpdateBackgroundColor()
+        {
+            if ((ShadowType == ShadowType.None && _shadow == null) || Device.RuntimePlatform == Device.UWP)
+            {
+                _grid.BackgroundColor = BackgroundColor;
+                return;
+            }
+
+            _grid.BackgroundColor = Color.Transparent;
+            _contentBackgroundView.BackgroundColor = BackgroundColor;
+        }
+
         private void UpdateShadow()
         {
-            if (ShadowType == ShadowType.None || Device.RuntimePlatform == Device.UWP)
+            if ((ShadowType == ShadowType.None && _shadow == null) || Device.RuntimePlatform == Device.UWP)
             {
                 return;
             }
 
+            if (_shadow != null)
+            {
+                // _shadow has already be computed
+
+                if (ShadowType == ShadowType.None)
+                {
+                    // restore margins according to previous shadow positioning
+                    if (Grid.GetRow(_shadow) == 0)
+                    {
+                        // Shadow top
+                        Margin = new Thickness(Margin.Left, Margin.Top + ShadowHeight, Margin.Right, Margin.Bottom);
+                    }
+                    else
+                    {
+                        // Shadow bottom
+                        Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom + ShadowHeight);
+                    }
+
+                    _shadowRowDefinition.Height = 0;
+
+                    return;
+                }
+
+                if (ShadowType == ShadowType.Top)
+                {
+                    Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
+                }
+
+                if (ShadowType == ShadowType.Bottom)
+                {
+                    Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
+                }
+
+                _shadowRowDefinition.Height = ShadowHeight;
+
+                return;
+            }
+
+            // compute and layout _shadow
             _shadow = new ShadowBoxView { ShadowType = ShadowType };
+            _shadowRowDefinition = new RowDefinition { Height = ShadowHeight };
 
             if (ShadowType == ShadowType.Top)
             {
                 Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
-                _grid.RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
+                _grid.RowDefinitions.Add(_shadowRowDefinition);
                 Grid.SetRow(_shadow, 0);
                 _childRow = 1;
             }
@@ -204,14 +274,13 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             if (ShadowType == ShadowType.Bottom)
             {
                 Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
-                _grid.RowDefinitions.Add(new RowDefinition { Height = ShadowHeight });
+                _grid.RowDefinitions.Add(_shadowRowDefinition);
                 _childRow = 0;
                 Grid.SetRow(_shadow, 1);
             }
 
             _contentBackgroundView = new BoxView { BackgroundColor = BackgroundColor };
             Grid.SetRow(_contentBackgroundView, _childRow);
-            BackgroundColor = Color.Transparent;
 
             foreach (var element in _grid.Children)
             {
