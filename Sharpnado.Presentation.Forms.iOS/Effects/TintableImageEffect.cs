@@ -1,7 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+
 using Foundation;
 using Sharpnado.Presentation.Forms.Effects;
 using Sharpnado.Presentation.Forms.iOS.Effects;
+using Sharpnado.Tasks;
+
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
@@ -14,6 +19,9 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
     [Preserve]
     public class iOSTintableImageEffect : PlatformEffect
     {
+        private int _tintAttempts = 0;
+        private bool _isAttached = false;
+
         public static void Initialize()
         {
         }
@@ -24,17 +32,22 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
 
             if ((Element is Image) && args.PropertyName == Image.SourceProperty.PropertyName)
             {
+                _tintAttempts = 0;
                 UpdateColor();
             }
         }
 
         protected override void OnAttached()
         {
+            _tintAttempts = 0;
+            _isAttached = true;
             UpdateColor();
         }
 
         protected override void OnDetached()
         {
+            _isAttached = false;
+            _tintAttempts = 0;
             if (Control is UIImageView imageView && imageView.Image != null)
             {
                 imageView.Image = imageView.Image.ImageWithRenderingMode(UIImageRenderingMode.Automatic);
@@ -43,22 +56,40 @@ namespace Sharpnado.Presentation.Forms.iOS.Effects
 
         private void UpdateColor()
         {
-            var imageView = (UIImageView)Control;
-            if (imageView?.Image == null)
+            if (!_isAttached || Control == null || Element == null)
             {
                 return;
             }
 
-            var effect =
-                (TintableImageEffect)Element.Effects.FirstOrDefault(
-                    x => x is TintableImageEffect);
+            var imageView = (UIImageView)Control;
+            var effect = (TintableImageEffect)Element.Effects.FirstOrDefault(x => x is TintableImageEffect);
 
             var color = effect?.TintColor.ToUIColor();
-            if (color != null)
+            if (color == null)
             {
-                imageView.Image = imageView.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
-                Control.TintColor = color;
+                return;
             }
+
+            Control.TintColor = color;
+
+            if (imageView?.Image == null)
+            {
+                if (_tintAttempts < 5)
+                {
+                    TaskMonitor.Create(() => DelayedPost(500, UpdateColor));
+                }
+
+                return;
+            }
+
+            _tintAttempts = 0;
+            imageView.Image = imageView.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+        }
+
+        private async Task DelayedPost(int milliseconds, Action action)
+        {
+            await Task.Delay(milliseconds);
+            Device.BeginInvokeOnMainThread(action);
         }
     }
 }
