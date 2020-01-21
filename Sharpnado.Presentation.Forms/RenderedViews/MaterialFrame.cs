@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using System;
+
+using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.RenderedViews
 {
@@ -8,6 +10,18 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
     /// </summary>
     public class MaterialFrame : Frame
     {
+        public static readonly BindableProperty MaterialThemeProperty = BindableProperty.Create(
+            nameof(MaterialTheme),
+            typeof(Theme),
+            typeof(MaterialFrame),
+            defaultValue: Theme.Light);
+
+        public static readonly BindableProperty LightThemeBackgroundColorProperty = BindableProperty.Create(
+            nameof(LightThemeBackgroundColor),
+            typeof(Color),
+            typeof(MaterialFrame),
+            defaultValue: Color.White);
+
         public static readonly BindableProperty ElevationProperty = BindableProperty.Create(
             nameof(Elevation),
             typeof(int),
@@ -44,11 +58,17 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             Color.FromHex("373737"), // 24dp
         };
 
+        private static Theme globalTheme;
+
         public MaterialFrame()
         {
             HasShadow = false;
             CornerRadius = 5;
+            MaterialTheme = globalTheme;
+            ThemeChanged += OnThemeChanged;
         }
+
+        public static event EventHandler ThemeChanged;
 
         public enum Theme
         {
@@ -56,16 +76,33 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             Dark,
         }
 
-        public static Theme MaterialTheme
+        public Theme MaterialTheme
         {
-            get;
-            set;
+            get => (Theme)GetValue(MaterialThemeProperty);
+            set => SetValue(MaterialThemeProperty, value);
+        }
+
+        public Color LightThemeBackgroundColor
+        {
+            get => (Color)GetValue(LightThemeBackgroundColorProperty);
+            set => SetValue(LightThemeBackgroundColorProperty, value);
         }
 
         public int Elevation
         {
             get => (int)GetValue(ElevationProperty);
             set => SetValue(ElevationProperty, value);
+        }
+
+        public static void ChangeGlobalTheme(Theme newTheme)
+        {
+            globalTheme = newTheme;
+            ThemeChanged?.Invoke(null, new EventArgs());
+        }
+
+        public void Unsubscribe()
+        {
+            ThemeChanged -= OnThemeChanged;
         }
 
         public Color ElevationToColor()
@@ -82,6 +119,11 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
             int index = Elevation > 24 ? 24 : Elevation;
             return DarkColors[index];
+        }
+
+        private void OnThemeChanged(object sender, EventArgs eventArgs)
+        {
+            MaterialTheme = globalTheme;
         }
     }
 }

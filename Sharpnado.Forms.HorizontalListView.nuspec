@@ -40,6 +40,7 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
         <dependencies>
           <group>
             <dependency id="Xamarin.Forms" version="3.4.0" exclude="Build,Analyzers"/>
+            <dependency id="Sharpnado.TaskMonitor" Version="1.0.0" />
           </group>
         </dependencies>
 

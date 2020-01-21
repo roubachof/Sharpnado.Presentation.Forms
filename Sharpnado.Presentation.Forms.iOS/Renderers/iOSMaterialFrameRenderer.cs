@@ -30,6 +30,9 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
         protected override void OnElementChanged(ElementChangedEventArgs<MaterialFrame> e)
         {
             base.OnElementChanged(e);
+
+            e.OldElement?.Unsubscribe();
+
             if (e.NewElement == null)
             {
                 return;
@@ -44,7 +47,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
             if (e.PropertyName != VisualElement.BackgroundColorProperty.PropertyName
                 && e.PropertyName != Xamarin.Forms.Frame.HasShadowProperty.PropertyName
                 && e.PropertyName != Xamarin.Forms.Frame.CornerRadiusProperty.PropertyName
-                && e.PropertyName != MaterialFrame.ElevationProperty.PropertyName)
+                && e.PropertyName != MaterialFrame.ElevationProperty.PropertyName
+                && e.PropertyName != MaterialFrame.MaterialThemeProperty.PropertyName)
             {
                 return;
             }
@@ -62,7 +66,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
 
             Layer.CornerRadius = num;
 
-            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
+            if (Element.MaterialTheme == MaterialFrame.Theme.Dark)
             {
                 Layer.BackgroundColor = Element.ElevationToColor().ToCGColor();
             }
@@ -85,7 +89,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
                 Layer.ShadowOpacity = 0.0f;
             }
 
-            if (Element.Elevation > 0 && MaterialFrame.MaterialTheme == MaterialFrame.Theme.Light)
+            if (Element.Elevation > 0 && Element.MaterialTheme == MaterialFrame.Theme.Light)
             {
                 float adaptedElevation = Element.Elevation / 2;
 

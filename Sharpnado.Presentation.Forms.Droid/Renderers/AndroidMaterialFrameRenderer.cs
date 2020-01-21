@@ -26,7 +26,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
         {
             base.OnElementPropertyChanged(sender, e);
 
-            if (e.PropertyName == nameof(MaterialFrame.Elevation))
+            if (e.PropertyName == nameof(MaterialFrame.Elevation)
+                || e.PropertyName == nameof(MaterialFrame.MaterialTheme)
+                || (e.PropertyName == nameof(MaterialFrame.LightThemeBackgroundColor)
+                    && MaterialFrame.MaterialTheme == MaterialFrame.Theme.Light))
             {
                 UpdateElevation();
             }
@@ -35,6 +38,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
         protected override void OnElementChanged(ElementChangedEventArgs<Frame> e)
         {
             base.OnElementChanged(e);
+
+            ((MaterialFrame)e.OldElement)?.Unsubscribe();
+
             if (e.NewElement == null)
             {
                 return;
@@ -48,6 +54,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
             if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
             {
                 MaterialFrame.BackgroundColor = MaterialFrame.ElevationToColor();
+                ViewCompat.SetElevation(this, 0);
+                ViewCompat.SetElevation(Control, 0);
+
                 base.OnElementPropertyChanged(this, new PropertyChangedEventArgs(VisualElement.BackgroundColorProperty.PropertyName));
                 return;
             }
@@ -55,9 +64,13 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
             // we need to reset the StateListAnimator to override the setting of Elevation on touch down and release.
             Control.StateListAnimator = new Android.Animation.StateListAnimator();
 
+            MaterialFrame.BackgroundColor = MaterialFrame.LightThemeBackgroundColor;
+
             // set the elevation manually
             ViewCompat.SetElevation(this, MaterialFrame.Elevation);
             ViewCompat.SetElevation(Control, MaterialFrame.Elevation);
+
+            base.OnElementPropertyChanged(this, new PropertyChangedEventArgs(VisualElement.BackgroundColorProperty.PropertyName));
         }
     }
 }

@@ -28,11 +28,13 @@ Pure Xamarin.Forms tabs:
   * Custom tabs (be creative just implement TabItem)
   * Independent ```ViewSwitcher```
 
-The TaskLoaderView displays an ActivityIndicator while loading then:
+The TaskLoaderView 2.0 handles all your task loading states:
   * Handles error with custom messages and icons
   * Handles empty states
-  * Don't show activity loader for refresh scenarios (if data is already shown)
+  * Show snackbar errors for refresh scenarios (if data is already shown)
   * Handles retry with button
+  * Support Xamarin.Forms.Skeleton
+  * Can override any state views with your own custom ones
 
 HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Carousel layout
@@ -57,6 +59,8 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
         <dependencies>
           <group>
             <dependency id="Xamarin.Forms" version="3.4.0" exclude="Build,Analyzers"/>
+            <dependency id="Sharpnado.TaskLoaderView" Version="2.0.0" />
+            <dependency id="Sharpnado.TaskMonitor" Version="1.0.0" />
           </group>
         </dependencies>
 
