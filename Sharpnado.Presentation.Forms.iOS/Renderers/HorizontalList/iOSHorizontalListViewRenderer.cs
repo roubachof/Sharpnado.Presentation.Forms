@@ -29,6 +29,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         private bool _isInternalScroll;
         private bool _isMovedBackfire;
         private bool _isFirstInitialization = true;
+        private bool _isRefreshViewUserEnabled = false;
 
         private List<DataTemplate> _registeredDataTemplates = new List<DataTemplate>();
 
@@ -168,6 +169,12 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 _isFirstInitialization = false;
             }
 
+            if (Element.Parent is RefreshView refreshView)
+            {
+                _isRefreshViewUserEnabled = refreshView.IsEnabled;
+                refreshView.IsEnabled = false;
+            }
+
             Control?.DataSource?.Dispose();
             Control?.CollectionViewLayout?.Dispose();
             Control?.Dispose();
@@ -199,6 +206,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
         {
             SetNativeControl(collectionView);
             UpdateItemsSource();
+
+            if (Element.Parent is RefreshView refreshView && _isRefreshViewUserEnabled)
+            {
+                refreshView.IsEnabled = true;
+            }
 
             if (Element.SnapStyle == SnapStyle.Center)
             {
