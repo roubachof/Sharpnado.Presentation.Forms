@@ -13,9 +13,8 @@
         <iconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</iconUrl>
        	<requireLicenseAcceptance>false</requireLicenseAcceptance>
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
-        <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview</tags>
-        <releaseNotes>Numerous fixes.
-        </releaseNotes>
+        <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview drag drop</tags>
+        <releaseNotes>Support for RefreshView, improved drag and drop, numerous bug fixes</releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Carousel layout
@@ -30,6 +29,7 @@ HorizontalListView for Xamarin Forms (close to a CollectionView):
 Grid ListView (HorizontalListView with ListLayout set to Grid):
   * Column count
   * Drag And Drop
+  * RefreshView support
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling

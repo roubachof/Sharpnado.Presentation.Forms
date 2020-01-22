@@ -21,22 +21,18 @@ Xamarin Forms custom components and renderers starring:
 <table>
 	<thead>
 		<tr>
-			<th>Fixed tabs</th>
 			<th>Bottom bar tabs</th>
-      <th>Scrollable tabs</th>
+      <th>Fixed tabs</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/android_top_tabs.png" width="250" height=500/></td>
-  		<td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/bottom_tabs.gif" width="250" height=500/></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/scrollable_tabs_underline_text.gif" width="250" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_bottom_tabs.gif" width="300" /></td>
+  		<td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_fixed_tabs.gif" width="300" /></td>
 		</tr>
     <tr>
-      <td>UnderlinedTabItem</td>
-			<td>BottomTabItem</td>
-      <td>TabType.Scrollable</td>
-      
+      <td>BottomTabItem</td>
+			<td>UnderlinedTabItem</td>
     </tr>   
   </tbody>
 </table>
@@ -44,20 +40,17 @@ Xamarin Forms custom components and renderers starring:
 <table>
 	<thead>
 		<tr>			
-      <th>Circle button</th>
-			<th>Underline all</th>
+      <th>Scrollable tabs</th>
       <th>Custom tabs</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/tab_circle_button.png" width="250" /></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/slide_tabs_whole.gif" width="250" /></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/spam_tabs.gif" width="250" height=500 /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_scrollable_tabs.gif" width="300" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_spam_tabs.gif" width="300" /></td>
 		</tr>
     <tr>
-      <td>TabButton</td>
-      <td>UnderlineAllTab=True</td>
+      <td>TabType.Scrollable</td>
       <td>inherit from TabItem</td>
     </tr>   
   </tbody>
@@ -76,8 +69,8 @@ Xamarin Forms custom components and renderers starring:
   * This implementation is in fact very close in terms of philosophy and implementation to what will provide the future Xamarin ```CollectionView```.
 
 <p float="left" align="middle">
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/horizontal_snap_center.gif" width="250" hspace="20"/>
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/carousel-ios.gif" width="250" hspace="20"/>
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_hlv.gif" width="320" hspace="20"/>
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_hlv_carousel.gif" width="320" hspace="20"/>
 </p>
 
 ### [```Grid``` collection view (```ListLayout``` = ```Grid```)](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/HorizontalListView-Grid-And-Carousel#grid-layout)
@@ -89,19 +82,22 @@ Xamarin Forms custom components and renderers starring:
   * View recycling
 
 <p float="left" align="middle">
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/drag_and_drop.gif" width="250" hspace="20"/>
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/listview-dragandrop.gif" width="250" hspace="20"/>
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_list.gif" width="320" hspace="20"/>
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_grid.gif" width="320" hspace="20"/>
 </p>
 
-### [```TaskLoaderView``` displays an ```ActivityLoader``` while loading](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/TaskLoaderView)
+
+### [```TaskLoaderView 2.0``` handles all your task loading states](https://github.com/roubachof/Sharpnado.TaskLoaderView)
   * Handles error with custom messages and icons
   * Handles empty states
-  * Don't show activity loader for refresh scenarios (if data is already shown)
+  * Show snackbar errors for refresh scenarios (if data is already shown)
   * Handles retry with button
-  * Pure Xamarin Forms view: no renderers
+  * Support Xamarin.Forms.Skeleton
+  * Can override any state views with your own custom ones
 
-<p align="center">
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/task_loader_view.gif" width="250"  />
+<p float="left" align="middle">
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/tlv_skeleton.gif" width="320" hspace="20"/>
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/tlv_user_views.gif" width="320" hspace="20"/>
 </p>
 
 

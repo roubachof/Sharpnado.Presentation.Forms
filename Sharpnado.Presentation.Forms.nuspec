@@ -15,8 +15,7 @@
         <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
         <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView (mvvm async loading view)</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview mvvm async</tags>
-        <releaseNotes>Scrollable tabs, circle button in tab, numerous fixes...
-        </releaseNotes>
+        <releaseNotes>Support for RefreshView, improved drag and drop, numerous bug fixes</releaseNotes>
         <description>
 Collection of Xamarin.Forms components.
 
@@ -36,7 +35,7 @@ The TaskLoaderView 2.0 handles all your task loading states:
   * Support Xamarin.Forms.Skeleton
   * Can override any state views with your own custom ones
 
-HorizontalListView for Xamarin Forms (close to a CollectionView):
+HorizontalListView for Xamarin.Forms (close to a CollectionView):
   * Carousel layout
   * Column count
   * Snapping on first or middle element
@@ -49,6 +48,7 @@ HorizontalListView for Xamarin Forms (close to a CollectionView):
 Grid ListView (HorizontalListView with ListLayout set to Grid):
   * Column count
   * Drag And Drop
+  * RefreshView support
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
