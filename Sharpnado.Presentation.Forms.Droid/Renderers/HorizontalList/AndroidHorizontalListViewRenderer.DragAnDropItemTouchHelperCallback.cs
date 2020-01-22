@@ -7,6 +7,8 @@ using Android.Support.V7.Widget.Helper;
 
 using Sharpnado.Presentation.Forms.RenderedViews;
 
+using Xamarin.Forms;
+
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {
     public partial class AndroidHorizontalListViewRenderer
@@ -55,6 +57,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 if (actionState == ItemTouchHelper.ActionStateDrag)
                 {
                     _horizontalList.IsDragAndDropping = true;
+                    if (_horizontalList.Parent is RefreshView refreshView)
+                    {
+                        refreshView.IsEnabled = false;
+                    }
+
                     if (((ViewHolder)viewHolder).ViewCell is DraggableViewCell draggableViewCell)
                     {
                         // System.Diagnostics.Debug.WriteLine($">>>>> OnSelectedChanged( {draggableViewCell.BindingContext} IsDragAndDropping: true )");
@@ -65,6 +72,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 else if (actionState == ItemTouchHelper.ActionStateIdle)
                 {
                     _horizontalList.IsDragAndDropping = false;
+                    if (_horizontalList.Parent is RefreshView refreshView)
+                    {
+                        refreshView.IsEnabled = true;
+                    }
+
                     if (_draggedViewCell != null)
                     {
                         // System.Diagnostics.Debug.WriteLine($">>>>> OnSelectedChanged( {_draggedViewCell.BindingContext} IsDragAndDropping: false )");
