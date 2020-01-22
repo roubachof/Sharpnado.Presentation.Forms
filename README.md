@@ -96,8 +96,8 @@ Xamarin Forms custom components and renderers starring:
   * Can override any state views with your own custom ones
 
 <p float="left" align="middle">
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/tlv_skeleton.gif" width="320" hspace="20"/>
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/tlv_user_views.gif" width="320" hspace="20"/>
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/tlv_skeleton.gif" width="320" hspace="20"/>
+  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/tlv_user_views.gif" width="320" hspace="20"/>
 </p>
 
 
