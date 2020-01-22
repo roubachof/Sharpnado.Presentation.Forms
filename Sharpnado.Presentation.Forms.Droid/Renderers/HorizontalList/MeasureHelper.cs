@@ -1,6 +1,4 @@
-using System;
-
-using Sharpnado.Presentation.Forms.RenderedViews;
+﻿using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {

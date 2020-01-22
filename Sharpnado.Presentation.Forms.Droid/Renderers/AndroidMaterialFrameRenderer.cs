@@ -8,6 +8,7 @@ using Xamarin.Forms.Platform.Android;
 using FrameRenderer = Xamarin.Forms.Platform.Android.AppCompat.FrameRenderer;
 
 [assembly: ExportRenderer(typeof(MaterialFrame), typeof(AndroidMaterialFrameRenderer))]
+
 namespace Sharpnado.Presentation.Forms.Droid.Renderers
 {
     /// <summary>

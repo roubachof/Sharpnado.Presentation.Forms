@@ -6,6 +6,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
     {
         private static PlatformHelper _instance;
 
+        public enum Rounding
+        {
+            Round = 0,
+            Floor = 1,
+            Ceil = 2,
+        }
+
         public static PlatformHelper Instance => _instance;
 
         public static void InitializeSingleton(PlatformHelper instance)
@@ -18,12 +25,5 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         public abstract int DpToPixels(double dp, Rounding rounding = Rounding.Round);
 
         public abstract double PixelsToDp(double pixels);
-
-        public enum Rounding
-        {
-            Round = 0,
-            Floor = 1,
-            Ceil = 2,
-        }
     }
 }

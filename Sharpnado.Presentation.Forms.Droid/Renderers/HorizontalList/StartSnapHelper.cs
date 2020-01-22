@@ -77,6 +77,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 if (WeakNativeView.TryGetTarget(out var target))
                 {
                     target.CurrentSnapIndex = layoutManager.ItemCount - 1;
+
                     // System.Diagnostics.Debug.WriteLine($">>>>>> CurrentSnapIndex: {target.CurrentSnapIndex}");
                 }
 

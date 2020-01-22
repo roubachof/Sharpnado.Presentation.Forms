@@ -16,6 +16,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ExportRenderer(typeof(HorizontalListView), typeof(iOSHorizontalListViewRenderer))]
+
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     [Foundation.Preserve]

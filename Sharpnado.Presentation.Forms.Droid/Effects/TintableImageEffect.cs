@@ -9,6 +9,7 @@ using Xamarin.Forms.Platform.Android;
 
 [assembly: ResolutionGroupName("Silly")]
 [assembly: ExportEffect(typeof(AndroidTintableImageEffect), nameof(TintableImageEffect))]
+
 namespace Sharpnado.Presentation.Forms.Droid.Effects
 {
     [Preserve]

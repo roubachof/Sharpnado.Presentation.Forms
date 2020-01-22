@@ -79,6 +79,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 {
                     var viewHolder = target.Control.FindContainingViewHolder(snapView);
                     target.CurrentSnapIndex = viewHolder.AdapterPosition;
+
                     // System.Diagnostics.Debug.WriteLine($">>>>>> CurrentSnapIndex: {target.CurrentSnapIndex}");
                 }
             }

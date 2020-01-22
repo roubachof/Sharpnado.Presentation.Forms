@@ -164,8 +164,6 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             typeof(HorizontalListView),
             defaultValue: false);
 
-        private HorizontalListViewLayout _layout = HorizontalListViewLayout.Linear;
-
         public int CurrentIndex
         {
             get => (int)GetValue(CurrentIndexProperty);

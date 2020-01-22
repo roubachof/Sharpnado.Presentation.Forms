@@ -58,11 +58,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                                 if (draggedViewCell == null || (draggedViewCell.FormsCell is DraggableViewCell draggableViewCell && !draggableViewCell.IsDraggable))
                                 {
                                     pathTo = null;
+
                                     // System.Diagnostics.Debug.WriteLine("Cancel change state");
                                     return;
                                 }
 
                                 pathTo = changedPath;
+
                                 // System.Diagnostics.Debug.WriteLine($"State changed to {pathTo.Item}");
                             }
 
@@ -86,7 +88,6 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                             }
 
                             // System.Diagnostics.Debug.WriteLine($"Ended from: {from} to: {pathTo.Item}");
-
                             Control.EndInteractiveMovement();
                             if (_itemsSource is IList itemsSourceList)
                             {

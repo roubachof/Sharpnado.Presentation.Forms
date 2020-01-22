@@ -68,8 +68,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private ColumnDefinition _lastFillingColumn;
 
-        private bool _isInnerSetBackgroundColorReturnFire;
-
         public TabHostView()
         {
             TabItemTappedCommand = new TapCommand(OnTabItemTapped);
@@ -222,7 +220,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             if (_shadow != null)
             {
                 // _shadow has already be computed
-
                 if (ShadowType == ShadowType.None)
                 {
                     // restore margins according to previous shadow positioning

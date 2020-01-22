@@ -78,7 +78,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             base.GetItemOffsets(outRect, view, parent, state);
 
-            //InternalLogger.Info(
+            // InternalLogger.Info(
             //    $"view n°{viewPosition + 1} => left: {left}, right: {right}");
         }
     }

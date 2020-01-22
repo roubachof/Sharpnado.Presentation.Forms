@@ -87,7 +87,6 @@ namespace Sharpnado.Presentation.Forms.Effects
             if (frame != null)
             {
                 // System.Diagnostics.Debug.WriteLine($"Frame not supported for android, attaching it to its content {frame.Content?.GetType().Name}");
-
                 view = frame.Content;
 
                 if (view == null)

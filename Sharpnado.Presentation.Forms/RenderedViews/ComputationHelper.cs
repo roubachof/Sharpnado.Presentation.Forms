@@ -28,7 +28,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public static (Point StartPoint, Point EndPoint) RadiusGradientToPoints(int angle)
         {
-            if (GradientPointsByAngle.TryGetValue(angle, out (Point StartPoint, Point endPoint) points))
+            if (GradientPointsByAngle.TryGetValue(angle, out (Point StartPoint, Point EndPoint) points))
             {
                 return points;
             }
