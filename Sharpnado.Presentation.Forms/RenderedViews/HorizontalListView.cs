@@ -301,6 +301,22 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             }
         }
 
+        public bool IsInPullToRefresh()
+        {
+            if (Parent == null)
+            {
+                return false;
+            }
+
+            string parentTypeFullName = Parent.GetType().FullName;
+
+            const string RefreshViewFullName = "Xamarin.Forms.RefreshView";
+            const string PullToRefreshFullName = "Refractored.XamForms.PullToRefresh.PullToRefreshLayout ";
+
+            return parentTypeFullName == RefreshViewFullName
+                || parentTypeFullName == PullToRefreshFullName;
+        }
+
         /// <summary>
         /// Automatically compute item width for a given parent width and a given column count.
         /// </summary>

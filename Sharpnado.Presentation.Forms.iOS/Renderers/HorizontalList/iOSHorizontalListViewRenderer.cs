@@ -169,7 +169,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 _isFirstInitialization = false;
             }
 
-            if (Element.Parent is RefreshView refreshView)
+            if (Element.IsInPullToRefresh() && Element.Parent is ContentView refreshView)
             {
                 _isRefreshViewUserEnabled = refreshView.IsEnabled;
                 refreshView.IsEnabled = false;
@@ -207,7 +207,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             SetNativeControl(collectionView);
             UpdateItemsSource();
 
-            if (Element.Parent is RefreshView refreshView && _isRefreshViewUserEnabled)
+            if (Element.IsInPullToRefresh() && Element.Parent is ContentView refreshView && _isRefreshViewUserEnabled)
             {
                 refreshView.IsEnabled = true;
             }

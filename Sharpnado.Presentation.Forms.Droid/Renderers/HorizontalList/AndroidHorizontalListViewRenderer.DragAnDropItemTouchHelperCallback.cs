@@ -25,6 +25,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             private DraggableViewCell _draggedViewCell;
 
+            private bool _isRefreshViewUserEnabled = false;
+
             public DragAnDropItemTouchHelperCallback(IntPtr handle, JniHandleOwnership transfer)
                 : base(handle, transfer)
             {
@@ -57,8 +59,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 if (actionState == ItemTouchHelper.ActionStateDrag)
                 {
                     _horizontalList.IsDragAndDropping = true;
-                    if (_horizontalList.Parent is RefreshView refreshView)
+                    if (_horizontalList.IsInPullToRefresh() && _horizontalList.Parent is ContentView refreshView)
                     {
+                        _isRefreshViewUserEnabled = refreshView.IsEnabled;
                         refreshView.IsEnabled = false;
                     }
 
@@ -72,7 +75,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 else if (actionState == ItemTouchHelper.ActionStateIdle)
                 {
                     _horizontalList.IsDragAndDropping = false;
-                    if (_horizontalList.Parent is RefreshView refreshView)
+                    if (_horizontalList.IsInPullToRefresh() && _horizontalList.Parent is ContentView refreshView && _isRefreshViewUserEnabled)
                     {
                         refreshView.IsEnabled = true;
                     }
