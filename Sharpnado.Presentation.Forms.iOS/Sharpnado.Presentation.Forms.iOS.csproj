@@ -74,7 +74,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.4.0.991477</Version>
+      <Version>4.4.0.991537</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
