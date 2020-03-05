@@ -7,11 +7,10 @@ using System.Windows.Input;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Support.V7.Widget;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-
+using AndroidX.RecyclerView.Widget;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.Helpers;
 using Sharpnado.Presentation.Forms.RenderedViews;

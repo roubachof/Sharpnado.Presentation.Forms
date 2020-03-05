@@ -3,8 +3,7 @@
 using Android.Content;
 using Android.Graphics;
 using Android.Runtime;
-using Android.Support.V7.Widget;
-
+using AndroidX.RecyclerView.Widget;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using View = Android.Views.View;

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Android.Support.V7.Widget;
 using Android.Views;
-
+using AndroidX.RecyclerView.Widget;
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Tasks;
 

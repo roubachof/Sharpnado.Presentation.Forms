@@ -2,9 +2,7 @@
 using System.Windows.Input;
 
 using Android.Runtime;
-using Android.Support.V7.Widget;
-using Android.Support.V7.Widget.Helper;
-
+using AndroidX.RecyclerView.Widget;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 using Xamarin.Forms;

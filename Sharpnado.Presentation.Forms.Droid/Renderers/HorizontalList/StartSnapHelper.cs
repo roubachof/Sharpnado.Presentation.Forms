@@ -1,8 +1,8 @@
 ﻿using System;
 
 using Android.Runtime;
-using Android.Support.V7.Widget;
 using Android.Views;
+using AndroidX.RecyclerView.Widget;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {

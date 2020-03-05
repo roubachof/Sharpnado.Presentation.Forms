@@ -2,10 +2,9 @@
 
 using Android.Content;
 using Android.Runtime;
-using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
-
+using AndroidX.RecyclerView.Widget;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
