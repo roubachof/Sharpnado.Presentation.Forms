@@ -45,8 +45,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         public static readonly BindableProperty ShadowTypeProperty = BindableProperty.Create(
             nameof(ShadowType),
             typeof(ShadowType),
-            typeof(TabHostView),
-            defaultBindingMode: BindingMode.OneWayToSource);
+            typeof(TabHostView));
 
         public static readonly new BindableProperty BackgroundColorProperty = BindableProperty.Create(
             nameof(BackgroundColor),
@@ -294,7 +293,9 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             }
 
             _grid.Children.Add(_shadow);
-            _grid.Children.Add(_contentBackgroundView);
+            _grid.Children.Insert(0, _contentBackgroundView);
+
+            RaiseTabButtons();
         }
 
         private void UpdateTabType()
@@ -395,6 +396,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             Grid.SetColumn(tabItem, Tabs.Count - 1);
             Grid.SetRow(tabItem, _childRow);
 
+            RaiseTabButtons();
+
             if (tabItem.IsSelectable)
             {
                 AddTapCommand(tabItem);
@@ -464,6 +467,15 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         private void RaiseSelectedTabIndexChanged(SelectedPositionChangedEventArgs e)
         {
             SelectedTabIndexChanged?.Invoke(this, e);
+        }
+
+        private void RaiseTabButtons()
+        {
+            foreach (var tabButton in Tabs.Where(t => t is TabButton))
+            {
+                // We always want our TabButton with the highest Z-index
+                _grid.RaiseChild(tabButton);
+            }
         }
     }
 }

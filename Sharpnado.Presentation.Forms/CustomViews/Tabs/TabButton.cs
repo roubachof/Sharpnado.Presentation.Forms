@@ -10,7 +10,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
     {
         public static readonly BindableProperty IconImageSourceProperty = BindableProperty.Create(
             nameof(IconImageSource),
-            typeof(string),
+            typeof(ImageSource),
             typeof(TabButton));
 
         public static readonly BindableProperty TapCommandProperty = BindableProperty.Create(
@@ -62,9 +62,9 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             remove => _imageButton.Clicked -= value;
         }
 
-        public string IconImageSource
+        public ImageSource IconImageSource
         {
-            get => (string)GetValue(IconImageSourceProperty);
+            get => (ImageSource)GetValue(IconImageSourceProperty);
             set => SetValue(IconImageSourceProperty, value);
         }
 
