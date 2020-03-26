@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Xamarin.Forms;
+
 namespace Sharpnado.Presentation.Forms.RenderedViews
 {
     public abstract class PlatformHelper
@@ -25,5 +27,9 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         public abstract int DpToPixels(double dp, Rounding rounding = Rounding.Round);
 
         public abstract double PixelsToDp(double pixels);
+
+        public abstract string DumpNativeViewHierarchy(View formsView, bool verbose);
+
+        public abstract string DumpNativeViewInfo(View formsView);
     }
 }

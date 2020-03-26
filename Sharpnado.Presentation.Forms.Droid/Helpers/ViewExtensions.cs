@@ -10,10 +10,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
 
         private const string StringFormat = "Dumping Android view hierarchy:{0}{1}";
 
-        public static string DumpHierarchy(this View view)
+        public static string DumpHierarchy(this View view, bool isVerbose)
         {
             var hierarchyStringBuilder = new ViewHierarchyStringBuilder(IndentCount);
-            ViewVisitor.Visit(view, hierarchyStringBuilder.Add);
+            ViewVisitor.Visit(view, hierarchyStringBuilder.Add, isVerbose);
             return string.Format(StringFormat, Environment.NewLine, hierarchyStringBuilder);
         }
 

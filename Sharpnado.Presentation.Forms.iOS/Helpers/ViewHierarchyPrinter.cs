@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-using Android.Views;
+using UIKit;
 
-namespace Sharpnado.Presentation.Forms.Droid.Helpers
+namespace Sharpnado.Presentation.Forms.iOS.Helpers
 {
     public class ViewHierarchyStringBuilder
     {
@@ -16,7 +16,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
             _indentSpace = string.Empty.PadLeft(indentCount);
         }
 
-        public void Add(View view, int depth, bool isVerbose = false)
+        public void Add(UIView view, int depth, bool isVerbose = false)
         {
             for (int i = 0; i < depth; i++)
             {
@@ -27,7 +27,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
 
             if (isVerbose)
             {
-                _stringBuilder.Append($" X: {view.GetX()}, Y: {view.GetY()}, Width: {view.Width}, Height: {view.Height}");
+                _stringBuilder.Append($" Frame={view.Frame}");
             }
 
             _stringBuilder.AppendLine(">");

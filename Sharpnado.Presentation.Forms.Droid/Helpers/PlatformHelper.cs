@@ -3,6 +3,9 @@
 using Android.Content.Res;
 using Sharpnado.Presentation.Forms.RenderedViews;
 
+using Xamarin.Forms;
+using Xamarin.Forms.Platform.Android;
+
 namespace Sharpnado.Presentation.Forms.Droid.Helpers
 {
     public class AndroidPlatformHelper : PlatformHelper
@@ -25,6 +28,20 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
         public override double PixelsToDp(double pixels)
         {
             return Math.Floor((pixels / Resources.System.DisplayMetrics.Density) * 100) / 100;
+        }
+
+        public override string DumpNativeViewHierarchy(View formsView, bool verbose)
+        {
+            var renderer = Platform.GetRenderer(formsView);
+            Platform.SetRenderer(formsView, renderer);
+            return renderer.View.DumpHierarchy(verbose);
+        }
+
+        public override string DumpNativeViewInfo(View formsView)
+        {
+            var renderer = Platform.GetRenderer(formsView);
+            Platform.SetRenderer(formsView, renderer);
+            return renderer.View.DumpInfo();
         }
     }
 }

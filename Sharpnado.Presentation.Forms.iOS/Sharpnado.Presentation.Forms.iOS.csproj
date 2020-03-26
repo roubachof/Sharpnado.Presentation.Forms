@@ -49,6 +49,9 @@
     <Compile Include="Effects\TintableImageEffect.cs" />
     <Compile Include="Effects\ViewStyleEffect .cs" />
     <Compile Include="Helpers\PlatformHelper.cs" />
+    <Compile Include="Helpers\ViewExtensions.cs" />
+    <Compile Include="Helpers\ViewHierarchyPrinter.cs" />
+    <Compile Include="Helpers\ViewVisitor.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Renderers\iOSShadowBoxViewRenderer.cs" />
