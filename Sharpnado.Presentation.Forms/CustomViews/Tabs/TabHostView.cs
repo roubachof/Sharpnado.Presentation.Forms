@@ -54,6 +54,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             Color.Transparent);
 
         private const int ShadowHeight = 6;
+        private const int AcrylicTopHeight = 2;
 
         private readonly Grid _grid;
         private readonly List<TabItem> _selectableTabs = new List<TabItem>();
@@ -66,6 +67,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         private RowDefinition _shadowRowDefinition;
 
         private ColumnDefinition _lastFillingColumn;
+
+        private int _lastShadowHeight;
 
         public TabHostView()
         {
@@ -225,41 +228,47 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                     if (Grid.GetRow(_shadow) == 0)
                     {
                         // Shadow top
-                        Margin = new Thickness(Margin.Left, Margin.Top + ShadowHeight, Margin.Right, Margin.Bottom);
+                        Margin = new Thickness(Margin.Left, Margin.Top + _lastShadowHeight, Margin.Right, Margin.Bottom);
                     }
                     else
                     {
                         // Shadow bottom
-                        Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom + ShadowHeight);
+                        Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom + _lastShadowHeight);
                     }
 
+                    _lastShadowHeight = 0;
                     _shadowRowDefinition.Height = 0;
 
                     return;
                 }
 
-                if (ShadowType == ShadowType.Top)
+                var shadowHeight = ShadowType == ShadowType.AcrylicTop ? AcrylicTopHeight : ShadowHeight;
+                _shadowRowDefinition.Height = shadowHeight;
+                _shadow.ShadowType = ShadowType;
+
+                if (ShadowType == ShadowType.Top || ShadowType == ShadowType.AcrylicTop)
                 {
-                    Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
+                    Margin = new Thickness(Margin.Left, Margin.Top + _lastShadowHeight - shadowHeight, Margin.Right, Margin.Bottom);
                 }
 
                 if (ShadowType == ShadowType.Bottom)
                 {
-                    Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
+                    Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom + _lastShadowHeight - shadowHeight);
                 }
 
-                _shadowRowDefinition.Height = ShadowHeight;
+                _lastShadowHeight = shadowHeight;
 
                 return;
             }
 
             // compute and layout _shadow
             _shadow = new ShadowBoxView { ShadowType = ShadowType };
-            _shadowRowDefinition = new RowDefinition { Height = ShadowHeight };
+            _lastShadowHeight = ShadowType == ShadowType.AcrylicTop ? AcrylicTopHeight : ShadowHeight;
+            _shadowRowDefinition = new RowDefinition { Height = _lastShadowHeight };
 
-            if (ShadowType == ShadowType.Top)
+            if (ShadowType == ShadowType.Top || ShadowType == ShadowType.AcrylicTop)
             {
-                Margin = new Thickness(Margin.Left, Margin.Top - ShadowHeight, Margin.Right, Margin.Bottom);
+                Margin = new Thickness(Margin.Left, Margin.Top - _lastShadowHeight, Margin.Right, Margin.Bottom);
                 _grid.RowDefinitions.Add(_shadowRowDefinition);
                 Grid.SetRow(_shadow, 0);
                 _childRow = 1;
@@ -269,7 +278,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
             if (ShadowType == ShadowType.Bottom)
             {
-                Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - ShadowHeight);
+                Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - _lastShadowHeight);
                 _grid.RowDefinitions.Add(_shadowRowDefinition);
                 _childRow = 0;
                 Grid.SetRow(_shadow, 1);

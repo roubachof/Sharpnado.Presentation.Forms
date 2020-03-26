@@ -1,4 +1,6 @@
-﻿using CoreAnimation;
+﻿using System.ComponentModel;
+
+using CoreAnimation;
 
 using CoreGraphics;
 
@@ -18,6 +20,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
     {
         private CGSize _previousSize;
 
+        private CAGradientLayer _gradientLayer;
+
         public override void LayoutSubviews()
         {
             if (_previousSize != Bounds.Size)
@@ -32,14 +36,22 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
         {
             base.Draw(rect);
 
-            if (NativeView.Layer.Sublayers != null
-                && NativeView.Layer.Sublayers.Length > 0
-                && NativeView.Layer.Sublayers[0] is CAGradientLayer)
+            if (Element.ShadowType == ShadowType.None)
             {
+                _gradientLayer?.RemoveFromSuperLayer();
                 return;
             }
 
-            if (Element.ShadowType != ShadowType.Top && Element.ShadowType != ShadowType.Bottom)
+            if (Element.ShadowType == ShadowType.AcrylicTop)
+            {
+                _gradientLayer?.RemoveFromSuperLayer();
+                NativeView.Layer.BackgroundColor = new CGColor(1, 1, 1);
+                return;
+            }
+
+            if (NativeView.Layer.Sublayers != null
+                && NativeView.Layer.Sublayers.Length > 0
+                && NativeView.Layer.Sublayers[0] is CAGradientLayer)
             {
                 return;
             }
@@ -48,7 +60,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
             // Top shadow
             var startColor = Color.FromHex("30000000");
-            var endColor = Color.FromHex("10ffffff");
+            var endColor = Color.FromHex("00ffffff");
             if (Element.ShadowType == ShadowType.Bottom)
             {
                 var tmpColor = startColor;
@@ -56,7 +68,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
                 endColor = tmpColor;
             }
 
-            var gradientLayer = new CAGradientLayer
+            _gradientLayer = new CAGradientLayer
             {
                 Frame = rect,
                 StartPoint = gradientsPoints.StartPoint.ToPointF(),
@@ -68,8 +80,18 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
                 },
             };
 
-            NativeView.Layer.InsertSublayer(gradientLayer, 0);
+            NativeView.Layer.InsertSublayer(_gradientLayer, 0);
             _previousSize = Bounds.Size;
+        }
+
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+
+            if (e.PropertyName == nameof(Element.ShadowType))
+            {
+                NativeView.Layer.SetNeedsLayout();
+            }
         }
     }
 }

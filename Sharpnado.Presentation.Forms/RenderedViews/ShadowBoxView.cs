@@ -7,6 +7,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         None = 0,
         Top,
         Bottom,
+        AcrylicTop,
     }
 
     public class ShadowBoxView : BoxView

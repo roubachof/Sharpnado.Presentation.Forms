@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using Android.Content;
+using Android.Graphics.Drawables;
 using Android.Support.V4.View;
 using Sharpnado.Presentation.Forms.Droid.Renderers;
 using Sharpnado.Presentation.Forms.RenderedViews;
@@ -16,6 +17,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
     /// </summary>
     public class AndroidMaterialFrameRenderer : FrameRenderer
     {
+        private GradientDrawable _mainDrawable;
+
+        private GradientDrawable _acrylicLayer;
+
         public AndroidMaterialFrameRenderer(Context context)
             : base(context)
         {
@@ -25,15 +30,42 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            base.OnElementPropertyChanged(sender, e);
-
-            if (e.PropertyName == nameof(MaterialFrame.Elevation)
-                || e.PropertyName == nameof(MaterialFrame.MaterialTheme)
-                || (e.PropertyName == nameof(MaterialFrame.LightThemeBackgroundColor)
-                    && MaterialFrame.MaterialTheme == MaterialFrame.Theme.Light))
+            switch (e.PropertyName)
             {
-                UpdateElevation();
+                case nameof(MaterialFrame.CornerRadius):
+                    UpdateCornerRadius();
+                    base.OnElementPropertyChanged(sender, e);
+                    break;
+
+                case nameof(MaterialFrame.Elevation):
+                    UpdateElevation();
+                    break;
+
+                case nameof(MaterialFrame.LightThemeBackgroundColor):
+                    UpdateLightThemeBackgroundColor();
+                    break;
+
+                case nameof(MaterialFrame.MaterialTheme):
+                    UpdateMaterialTheme();
+                    break;
+
+                default:
+                    base.OnElementPropertyChanged(sender, e);
+                    break;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _mainDrawable = null;
+
+                _acrylicLayer?.Dispose();
+                _acrylicLayer = null;
+            }
+
+            base.Dispose(disposing);
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Frame> e)
@@ -47,31 +79,100 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
                 return;
             }
 
-            UpdateElevation();
+            _mainDrawable = (GradientDrawable)Background;
+
+            UpdateMaterialTheme();
+        }
+
+        private void UpdateCornerRadius()
+        {
+            _acrylicLayer?.SetCornerRadius(Context.ToPixels(MaterialFrame.CornerRadius));
         }
 
         private void UpdateElevation()
         {
             if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
             {
-                MaterialFrame.BackgroundColor = MaterialFrame.ElevationToColor();
                 ViewCompat.SetElevation(this, 0);
                 ViewCompat.SetElevation(Control, 0);
-
-                base.OnElementPropertyChanged(this, new PropertyChangedEventArgs(VisualElement.BackgroundColorProperty.PropertyName));
                 return;
             }
+
+            bool isAcrylicTheme = MaterialFrame.MaterialTheme == MaterialFrame.Theme.Acrylic;
 
             // we need to reset the StateListAnimator to override the setting of Elevation on touch down and release.
             Control.StateListAnimator = new Android.Animation.StateListAnimator();
 
-            MaterialFrame.BackgroundColor = MaterialFrame.LightThemeBackgroundColor;
-
             // set the elevation manually
-            ViewCompat.SetElevation(this, MaterialFrame.Elevation);
-            ViewCompat.SetElevation(Control, MaterialFrame.Elevation);
+            ViewCompat.SetElevation(this, isAcrylicTheme ? MaterialFrame.AcrylicElevation : MaterialFrame.Elevation);
+            ViewCompat.SetElevation(Control, isAcrylicTheme ? MaterialFrame.AcrylicElevation : MaterialFrame.Elevation);
+        }
 
-            base.OnElementPropertyChanged(this, new PropertyChangedEventArgs(VisualElement.BackgroundColorProperty.PropertyName));
+        private void UpdateLightThemeBackgroundColor()
+        {
+            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
+            {
+                return;
+            }
+
+            _mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
+        }
+
+        private void UpdateMaterialTheme()
+        {
+            switch (MaterialFrame.MaterialTheme)
+            {
+                case MaterialFrame.Theme.Acrylic:
+                    SetAcrylicTheme();
+                    break;
+
+                case MaterialFrame.Theme.Dark:
+                    SetDarkTheme();
+                    break;
+
+                case MaterialFrame.Theme.Light:
+                    SetLightTheme();
+                    break;
+            }
+        }
+
+        private void SetDarkTheme()
+        {
+            _mainDrawable.SetColor(MaterialFrame.ElevationToColor().ToAndroid());
+
+            this.SetBackground(_mainDrawable);
+
+            UpdateElevation();
+        }
+
+        private void SetLightTheme()
+        {
+            _mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
+
+            this.SetBackground(_mainDrawable);
+
+            UpdateElevation();
+        }
+
+        private void SetAcrylicTheme()
+        {
+            if (_acrylicLayer == null)
+            {
+                _acrylicLayer = new GradientDrawable();
+                _acrylicLayer.SetShape(ShapeType.Rectangle);
+            }
+
+            _acrylicLayer.SetColor(Android.Graphics.Color.White);
+            _acrylicLayer.SetCornerRadius(_mainDrawable.CornerRadius);
+
+            _mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
+
+            LayerDrawable layer = new LayerDrawable(new Drawable[] { _acrylicLayer, _mainDrawable });
+            layer.SetLayerInsetTop(1, (int)Context.ToPixels(2));
+
+            this.SetBackground(layer);
+
+            UpdateElevation();
         }
     }
 }

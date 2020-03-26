@@ -24,6 +24,16 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
             UpdateBackgroundColor();
         }
 
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+
+            if (e.PropertyName == nameof(Element.ShadowType))
+            {
+                UpdateBackgroundColor();
+            }
+        }
+
         protected override void UpdateBackgroundColor()
         {
             switch (Element.ShadowType)
@@ -34,6 +44,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
                 case ShadowType.Bottom:
                     SetBackgroundResource(Resource.Drawable.bottom_shadow);
+                    break;
+
+                case ShadowType.AcrylicTop:
+                    SetBackgroundColor(Android.Graphics.Color.White);
                     break;
             }
         }

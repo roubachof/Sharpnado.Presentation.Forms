@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 
 using CoreAnimation;
 
@@ -27,6 +26,40 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
     [Preserve]
     public class iOSMaterialFrameRenderer : VisualElementRenderer<MaterialFrame>
     {
+        private CALayer _intermediateLayer;
+
+        public override void LayoutSublayersOfLayer(CALayer layer)
+        {
+            base.LayoutSublayersOfLayer(layer);
+
+            if (Layer.Bounds.Width > 0)
+            {
+                UpdateLayerBounds();
+
+                if (Layer.ShadowRadius > 0)
+                {
+                    Layer.ShadowPath = UIBezierPath.FromRect(Layer.Bounds).CGPath;
+                }
+            }
+        }
+
+        private void UpdateLayerBounds()
+        {
+            _intermediateLayer.Frame = new CGRect(0, 2, Bounds.Width, Bounds.Height - 2);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                _intermediateLayer?.RemoveFromSuperLayer();
+                _intermediateLayer?.Dispose();
+                _intermediateLayer = null;
+            }
+        }
+
         protected override void OnElementChanged(ElementChangedEventArgs<MaterialFrame> e)
         {
             base.OnElementChanged(e);
@@ -38,76 +71,136 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
                 return;
             }
 
-            SetupLayer();
+            _intermediateLayer = new CALayer { BackgroundColor = Color.Transparent.ToCGColor() };
+
+            Layer.InsertSublayer(_intermediateLayer, 0);
+
+            UpdateMaterialTheme();
         }
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            base.OnElementPropertyChanged(sender, e);
-            if (e.PropertyName != VisualElement.BackgroundColorProperty.PropertyName
-                && e.PropertyName != Xamarin.Forms.Frame.HasShadowProperty.PropertyName
-                && e.PropertyName != Xamarin.Forms.Frame.CornerRadiusProperty.PropertyName
-                && e.PropertyName != MaterialFrame.ElevationProperty.PropertyName
-                && e.PropertyName != MaterialFrame.MaterialThemeProperty.PropertyName)
+            switch (e.PropertyName)
             {
+                case nameof(MaterialFrame.CornerRadius):
+                    UpdateCornerRadius();
+                    break;
+
+                case nameof(MaterialFrame.Elevation):
+                    UpdateElevation();
+                    break;
+
+                case nameof(MaterialFrame.LightThemeBackgroundColor):
+                    UpdateLightThemeBackgroundColor();
+                    break;
+
+                case nameof(MaterialFrame.MaterialTheme):
+                    UpdateMaterialTheme();
+                    break;
+            }
+        }
+
+        private void UpdateLightThemeBackgroundColor()
+        {
+            switch (Element.MaterialTheme)
+            {
+                case MaterialFrame.Theme.Acrylic:
+                    _intermediateLayer.BackgroundColor = Element.LightThemeBackgroundColor.ToCGColor();
+                    break;
+
+                case MaterialFrame.Theme.Dark:
+                    return;
+
+                case MaterialFrame.Theme.Light:
+                    Layer.BackgroundColor = Element.LightThemeBackgroundColor.ToCGColor();
+                    break;
+            }
+        }
+
+        private void UpdateElevation()
+        {
+            if (Element.MaterialTheme == MaterialFrame.Theme.Dark)
+            {
+                Layer.ShadowOpacity = 0.0f;
+                Layer.BackgroundColor = Element.ElevationToColor().ToCGColor();
                 return;
             }
 
-            SetupLayer();
-        }
+            bool isAcrylicTheme = Element.MaterialTheme == MaterialFrame.Theme.Acrylic;
 
-        private void SetupLayer()
-        {
-            float num = Element.CornerRadius;
-            if (num == -1.0)
-            {
-                num = 5f;
-            }
+            float adaptedElevation = isAcrylicTheme ? MaterialFrame.AcrylicElevation / 2 : Element.Elevation / 2;
 
-            Layer.CornerRadius = num;
+            Layer.ShadowColor = UIColor.Black.CGColor;
+            Layer.ShadowRadius = Math.Abs(adaptedElevation);
+            Layer.ShadowOffset = new CGSize(0, adaptedElevation);
+            Layer.ShadowOpacity = 0.24f;
 
-            if (Element.MaterialTheme == MaterialFrame.Theme.Dark)
-            {
-                Layer.BackgroundColor = Element.ElevationToColor().ToCGColor();
-            }
-            else
-            {
-                Layer.BackgroundColor = Element.BackgroundColor == Color.Default
-                    ? UIColor.White.CGColor
-                    : Element.BackgroundColor.ToCGColor();
-            }
-
-            if (Element.HasShadow)
-            {
-                Layer.ShadowRadius = 5;
-                Layer.ShadowColor = UIColor.Black.CGColor;
-                Layer.ShadowOpacity = 0.8f;
-                Layer.ShadowOffset = SizeF.Empty;
-            }
-            else
-            {
-                Layer.ShadowOpacity = 0.0f;
-            }
-
-            if (Element.Elevation > 0 && Element.MaterialTheme == MaterialFrame.Theme.Light)
-            {
-                float adaptedElevation = Element.Elevation / 2;
-
-                Layer.ShadowColor = UIColor.Black.CGColor;
-                Layer.ShadowRadius = Math.Abs(adaptedElevation);
-                Layer.ShadowOffset = new CGSize(0, adaptedElevation);
-                Layer.ShadowOpacity = 0.24f;
-
-                // Layer.ShadowPath = UIBezierPath.FromRect(Layer.Bounds).CGPath;
-                Layer.MasksToBounds = false;
-            }
-            else
-            {
-                Layer.ShadowOpacity = 0.0f;
-            }
+            Layer.MasksToBounds = false;
 
             Layer.RasterizationScale = UIScreen.MainScreen.Scale;
             Layer.ShouldRasterize = true;
+        }
+
+        private void UpdateCornerRadius()
+        {
+            float radius = Element.CornerRadius;
+            if (radius == -1.0f)
+            {
+                radius = 5f;
+            }
+
+            Layer.CornerRadius = radius;
+            _intermediateLayer.CornerRadius = radius;
+        }
+
+        private void UpdateMaterialTheme()
+        {
+            switch (Element.MaterialTheme)
+            {
+                case MaterialFrame.Theme.Acrylic:
+                    SetAcrylicTheme();
+                    break;
+
+                case MaterialFrame.Theme.Dark:
+                    SetDarkTheme();
+                    break;
+
+                case MaterialFrame.Theme.Light:
+                    SetLightTheme();
+                    break;
+            }
+        }
+
+        private void SetDarkTheme()
+        {
+            _intermediateLayer.BackgroundColor = Color.Transparent.ToCGColor();
+
+            Layer.BackgroundColor = Element.ElevationToColor().ToCGColor();
+
+            UpdateCornerRadius();
+            UpdateElevation();
+        }
+
+        private void SetLightTheme()
+        {
+            _intermediateLayer.BackgroundColor = Color.Transparent.ToCGColor();
+
+            Layer.BackgroundColor = Element.LightThemeBackgroundColor.ToCGColor();
+
+            UpdateCornerRadius();
+            UpdateElevation();
+        }
+
+        private void SetAcrylicTheme()
+        {
+            _intermediateLayer.BackgroundColor = Element.LightThemeBackgroundColor.ToCGColor();
+
+            Layer.BackgroundColor = UIColor.White.CGColor;
+
+            UpdateCornerRadius();
+            UpdateElevation();
+
+            LayoutIfNeeded();
         }
     }
 }

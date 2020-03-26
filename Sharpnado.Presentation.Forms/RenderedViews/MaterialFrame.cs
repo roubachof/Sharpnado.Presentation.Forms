@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 using Xamarin.Forms;
 
@@ -10,6 +11,8 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
     /// </summary>
     public class MaterialFrame : Frame
     {
+        public const int AcrylicElevation = 20;
+
         public static readonly BindableProperty MaterialThemeProperty = BindableProperty.Create(
             nameof(MaterialTheme),
             typeof(Theme),
@@ -64,8 +67,9 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             HasShadow = false;
             CornerRadius = 5;
-            MaterialTheme = globalTheme;
             ThemeChanged += OnThemeChanged;
+
+            OnThemeChanged(this, null);
         }
 
         public static event EventHandler ThemeChanged;
@@ -74,6 +78,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             Light = 0,
             Dark,
+            Acrylic,
         }
 
         public Theme MaterialTheme
@@ -96,8 +101,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public static void ChangeGlobalTheme(Theme newTheme)
         {
+            var previousTheme = globalTheme;
             globalTheme = newTheme;
-            ThemeChanged?.Invoke(null, new EventArgs());
+
+            if (previousTheme != globalTheme)
+            {
+                ThemeChanged?.Invoke(null, new EventArgs());
+            }
         }
 
         public void Unsubscribe()
