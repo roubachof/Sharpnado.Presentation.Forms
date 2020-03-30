@@ -1,7 +1,13 @@
 ﻿using System.ComponentModel;
 using Android.Content;
 using Android.Graphics.Drawables;
+
+#if __ANDROID_29__
+using AndroidX.Core.View;
+#else
 using Android.Support.V4.View;
+#endif
+
 using Sharpnado.Presentation.Forms.Droid.Renderers;
 using Sharpnado.Presentation.Forms.RenderedViews;
 using Xamarin.Forms;

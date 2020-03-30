@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using Android.Support.V7.Widget;
 using Android.Views;
+
+#if __ANDROID_29__
+using AndroidX.RecyclerView.Widget;
+#else
+using Android.Support.V7.Widget;
+#endif
 
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Tasks;

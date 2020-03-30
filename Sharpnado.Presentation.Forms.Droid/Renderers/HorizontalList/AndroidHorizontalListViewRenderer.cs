@@ -4,9 +4,14 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 
 using Android.Content;
+using Android.Views;
+
+#if __ANDROID_29__
+using AndroidX.RecyclerView.Widget;
+#else
 using Android.Support.V7.Widget;
 using Android.Support.V7.Widget.Helper;
-using Android.Views;
+#endif
 
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList;

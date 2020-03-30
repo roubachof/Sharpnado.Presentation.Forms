@@ -18,7 +18,10 @@ $replaceString = "`$1 $formsVersion `$3"
 (Get-Content $iosProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $iosProject
 
 echo "  building Sharpnado.Presentation.Forms solution -- normal mode"
-msbuild /t:Clean,Restore,Build /p:Configuration=Release > build.txt
+msbuild /t:Clean,Restore,Build /p:Configuration=Release Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj > build.txt
+
+echo "  building Android9"
+msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj /t:Clean,Restore,Build /p:Configuration=ReleaseAndroid9.0 > build.Android9.txt
 
 $version = (Get-Item Sharpnado.Presentation.Forms\bin\Release\netstandard2.0\Sharpnado.Presentation.Forms.dll).VersionInfo.FileVersion
 
@@ -32,6 +35,10 @@ cp Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.HorizontalListView.
 
 echo "  building Sharpnado.Presentation.Forms solution -- only HorizontalListView"
 msbuild .\Sharpnado.Presentation.Forms.sln /t:Clean,Restore,Build /p:Configuration=Release > build.HorizontalListView.txt
+
+echo "  building Android9 -- only HorizontalListView"
+msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj /t:Clean,Restore,Build /p:Configuration=ReleaseAndroid9.0 > build.Android9.txt
+
 echo "  packaging Sharpnado.Forms.HorizontalListView.nuspec (v$version)"
 nuget pack .\Sharpnado.Forms.HorizontalListView.nuspec -Version $version
 

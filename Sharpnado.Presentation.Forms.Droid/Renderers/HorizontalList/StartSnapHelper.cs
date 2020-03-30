@@ -1,8 +1,13 @@
 ﻿using System;
 
 using Android.Runtime;
-using Android.Support.V7.Widget;
 using Android.Views;
+
+#if __ANDROID_29__
+using AndroidX.RecyclerView.Widget;
+#else
+using Android.Support.V7.Widget;
+#endif
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 {

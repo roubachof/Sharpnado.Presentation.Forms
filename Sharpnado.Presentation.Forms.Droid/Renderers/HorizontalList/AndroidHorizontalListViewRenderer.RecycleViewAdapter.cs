@@ -7,10 +7,16 @@ using System.Windows.Input;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Support.V7.Widget;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+
+
+#if __ANDROID_29__
+using AndroidX.RecyclerView.Widget;
+#else
+using Android.Support.V7.Widget;
+#endif
 
 using Sharpnado.Presentation.Forms.Droid.Helpers;
 using Sharpnado.Presentation.Forms.Helpers;
