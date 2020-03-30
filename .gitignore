@@ -266,3 +266,4 @@ ASALocalRun/
 /build.txt
 /build.HorizontalListView.txt
 build*.txt
+*nupkg.zip

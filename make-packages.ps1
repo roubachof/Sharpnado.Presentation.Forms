@@ -18,7 +18,7 @@ $replaceString = "`$1 $formsVersion `$3"
 (Get-Content $iosProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $iosProject
 
 echo "  building Sharpnado.Presentation.Forms solution -- normal mode"
-msbuild /t:Clean,Restore,Build /p:Configuration=Release Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj > build.txt
+msbuild .\Sharpnado.Presentation.Forms.sln /t:Clean,Restore,Build /p:Configuration=Release > build.txt
 
 echo "  building Android9"
 msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj /t:Clean,Restore,Build /p:Configuration=ReleaseAndroid9.0 > build.Android9.txt
