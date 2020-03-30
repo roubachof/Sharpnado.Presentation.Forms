@@ -14,7 +14,7 @@
        	<requireLicenseAcceptance>false</requireLicenseAcceptance>
         <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
         <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview drag drop</tags>
-        <releaseNotes>Support for RefreshView, improved drag and drop, numerous bug fixes</releaseNotes>
+        <releaseNotes>MaterialFrame with (Acrylic/Dark modes), AndroidX support.</releaseNotes>
        	<description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Carousel layout
@@ -33,6 +33,13 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
+
+MaterialFrame:
+  * Dark mode
+  * Light mode
+  * Acrylic mode
+  * Change modes dynamically
+  * Performance (CALayer on ios, LayerDrawable on android)
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
        	</description>

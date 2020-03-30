@@ -12,8 +12,8 @@
 [assembly: System.Reflection.AssemblyCompany("Sharpnado")]
 [assembly: System.Reflection.AssemblyDescription("Xamarin Forms custom components and renderers")]
 [assembly: System.Reflection.AssemblyProduct("Sharpnado Toolkit")]
-[assembly: System.Reflection.AssemblyCopyright("Copyright © Sharpnado 2019")]
-[assembly: System.Reflection.AssemblyVersion("1.4.0")]
-[assembly: System.Reflection.AssemblyFileVersion("1.4.0")]
+[assembly: System.Reflection.AssemblyCopyright("Copyright © Sharpnado 2020")]
+[assembly: System.Reflection.AssemblyVersion("1.5.0")]
+[assembly: System.Reflection.AssemblyFileVersion("1.5.0")]
 
 

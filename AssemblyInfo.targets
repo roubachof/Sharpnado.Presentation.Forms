@@ -2,8 +2,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <Copyright>Copyright © Sharpnado 2019</Copyright>
-    <Version>1.4.0</Version>
+    <Copyright>Copyright © Sharpnado 2020</Copyright>
+    <Version>1.5.0</Version>
     <Company>Sharpnado</Company>
     <Product>Sharpnado Toolkit</Product>
     <Description>Xamarin Forms custom components and renderers</Description>

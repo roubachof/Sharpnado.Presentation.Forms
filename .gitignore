@@ -265,3 +265,4 @@ ASALocalRun/
 .mfractor/
 /build.txt
 /build.HorizontalListView.txt
+build*.txt
