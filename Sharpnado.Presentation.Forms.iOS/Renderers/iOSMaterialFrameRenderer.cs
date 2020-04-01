@@ -128,12 +128,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
 
             bool isAcrylicTheme = Element.MaterialTheme == MaterialFrame.Theme.Acrylic;
 
-            float adaptedElevation = isAcrylicTheme ? MaterialFrame.AcrylicElevation / 2 : Element.Elevation / 2;
+            float adaptedElevation = isAcrylicTheme ? MaterialFrame.AcrylicElevation / 3 : Element.Elevation / 2;
+            float opacity = isAcrylicTheme ? 0.12f : 0.24f;
 
             Layer.ShadowColor = UIColor.Black.CGColor;
             Layer.ShadowRadius = Math.Abs(adaptedElevation);
             Layer.ShadowOffset = new CGSize(0, adaptedElevation);
-            Layer.ShadowOpacity = 0.24f;
+            Layer.ShadowOpacity = opacity;
 
             Layer.MasksToBounds = false;
 
