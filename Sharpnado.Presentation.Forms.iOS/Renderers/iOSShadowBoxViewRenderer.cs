@@ -4,14 +4,15 @@ using CoreAnimation;
 
 using CoreGraphics;
 
-using Sharpnado.Presentation.Forms.Droid.Renderers;
+using Sharpnado.Presentation.Forms.iOS.Renderers;
 using Sharpnado.Presentation.Forms.RenderedViews;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: ExportRenderer(typeof(ShadowBoxView), typeof(iOSShadowBoxViewRenderer))]
 
-namespace Sharpnado.Presentation.Forms.Droid.Renderers
+namespace Sharpnado.Presentation.Forms.iOS.Renderers
 {
     /// <summary>
     /// Renderer to update all frames with better shadows matching material design standards.

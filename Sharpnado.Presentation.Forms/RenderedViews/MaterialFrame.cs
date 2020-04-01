@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.RenderedViews
 {
-    /// <summary>
-    /// From https://alexdunn.org/2017/05/01/xamarin-tips-making-your-ios-frame-shadows-more-material/
-    /// Correct Frame Material shadow implementation for iOS, so that we can use this type of Frame to use automatic shadowing.
-    /// </summary>
     public class MaterialFrame : Frame
     {
         public const int AcrylicElevation = 20;
@@ -17,19 +12,25 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             nameof(MaterialTheme),
             typeof(Theme),
             typeof(MaterialFrame),
-            defaultValue: Theme.Light);
+            defaultValueCreator: (bo) => globalTheme);
 
         public static readonly BindableProperty LightThemeBackgroundColorProperty = BindableProperty.Create(
             nameof(LightThemeBackgroundColor),
             typeof(Color),
             typeof(MaterialFrame),
-            defaultValue: Color.White);
+            defaultValue: DefaultLightThemeBackgroundColor);
 
         public static readonly BindableProperty ElevationProperty = BindableProperty.Create(
             nameof(Elevation),
             typeof(int),
             typeof(MaterialFrame),
-            defaultValue: 2);
+            defaultValue: DefaultElevation);
+
+        private const Theme DefaultTheme = Theme.Light;
+
+        private const int DefaultElevation = 2;
+
+        private static readonly Color DefaultLightThemeBackgroundColor = Color.White;
 
         // https://material.io/design/color/dark-theme.html#properties
         private static readonly Color[] DarkColors = new[]
@@ -61,15 +62,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             Color.FromHex("373737"), // 24dp
         };
 
-        private static Theme globalTheme;
+        private static Theme globalTheme = DefaultTheme;
 
         public MaterialFrame()
         {
             HasShadow = false;
-            CornerRadius = 5;
-            ThemeChanged += OnThemeChanged;
 
-            OnThemeChanged(this, null);
+            ThemeChanged += OnThemeChanged;
         }
 
         public static event EventHandler ThemeChanged;
