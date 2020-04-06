@@ -56,6 +56,29 @@ Xamarin Forms custom components and renderers starring:
   </tbody>
 </table>
 
+### [``MaterialFrame``](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/MaterialFrame)
+
+  * 3 built-in themes: Light/Acrylic/Dark
+  * Dark elevation
+  * LightBackground color
+  * CornerRadius
+  * Performance
+
+<table>
+  <thead>
+    <tr>
+      <th>Dynamic theming</th>
+      <th>Acrylic theme</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/3-modes.gif" width="300" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/acrylic_ios.png" width="300" /></td>
+    </tr>
+  </tbody>
+</table>
+
 ### [```HorizontalListView``` for Xamarin Forms](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/HorizontalListView-Grid-And-Carousel)
   * Carousel layout
   * Column count
