@@ -1,7 +1,12 @@
 ﻿using System.ComponentModel;
 using Android.Content;
 using Android.Graphics.Drawables;
+using Android.Views;
+using Android.Widget;
 
+using Com.EightbitLab.BlurViewBinding;
+
+using Sharpnado.Presentation.Forms.Droid.Helpers;
 #if __ANDROID_29__
 using AndroidX.Core.View;
 #else
@@ -26,6 +31,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
         private GradientDrawable _mainDrawable;
 
         private GradientDrawable _acrylicLayer;
+
+        private FrameLayout _blurView;
 
         public AndroidMaterialFrameRenderer(Context context)
             : base(context)
@@ -97,7 +104,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
         private void UpdateElevation()
         {
-            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
+            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark || MaterialFrame.MaterialTheme == MaterialFrame.Theme.AcrylicBlur)
             {
                 ViewCompat.SetElevation(this, 0);
                 ViewCompat.SetElevation(Control, 0);
@@ -139,7 +146,49 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
                 case MaterialFrame.Theme.Light:
                     SetLightTheme();
                     break;
+
+                case MaterialFrame.Theme.AcrylicBlur:
+                    SetAcrylicBlurTheme();
+                    break;
             }
+        }
+
+        private void SetAcrylicBlurTheme()
+        {
+            var decorView = Context.GetActivity().Window.DecorView;
+            System.Diagnostics.Debug.WriteLine(decorView.DumpHierarchy(true));
+
+            var rootView = (ViewGroup)decorView;
+
+            if (_blurView == null)
+            {
+                _blurView = new FrameLayout(Context)
+                {
+                    LayoutParameters = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MatchParent,
+                        FrameLayout.LayoutParams.MatchParent),
+                };
+            }
+
+            _mainDrawable.SetColor(Color.Transparent.ToAndroid());
+
+            this.SetBackground(_mainDrawable);
+
+            //var content = GetChildAt(0);
+            //RemoveView(content);
+
+            //_blurView.AddView(content);
+
+            //AddView(_blurView);
+
+            //_blurView.SetupWith(rootView)
+            //    .SetBlurAlgorithm(new RenderScriptBlur(Context))
+            //    .SetBlurRadius(20f)
+            //    .SetOverlayColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
+
+            System.Diagnostics.Debug.WriteLine(this.DumpHierarchy(true));
+
+            UpdateElevation();
         }
 
         private void SetDarkTheme()

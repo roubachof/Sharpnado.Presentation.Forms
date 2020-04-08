@@ -78,6 +78,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             Light = 0,
             Dark,
             Acrylic,
+            AcrylicBlur,
         }
 
         public Theme MaterialTheme

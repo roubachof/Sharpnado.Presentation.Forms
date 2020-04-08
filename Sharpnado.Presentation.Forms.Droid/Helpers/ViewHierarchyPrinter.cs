@@ -28,6 +28,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
             if (isVerbose)
             {
                 _stringBuilder.Append($" X: {view.GetX()}, Y: {view.GetY()}, Width: {view.Width}, Height: {view.Height}");
+
+                _stringBuilder.Append(
+                    view.LayoutParameters != null
+                        ? $", LayoutParams: {{ {view.LayoutParameters.Width}, {view.LayoutParameters.Height} }}"
+                        : ", LayoutParams is null");
             }
 
             _stringBuilder.AppendLine(">");

@@ -130,6 +130,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <PackageReference Include="Xamarin.BlurView">
+      <Version>1.6.3</Version>
+    </PackageReference>
     <PackageReference Include="MSBuildTasks">
       <Version>1.5.0.235</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
