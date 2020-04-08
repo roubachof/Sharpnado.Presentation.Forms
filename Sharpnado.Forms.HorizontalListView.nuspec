@@ -3,19 +3,19 @@
     <metadata>
 
     	<id>Sharpnado.Forms.HorizontalListView</id>
-        <version>$version$</version>
-        <copyright>Sharpnado 2019</copyright>
-        <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
-        <authors>Jean-Marie Alfonsi</authors>
-        <owners></owners>
-        <licenseUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms/blob/master/LICENSE</licenseUrl>
-        <projectUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</projectUrl>
-        <iconUrl>https://avatars3.githubusercontent.com/u/596903?s=460&amp;v=4</iconUrl>
-       	<requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
-        <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview drag drop</tags>
-        <releaseNotes>MaterialFrame with (Acrylic/Dark modes), AndroidX support.</releaseNotes>
-       	<description>
+      <version>$version$</version>
+      <copyright>Sharpnado 2019</copyright>
+      <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
+      <authors>Jean-Marie Alfonsi</authors>
+      <owners></owners>
+      <projectUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</projectUrl>
+      <license type="file">LICENSE</license>
+      <icon>sharpnado.png</icon>
+      <requireLicenseAcceptance>false</requireLicenseAcceptance>
+      <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
+      <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview drag drop</tags>
+      <releaseNotes>Fix AndroidX support.</releaseNotes>
+      <description>
 HorizontalListView for Xamarin Forms (close to a CollectionView):
   * Carousel layout
   * Column count
@@ -42,20 +42,20 @@ MaterialFrame:
   * Performance (CALayer on ios, LayerDrawable on android)
 
 IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
-       	</description>
+      </description>
 
-        <dependencies>
-          <group>
-            <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
-            <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
-          </group>
-          <group targetFramework="MonoAndroid10.0">
-            <dependency id="Xamarin.AndroidX.Lifecycle.LiveData" version="2.1.0" />
-            <dependency id="Xamarin.Google.Android.Material" version="1.0.0" />
-          </group>
-        </dependencies>
+      <dependencies>
+        <group>
+          <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
+          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+        </group>
+        <group targetFramework="MonoAndroid10.0">
+          <dependency id="Xamarin.AndroidX.Lifecycle.LiveData" version="2.1.0" />
+          <dependency id="Xamarin.Google.Android.Material" version="1.0.0" />
+        </group>
+      </dependencies>
 
-	</metadata>
+    </metadata>
 
     <files>
 
