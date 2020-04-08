@@ -10,7 +10,7 @@
       <owners></owners>
       <projectUrl>https://github.com/roubachof/Sharpnado.Presentation.Forms</projectUrl>
       <license type="file">LICENSE</license>
-      <icon>sharpnado.png</icon>
+      <icon>images\sharpnado.png</icon>
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
       <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
       <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview drag drop</tags>
@@ -45,14 +45,32 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
       </description>
 
       <dependencies>
-        <group>
+
+        <group targetFramework=".NETStandard2.0">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
         </group>
+
+        <group targetFramework="Xamarin.iOS10">
+          <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
+          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+        </group>
+
+        <group targetFramework="MonoAndroid10">
+          <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
+          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+        </group>
+
         <group targetFramework="MonoAndroid10.0">
+          <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
+          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+          <dependency id="Xamarin.AndroidX.Browser" version="1.0.0" />
+          <dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
           <dependency id="Xamarin.AndroidX.Lifecycle.LiveData" version="2.1.0" />
+          <dependency id="Xamarin.AndroidX.MediaRouter" version="1.1.0" />
           <dependency id="Xamarin.Google.Android.Material" version="1.0.0" />
         </group>
+
       </dependencies>
 
     </metadata>
@@ -63,11 +81,11 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
         <file src="Sharpnado.Presentation.Forms\bin\Release\netstandard2.0\Sharpnado.Presentation.Forms.dll" target="lib\netstandard2.0\Sharpnado.Presentation.Forms.dll" />
         <file src="Sharpnado.Presentation.Forms\bin\Release\netstandard2.0\Sharpnado.Presentation.Forms.pdb" target="lib\netstandard2.0\Sharpnado.Presentation.Forms.pdb" />
 
-        <!--Xamarin.Android 9.0-->
-        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.Droid.dll" target="lib\MonoAndroid90\Sharpnado.Presentation.Forms.Droid.dll" />
-        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.Droid.pdb" target="lib\MonoAndroid90\Sharpnado.Presentation.Forms.Droid.pdb" />
-        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.dll" target="lib\MonoAndroid90\Sharpnado.Presentation.Forms.dll" />
-        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.pdb" target="lib\MonoAndroid90\Sharpnado.Presentation.Forms.pdb" />
+        <!--Xamarin.Android -->
+        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.Droid.dll" target="lib\MonoAndroid10\Sharpnado.Presentation.Forms.Droid.dll" />
+        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.Droid.pdb" target="lib\MonoAndroid10\Sharpnado.Presentation.Forms.Droid.pdb" />
+        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.dll" target="lib\MonoAndroid10\Sharpnado.Presentation.Forms.dll" />
+        <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid90\Sharpnado.Presentation.Forms.pdb" target="lib\MonoAndroid10\Sharpnado.Presentation.Forms.pdb" />
 
         <!--Xamarin.Android 10.0-->
         <file src="Sharpnado.Presentation.Forms.Droid\bin\Release\monoandroid10.0\Sharpnado.Presentation.Forms.Droid.dll" target="lib\MonoAndroid10.0\Sharpnado.Presentation.Forms.Droid.dll" />
@@ -80,6 +98,12 @@ IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xa
         <file src="Sharpnado.Presentation.Forms.iOS\bin\Release\Sharpnado.Presentation.Forms.iOS.pdb" target="lib\Xamarin.iOS10\Sharpnado.Presentation.Forms.iOS.pdb" />
         <file src="Sharpnado.Presentation.Forms.iOS\bin\Release\Sharpnado.Presentation.Forms.dll" target="lib\Xamarin.iOS10\Sharpnado.Presentation.Forms.dll" />
         <file src="Sharpnado.Presentation.Forms.iOS\bin\Release\Sharpnado.Presentation.Forms.pdb" target="lib\Xamarin.iOS10\Sharpnado.Presentation.Forms.pdb" />
+
+        <!-- Icon -->
+        <file src="sharpnado.png" target="images\" />
+
+        <!--License-->
+        <file src="LICENSE" target="LICENSE" />
 
     </files>
 
