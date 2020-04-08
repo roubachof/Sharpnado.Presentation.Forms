@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <Copyright>Copyright © Sharpnado 2020</Copyright>
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
     <Company>Sharpnado</Company>
     <Product>Sharpnado Toolkit</Product>
     <Description>Xamarin Forms custom components and renderers</Description>

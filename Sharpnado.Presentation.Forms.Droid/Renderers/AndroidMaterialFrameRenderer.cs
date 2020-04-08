@@ -107,18 +107,16 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
             if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark || MaterialFrame.MaterialTheme == MaterialFrame.Theme.AcrylicBlur)
             {
                 ViewCompat.SetElevation(this, 0);
-                ViewCompat.SetElevation(Control, 0);
                 return;
             }
 
             bool isAcrylicTheme = MaterialFrame.MaterialTheme == MaterialFrame.Theme.Acrylic;
 
             // we need to reset the StateListAnimator to override the setting of Elevation on touch down and release.
-            Control.StateListAnimator = new Android.Animation.StateListAnimator();
+            StateListAnimator = new Android.Animation.StateListAnimator();
 
             // set the elevation manually
             ViewCompat.SetElevation(this, isAcrylicTheme ? MaterialFrame.AcrylicElevation : MaterialFrame.Elevation);
-            ViewCompat.SetElevation(Control, isAcrylicTheme ? MaterialFrame.AcrylicElevation : MaterialFrame.Elevation);
         }
 
         private void UpdateLightThemeBackgroundColor()
