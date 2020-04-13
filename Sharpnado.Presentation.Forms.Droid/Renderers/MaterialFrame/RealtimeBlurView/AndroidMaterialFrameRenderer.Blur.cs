@@ -42,11 +42,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame
         private void EnableBlur()
         {
             InitializeBlurIfNeeded();
-            if (MeasuredWidth == 0 || MeasuredHeight == 0)
-            {
-                ViewTreeObserver.AddOnGlobalLayoutListener(_globalLayoutListener);
-                return;
-            }
+            //if (MeasuredWidth == 0 || MeasuredHeight == 0)
+            //{
+            //    ViewTreeObserver.AddOnGlobalLayoutListener(_globalLayoutListener);
+            //    return;
+            //}
 
             Init();
         }

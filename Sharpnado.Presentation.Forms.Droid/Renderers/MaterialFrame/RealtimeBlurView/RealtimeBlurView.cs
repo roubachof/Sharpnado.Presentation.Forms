@@ -292,6 +292,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
                 {
                     return false;
                 }
+
                 int[] locations = new int[2];
                 Bitmap oldBmp = blurView.mBlurredBitmap;
                 View decor = blurView.mDecorView;
@@ -329,7 +330,6 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
                     }
                     catch (StopException)
                     {
-                        InternalLogger.Info("Stop exception received: rendering was stopped");
                     }
                     finally
                     {
