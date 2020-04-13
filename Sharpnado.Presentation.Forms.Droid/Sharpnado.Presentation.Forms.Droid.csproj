@@ -70,7 +70,8 @@
     <Compile Include="Helpers\PlatformHelper.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Renderers\AndroidShadowBoxViewRenderer.cs" />
-    <Compile Include="Renderers\AndroidMaterialFrameRenderer.cs" />
+    <None Include="Renderers\MaterialFrame\BlurView\AndroidMaterialFrameRenderer.Blur.cs" />
+    <Compile Include="Renderers\MaterialFrame\AndroidMaterialFrameRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.DragAnDropItemTouchHelperCallback.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.OnControlScrollChangedListener.cs" />
@@ -83,6 +84,13 @@
     <Compile Include="Renderers\HorizontalList\SlowRecyclerView.cs" />
     <Compile Include="Renderers\HorizontalList\StartSnapHelper.cs" />
     <Compile Include="Renderers\HorizontalList\ViewHolderQueue.cs" />
+    <Compile Include="Renderers\MaterialFrame\BlurView\BlockingBlurController.cs" />
+    <Compile Include="Renderers\MaterialFrame\BlurView\BlurViewFacade.cs" />
+    <Compile Include="Renderers\MaterialFrame\BlurView\RenderScriptBlur.cs" />
+    <Compile Include="Renderers\MaterialFrame\RealtimeBlurView\AndroidMaterialFrameRenderer.Blur.cs" />
+    <Compile Include="Renderers\MaterialFrame\RealtimeBlurView\AndroidStockBlurImpl.cs" />
+    <Compile Include="Renderers\MaterialFrame\RealtimeBlurView\IBlurImpl.cs" />
+    <Compile Include="Renderers\MaterialFrame\RealtimeBlurView\RealtimeBlurView.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -130,9 +138,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <PackageReference Include="Xamarin.BlurView">
-      <Version>1.6.3</Version>
-    </PackageReference>
     <PackageReference Include="MSBuildTasks">
       <Version>1.5.0.235</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -159,6 +164,7 @@
       <Name>Sharpnado.Presentation.Forms</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\AssemblyInfo.targets" />
 </Project>

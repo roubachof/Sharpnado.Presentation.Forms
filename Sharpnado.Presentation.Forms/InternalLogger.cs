@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Sharpnado.Presentation.Forms
 {
@@ -35,7 +36,7 @@ namespace Sharpnado.Presentation.Forms
             }
 
 #if DEBUG
-            Debug.WriteLine(DateTime.Now.ToString("MM-dd H:mm:ss.fff") + " | SharpnadoInternals | " + format, parameters);
+            Debug.WriteLine(DateTime.Now.ToString("MM-dd H:mm:ss.fff") + " | SharpnadoInternals | " + Thread.CurrentThread.ManagedThreadId + " | " + format, parameters);
 #else
             Console.WriteLine(DateTime.Now.ToString("MM-dd H:mm:ss.fff") + " | SharpnadoInternals | " + format, parameters);
 #endif

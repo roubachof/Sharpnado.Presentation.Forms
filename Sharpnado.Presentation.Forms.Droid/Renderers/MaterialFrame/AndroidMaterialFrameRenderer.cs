@@ -1,45 +1,44 @@
 ﻿using System.ComponentModel;
+
 using Android.Content;
 using Android.Graphics.Drawables;
 using Android.Views;
 using Android.Widget;
 
-using Com.EightbitLab.BlurViewBinding;
-
-using Sharpnado.Presentation.Forms.Droid.Helpers;
 #if __ANDROID_29__
 using AndroidX.Core.View;
 #else
 using Android.Support.V4.View;
 #endif
 
-using Sharpnado.Presentation.Forms.Droid.Renderers;
+using Sharpnado.Presentation.Forms.Droid.Helpers;
+using Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame;
 using Sharpnado.Presentation.Forms.RenderedViews;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
+
 using FrameRenderer = Xamarin.Forms.Platform.Android.AppCompat.FrameRenderer;
 
 [assembly: ExportRenderer(typeof(MaterialFrame), typeof(AndroidMaterialFrameRenderer))]
 
-namespace Sharpnado.Presentation.Forms.Droid.Renderers
+namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame
 {
     /// <summary>
     /// Renderer to update all frames with better shadows matching material design standards.
     /// </summary>
-    public class AndroidMaterialFrameRenderer : FrameRenderer
+    public partial class AndroidMaterialFrameRenderer : FrameRenderer
     {
         private GradientDrawable _mainDrawable;
 
         private GradientDrawable _acrylicLayer;
-
-        private FrameLayout _blurView;
 
         public AndroidMaterialFrameRenderer(Context context)
             : base(context)
         {
         }
 
-        private MaterialFrame MaterialFrame => (MaterialFrame)Element;
+        private RenderedViews.MaterialFrame MaterialFrame => (RenderedViews.MaterialFrame)Element;
 
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -85,7 +84,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
         {
             base.OnElementChanged(e);
 
-            ((MaterialFrame)e.OldElement)?.Unsubscribe();
+            ((RenderedViews.MaterialFrame)e.OldElement)?.Unsubscribe();
+            DestroyBlur();
 
             if (e.NewElement == null)
             {
@@ -104,24 +104,24 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
         private void UpdateElevation()
         {
-            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark || MaterialFrame.MaterialTheme == MaterialFrame.Theme.AcrylicBlur)
+            if (MaterialFrame.MaterialTheme == RenderedViews.MaterialFrame.Theme.Dark || MaterialFrame.MaterialTheme == RenderedViews.MaterialFrame.Theme.AcrylicBlur)
             {
                 ViewCompat.SetElevation(this, 0);
                 return;
             }
 
-            bool isAcrylicTheme = MaterialFrame.MaterialTheme == MaterialFrame.Theme.Acrylic;
+            bool isAcrylicTheme = MaterialFrame.MaterialTheme == RenderedViews.MaterialFrame.Theme.Acrylic;
 
             // we need to reset the StateListAnimator to override the setting of Elevation on touch down and release.
             StateListAnimator = new Android.Animation.StateListAnimator();
 
             // set the elevation manually
-            ViewCompat.SetElevation(this, isAcrylicTheme ? MaterialFrame.AcrylicElevation : MaterialFrame.Elevation);
+            ViewCompat.SetElevation(this, isAcrylicTheme ? RenderedViews.MaterialFrame.AcrylicElevation : MaterialFrame.Elevation);
         }
 
         private void UpdateLightThemeBackgroundColor()
         {
-            if (MaterialFrame.MaterialTheme == MaterialFrame.Theme.Dark)
+            if (MaterialFrame.MaterialTheme == RenderedViews.MaterialFrame.Theme.Dark)
             {
                 return;
             }
@@ -133,19 +133,19 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
         {
             switch (MaterialFrame.MaterialTheme)
             {
-                case MaterialFrame.Theme.Acrylic:
+                case RenderedViews.MaterialFrame.Theme.Acrylic:
                     SetAcrylicTheme();
                     break;
 
-                case MaterialFrame.Theme.Dark:
+                case RenderedViews.MaterialFrame.Theme.Dark:
                     SetDarkTheme();
                     break;
 
-                case MaterialFrame.Theme.Light:
+                case RenderedViews.MaterialFrame.Theme.Light:
                     SetLightTheme();
                     break;
 
-                case MaterialFrame.Theme.AcrylicBlur:
+                case RenderedViews.MaterialFrame.Theme.AcrylicBlur:
                     SetAcrylicBlurTheme();
                     break;
             }
@@ -153,44 +153,19 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
         private void SetAcrylicBlurTheme()
         {
-            var decorView = Context.GetActivity().Window.DecorView;
-            System.Diagnostics.Debug.WriteLine(decorView.DumpHierarchy(true));
-
-            var rootView = (ViewGroup)decorView;
-
-            if (_blurView == null)
-            {
-                _blurView = new FrameLayout(Context)
-                {
-                    LayoutParameters = new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MatchParent,
-                        FrameLayout.LayoutParams.MatchParent),
-                };
-            }
-
             _mainDrawable.SetColor(Color.Transparent.ToAndroid());
 
             this.SetBackground(_mainDrawable);
 
-            //var content = GetChildAt(0);
-            //RemoveView(content);
-
-            //_blurView.AddView(content);
-
-            //AddView(_blurView);
-
-            //_blurView.SetupWith(rootView)
-            //    .SetBlurAlgorithm(new RenderScriptBlur(Context))
-            //    .SetBlurRadius(20f)
-            //    .SetOverlayColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
-
-            System.Diagnostics.Debug.WriteLine(this.DumpHierarchy(true));
-
             UpdateElevation();
+
+            EnableBlur();
         }
 
         private void SetDarkTheme()
         {
+            DisableBlur();
+
             _mainDrawable.SetColor(MaterialFrame.ElevationToColor().ToAndroid());
 
             this.SetBackground(_mainDrawable);
@@ -200,6 +175,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers
 
         private void SetLightTheme()
         {
+            DisableBlur();
+
             _mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
 
             this.SetBackground(_mainDrawable);

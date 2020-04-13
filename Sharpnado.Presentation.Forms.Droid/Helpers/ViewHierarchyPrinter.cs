@@ -29,10 +29,19 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
             {
                 _stringBuilder.Append($" X: {view.GetX()}, Y: {view.GetY()}, Width: {view.Width}, Height: {view.Height}");
 
-                _stringBuilder.Append(
-                    view.LayoutParameters != null
+                string layoutParams;
+                if (view.LayoutParameters is ViewGroup.MarginLayoutParams marginLayout)
+                {
+                    layoutParams = $", MarginLayoutParams: {{ {view.LayoutParameters.Width}, {view.LayoutParameters.Height}, {marginLayout.LeftMargin}l, {marginLayout.TopMargin}t, {marginLayout.RightMargin}r, {marginLayout.BottomMargin}b }}";
+                }
+                else
+                {
+                    layoutParams = view.LayoutParameters != null
                         ? $", LayoutParams: {{ {view.LayoutParameters.Width}, {view.LayoutParameters.Height} }}"
-                        : ", LayoutParams is null");
+                        : ", LayoutParams is null";
+                }
+
+                _stringBuilder.Append(layoutParams);
             }
 
             _stringBuilder.AppendLine(">");
