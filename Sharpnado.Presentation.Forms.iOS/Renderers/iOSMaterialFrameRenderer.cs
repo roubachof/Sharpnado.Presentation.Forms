@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 
 using CoreAnimation;
 
@@ -28,6 +29,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
     {
         private CALayer _intermediateLayer;
 
+        private UIVisualEffectView _blurView;
+
         public override void LayoutSublayersOfLayer(CALayer layer)
         {
             base.LayoutSublayersOfLayer(layer);
@@ -43,9 +46,27 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
             }
         }
 
+        public override void LayoutSubviews()
+        {
+            base.LayoutSubviews();
+
+            if (Bounds.Width > 0)
+            {
+                UpdateBlurViewBounds();
+            }
+        }
+
         private void UpdateLayerBounds()
         {
             _intermediateLayer.Frame = new CGRect(0, 2, Bounds.Width, Bounds.Height - 2);
+        }
+
+        private void UpdateBlurViewBounds()
+        {
+            if (_blurView != null)
+            {
+                _blurView.Frame = new CGRect(0, 0, Bounds.Width, Bounds.Height);
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -94,8 +115,16 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
                     UpdateLightThemeBackgroundColor();
                     break;
 
+                case nameof(MaterialFrame.AcrylicGlowColor):
+                    UpdateAcrylicGlowColor();
+                    break;
+
                 case nameof(MaterialFrame.MaterialTheme):
                     UpdateMaterialTheme();
+                    break;
+
+                case nameof(MaterialFrame.MaterialBlurStyle):
+                    UpdateMaterialBlurStyle();
                     break;
             }
         }
@@ -108,6 +137,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
                     _intermediateLayer.BackgroundColor = Element.LightThemeBackgroundColor.ToCGColor();
                     break;
 
+                case MaterialFrame.Theme.AcrylicBlur:
                 case MaterialFrame.Theme.Dark:
                     return;
 
@@ -117,8 +147,24 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
             }
         }
 
+        private void UpdateAcrylicGlowColor()
+        {
+            if (Element.MaterialTheme != MaterialFrame.Theme.Acrylic)
+            {
+                return;
+            }
+
+            Layer.BackgroundColor = Element.AcrylicGlowColor.ToCGColor();
+        }
+
         private void UpdateElevation()
         {
+            if (Element.MaterialTheme == MaterialFrame.Theme.AcrylicBlur)
+            {
+                Layer.ShadowOpacity = 0.0f;
+                return;
+            }
+
             if (Element.MaterialTheme == MaterialFrame.Theme.Dark)
             {
                 Layer.ShadowOpacity = 0.0f;
@@ -152,6 +198,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
 
             Layer.CornerRadius = radius;
             _intermediateLayer.CornerRadius = radius;
+
+            if (_blurView != null)
+            {
+                _blurView.Layer.CornerRadius = radius;
+            }
         }
 
         private void UpdateMaterialTheme()
@@ -160,6 +211,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
             {
                 case MaterialFrame.Theme.Acrylic:
                     SetAcrylicTheme();
+                    break;
+
+                case MaterialFrame.Theme.AcrylicBlur:
+                    SetAcrylicBlurTheme();
                     break;
 
                 case MaterialFrame.Theme.Dark:
@@ -180,6 +235,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
 
             UpdateCornerRadius();
             UpdateElevation();
+
+            DisableBlur();
         }
 
         private void SetLightTheme()
@@ -190,18 +247,79 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
 
             UpdateCornerRadius();
             UpdateElevation();
+
+            DisableBlur();
         }
 
         private void SetAcrylicTheme()
         {
             _intermediateLayer.BackgroundColor = Element.LightThemeBackgroundColor.ToCGColor();
 
-            Layer.BackgroundColor = UIColor.White.CGColor;
+            UpdateAcrylicGlowColor();
+
+            UpdateCornerRadius();
+            UpdateElevation();
+
+            DisableBlur();
+
+            LayoutIfNeeded();
+        }
+
+        private void SetAcrylicBlurTheme()
+        {
+            _intermediateLayer.BackgroundColor = Color.Transparent.ToCGColor();
+
+            Layer.BackgroundColor = Color.Transparent.ToCGColor();
+
+            EnableBlur();
 
             UpdateCornerRadius();
             UpdateElevation();
 
             LayoutIfNeeded();
+        }
+
+        private void UpdateMaterialBlurStyle()
+        {
+            if (_blurView != null)
+            {
+                _blurView.Effect = UIBlurEffect.FromStyle(ConvertBlurStyle());
+            }
+        }
+
+        private void EnableBlur()
+        {
+            if (_blurView == null)
+            {
+                _blurView = new UIVisualEffectView() { ClipsToBounds = true };
+            }
+
+            if (Subviews.Length > 0 && ReferenceEquals(Subviews[0], _blurView))
+            {
+                return;
+            }
+
+            UpdateMaterialBlurStyle();
+            InsertSubview(_blurView, 0);
+        }
+
+        private void DisableBlur()
+        {
+            _blurView?.RemoveFromSuperview();
+        }
+
+        private UIBlurEffectStyle ConvertBlurStyle()
+        {
+            switch (Element.MaterialBlurStyle)
+            {
+                case MaterialFrame.BlurStyle.ExtraLight:
+                    return UIBlurEffectStyle.ExtraLight;
+                case MaterialFrame.BlurStyle.Dark:
+                    return UIBlurEffectStyle.Dark;
+
+                default:
+                    return UIBlurEffectStyle.Light;
+            }
         }
     }
 }

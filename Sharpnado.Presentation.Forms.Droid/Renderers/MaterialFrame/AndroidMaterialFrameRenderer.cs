@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 using Android.Content;
 using Android.Graphics.Drawables;
@@ -57,8 +58,28 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame
                     UpdateLightThemeBackgroundColor();
                     break;
 
+                case nameof(MaterialFrame.AcrylicGlowColor):
+                    UpdateAcrylicGlowColor();
+                    break;
+
+                case nameof(MaterialFrame.AndroidBlurOverlayColor):
+                    UpdateAndroidBlurOverlayColor();
+                    break;
+
+                case nameof(MaterialFrame.AndroidBlurRadius):
+                    UpdateAndroidBlurRadius();
+                    break;
+
+                case nameof(MaterialFrame.AndroidBlurRootElement):
+                    UpdateAndroidBlurRootElement();
+                    break;
+
                 case nameof(MaterialFrame.MaterialTheme):
                     UpdateMaterialTheme();
+                    break;
+
+                case nameof(MaterialFrame.MaterialBlurStyle):
+                    UpdateMaterialBlurStyle();
                     break;
 
                 default:
@@ -100,6 +121,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame
         private void UpdateCornerRadius()
         {
             _acrylicLayer?.SetCornerRadius(Context.ToPixels(MaterialFrame.CornerRadius));
+            _realtimeBlurView?.SetCornerRadius(Context.ToPixels(MaterialFrame.CornerRadius));
         }
 
         private void UpdateElevation()
@@ -121,12 +143,17 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame
 
         private void UpdateLightThemeBackgroundColor()
         {
-            if (MaterialFrame.MaterialTheme == RenderedViews.MaterialFrame.Theme.Dark)
+            if (MaterialFrame.MaterialTheme == RenderedViews.MaterialFrame.Theme.Dark || MaterialFrame.MaterialTheme == RenderedViews.MaterialFrame.Theme.AcrylicBlur)
             {
                 return;
             }
 
             _mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
+        }
+
+        private void UpdateAcrylicGlowColor()
+        {
+            _acrylicLayer?.SetColor(MaterialFrame.AcrylicGlowColor.ToAndroid());
         }
 
         private void UpdateMaterialTheme()
@@ -192,8 +219,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame
                 _acrylicLayer.SetShape(ShapeType.Rectangle);
             }
 
-            _acrylicLayer.SetColor(Android.Graphics.Color.White);
-            _acrylicLayer.SetCornerRadius(_mainDrawable.CornerRadius);
+            UpdateAcrylicGlowColor();
+            UpdateCornerRadius();
 
             _mainDrawable.SetColor(MaterialFrame.LightThemeBackgroundColor.ToAndroid());
 

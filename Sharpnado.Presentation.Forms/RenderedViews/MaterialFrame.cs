@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.RenderedViews
 {
-    public class MaterialFrame : Frame
+    public partial class MaterialFrame : Frame
     {
         public const int AcrylicElevation = 20;
 
@@ -12,13 +12,25 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             nameof(MaterialTheme),
             typeof(Theme),
             typeof(MaterialFrame),
-            defaultValueCreator: (bo) => globalTheme);
+            defaultValueCreator: _ => globalTheme);
+
+        public static readonly BindableProperty MaterialBlurStyleProperty = BindableProperty.Create(
+            nameof(MaterialBlurStyle),
+            typeof(BlurStyle),
+            typeof(MaterialFrame),
+            defaultValue: DefaultBlurStyle);
 
         public static readonly BindableProperty LightThemeBackgroundColorProperty = BindableProperty.Create(
             nameof(LightThemeBackgroundColor),
             typeof(Color),
             typeof(MaterialFrame),
-            defaultValue: DefaultLightThemeBackgroundColor);
+            defaultValueCreator: _ => DefaultLightThemeBackgroundColor);
+
+        public static readonly BindableProperty AcrylicGlowColorProperty = BindableProperty.Create(
+            nameof(AcrylicGlowColor),
+            typeof(Color),
+            typeof(MaterialFrame),
+            defaultValueCreator: _ => DefaultAcrylicGlowColor);
 
         public static readonly BindableProperty ElevationProperty = BindableProperty.Create(
             nameof(Elevation),
@@ -30,7 +42,11 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         private const int DefaultElevation = 2;
 
+        private const BlurStyle DefaultBlurStyle = BlurStyle.Light;
+
         private static readonly Color DefaultLightThemeBackgroundColor = Color.White;
+
+        private static readonly Color DefaultAcrylicGlowColor = Color.White;
 
         // https://material.io/design/color/dark-theme.html#properties
         private static readonly Color[] DarkColors = new[]
@@ -81,6 +97,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             AcrylicBlur,
         }
 
+        public enum BlurStyle
+        {
+            Light = 0,
+            ExtraLight,
+            Dark,
+        }
+
         public Theme MaterialTheme
         {
             get => (Theme)GetValue(MaterialThemeProperty);
@@ -91,6 +114,18 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             get => (Color)GetValue(LightThemeBackgroundColorProperty);
             set => SetValue(LightThemeBackgroundColorProperty, value);
+        }
+
+        public Color AcrylicGlowColor
+        {
+            get => (Color)GetValue(AcrylicGlowColorProperty);
+            set => SetValue(AcrylicGlowColorProperty, value);
+        }
+
+        public BlurStyle MaterialBlurStyle
+        {
+            get => (BlurStyle)GetValue(MaterialBlurStyleProperty);
+            set => SetValue(MaterialBlurStyleProperty, value);
         }
 
         public int Elevation

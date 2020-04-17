@@ -8,6 +8,33 @@ namespace Sharpnado.Presentation.Forms
     {
         public static bool EnableLogging { get; set; } = false;
 
+        public static bool EnableDebug { get; set; } = false;
+
+        public static void Debug(string tag, string format, params object[] parameters)
+        {
+            if (!EnableDebug)
+            {
+                return;
+            }
+
+            DiagnosticLog(tag + " | DBUG | " + format, parameters);
+        }
+
+        public static void Debug(string format, params object[] parameters)
+        {
+            if (!EnableDebug)
+            {
+                return;
+            }
+
+            DiagnosticLog("DBUG | " + format, parameters);
+        }
+
+        public static void Info(string tag, string format, params object[] parameters)
+        {
+            DiagnosticLog(tag + " | INFO | " + format, parameters);
+        }
+
         public static void Info(string format, params object[] parameters)
         {
             DiagnosticLog("INFO | " + format, parameters);
@@ -20,7 +47,7 @@ namespace Sharpnado.Presentation.Forms
 
         public static void Error(string format, params object[] parameters)
         {
-            DiagnosticLog("ERROR | " + format, parameters);
+            DiagnosticLog("ERRO | " + format, parameters);
         }
 
         public static void Error(Exception exception)
@@ -36,7 +63,7 @@ namespace Sharpnado.Presentation.Forms
             }
 
 #if DEBUG
-            Debug.WriteLine(DateTime.Now.ToString("MM-dd H:mm:ss.fff") + " | SharpnadoInternals | " + Thread.CurrentThread.ManagedThreadId + " | " + format, parameters);
+            System.Diagnostics.Debug.WriteLine(DateTime.Now.ToString("MM-dd H:mm:ss.fff") + " | SharpnadoInternals | " + $"{Thread.CurrentThread.ManagedThreadId:000} | " + format, parameters);
 #else
             Console.WriteLine(DateTime.Now.ToString("MM-dd H:mm:ss.fff") + " | SharpnadoInternals | " + format, parameters);
 #endif

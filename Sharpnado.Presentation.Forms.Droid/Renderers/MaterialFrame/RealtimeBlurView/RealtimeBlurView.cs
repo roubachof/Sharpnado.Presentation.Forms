@@ -26,10 +26,13 @@ using System;
 using Android.App;
 using Android.Content;
 using Android.Graphics;
+using Android.OS;
 using Android.Runtime;
 using Android.Views;
 
 using Java.Lang;
+
+using Sharpnado.Presentation.Forms.Droid.Helpers;
 
 using Exception = System.Exception;
 using Math = System.Math;
@@ -54,7 +57,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
 
         private float mBlurRadius; // default 10dp (0 < r <= 25)
 
+        private float mCornerRadius; // default 0
+
         private readonly IBlurImpl mBlurImpl;
+
+        private readonly string _formsId;
 
         private bool mDirty;
 
@@ -69,21 +76,32 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
         private readonly Rect mRectSrc = new Rect(), mRectDst = new Rect();
 
         // mDecorView should be the root view of the activity (even if you are on a different window like a dialog)
-        private View mDecorView;
+        // private View mDecorView;
+
+        private JniWeakReference<View> _weakDecorView;
+
 
         // If the view is on different root view (usually means we are on a PopupWindow),
         // we need to manually call invalidate() in onPreDraw(), otherwise we will not be able to see the changes
         private bool mDifferentRoot;
 
+        private bool _isContainerShown;
+
+        private bool _autoUpdate;
+
         private static int RENDERING_COUNT;
 
         private static int BLUR_IMPL;
 
-        public RealtimeBlurView(Context context)
+        public RealtimeBlurView(Context context, string formsId)
             : base(context)
         {
             mBlurImpl = GetBlurImpl(); // provide your own by override getBlurImpl()
             mPaint = new Paint();
+
+            _formsId = formsId;
+            _isContainerShown = true;
+            _autoUpdate = true;
 
             preDrawListener = new PreDrawListener(this);
         }
@@ -123,11 +141,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
             }
         }
 
-        public void SetBlurRadius(float radius)
+        public void SetCornerRadius(float radius)
         {
-            if (mBlurRadius != radius)
+            if (mCornerRadius != radius)
             {
-                mBlurRadius = radius;
+                mCornerRadius = radius;
                 mDirty = true;
                 Invalidate();
             }
@@ -151,8 +169,19 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
 
         public void Release()
         {
+            SetRootView(null);
             ReleaseBitmap();
             mBlurImpl.Release();
+        }
+
+        public void SetBlurRadius(float radius)
+        {
+            if (mBlurRadius != radius)
+            {
+                mBlurRadius = radius;
+                mDirty = true;
+                Invalidate();
+            }
         }
 
         public void SetOverlayColor(int color)
@@ -162,6 +191,112 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
                 mOverlayColor = color;
                 Invalidate();
             }
+        }
+
+        public void SetRootView(View rootView)
+        {
+            var mDecorView = GetRootView();
+            if (mDecorView != rootView)
+            {
+                mDecorView?.ViewTreeObserver.RemoveOnPreDrawListener(preDrawListener);
+
+                _weakDecorView = new JniWeakReference<View>(rootView);
+
+                if (IsAttachedToWindow)
+                {
+                    OnAttached(rootView);
+                }
+            }
+        }
+
+        private View GetRootView()
+        {
+            View mDecorView = null;
+            _weakDecorView?.TryGetTarget(out mDecorView);
+            return mDecorView;
+        }
+
+        private void OnAttached(View mDecorView)
+        {
+            if (mDecorView != null)
+            {
+                mDecorView.ViewTreeObserver.AddOnPreDrawListener(preDrawListener);
+                mDifferentRoot = mDecorView.RootView != RootView;
+                if (mDifferentRoot)
+                {
+                    mDecorView.PostInvalidate();
+                }
+            }
+            else
+            {
+                mDifferentRoot = false;
+            }
+        }
+
+        protected override void OnVisibilityChanged(View changedView, [GeneratedEnum] ViewStates visibility)
+        {
+            base.OnVisibilityChanged(changedView, visibility);
+
+            if (changedView.GetType().Name == "PageContainer")
+            {
+                _isContainerShown = visibility == ViewStates.Visible;
+                SetAutoUpdate(_isContainerShown);
+            }
+        }
+
+        private void SetAutoUpdate(bool autoUpdate)
+        {
+            if (autoUpdate)
+            {
+                EnableAutoUpdate();
+                return;
+            }
+
+            DisableAutoUpdate();
+        }
+
+        private void EnableAutoUpdate()
+        {
+            if (_autoUpdate)
+            {
+                return;
+            }
+
+            InternalLogger.Debug(_formsId, $"EnableAutoUpdate()");
+
+            _autoUpdate = true;
+            using var handler = new Handler();
+            handler.PostDelayed(
+                () =>
+                {
+                    var mDecorView = GetRootView();
+                    if (mDecorView == null || !_autoUpdate)
+                    {
+                        return;
+                    }
+
+                    mDecorView.ViewTreeObserver.AddOnPreDrawListener(preDrawListener);
+                },
+                AndroidMaterialFrameRenderer.BlurProcessDelayMilliseconds);
+        }
+
+        private void DisableAutoUpdate()
+        {
+            if (!_autoUpdate)
+            {
+                return;
+            }
+
+            InternalLogger.Debug(_formsId, $"DisableAutoUpdate()");
+
+            _autoUpdate = false;
+            var mDecorView = GetRootView();
+            if (mDecorView == null)
+            {
+                return;
+            }
+
+            mDecorView.ViewTreeObserver.RemoveOnPreDrawListener(preDrawListener);
         }
 
         private void ReleaseBitmap()
@@ -222,6 +357,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
 
                     mBlurringCanvas = new Canvas(mBitmapToBlur);
 
+                    InternalLogger.Debug(_formsId, $"Prepare() => Bitmap.CreateBitmap()");
                     mBlurredBitmap = Bitmap.CreateBitmap(scaledWidth, scaledHeight, Bitmap.Config.Argb8888);
                     if (mBlurredBitmap == null)
                     {
@@ -252,6 +388,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
 
             if (dirty)
             {
+                InternalLogger.Debug(_formsId, $"Prepare() => dirty: mBlurImpl.Prepare()");
                 if (mBlurImpl.Prepare(Context, mBitmapToBlur, radius))
                 {
                     mDirty = false;
@@ -274,11 +411,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
 
         private class PreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
         {
-            private readonly WeakReference<RealtimeBlurView> _weakBlurView;
+            private readonly JniWeakReference<RealtimeBlurView> _weakBlurView;
 
             public PreDrawListener(RealtimeBlurView blurView)
             {
-                _weakBlurView = new WeakReference<RealtimeBlurView>(blurView);
+                _weakBlurView = new JniWeakReference<RealtimeBlurView>(blurView);
             }
 
             public PreDrawListener(IntPtr handle, JniHandleOwnership transfer)
@@ -293,12 +430,21 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
                     return false;
                 }
 
+                if (!blurView._isContainerShown)
+                {
+                    return false;
+                }
+
+                var mDecorView = blurView.GetRootView();
+
+                InternalLogger.Debug(blurView._formsId, $"OnPreDraw()");
+
                 int[] locations = new int[2];
                 Bitmap oldBmp = blurView.mBlurredBitmap;
-                View decor = blurView.mDecorView;
-                if (decor != null && blurView.IsShown && blurView.Prepare())
+                View decor = mDecorView;
+                if (!decor.IsNullOrDisposed() && blurView.IsShown && blurView.Prepare())
                 {
-                    InternalLogger.Info("OnPreDraw()");
+                    InternalLogger.Debug($"OnPreDraw(formsId: {blurView._formsId}) => calling draw on decor");
                     bool redrawBitmap = blurView.mBlurredBitmap != oldBmp;
                     oldBmp = null;
                     decor.GetLocationOnScreen(locations);
@@ -330,6 +476,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
                     }
                     catch (StopException)
                     {
+                        InternalLogger.Debug($"OnPreDraw(formsId: {blurView._formsId}) => in catch StopException");
+                    }
+                    catch (Exception)
+                    {
+                        InternalLogger.Debug($"OnPreDraw(formsId: {blurView._formsId}) => in catch global exception");
                     }
                     finally
                     {
@@ -338,10 +489,13 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
                         blurView.mBlurringCanvas.RestoreToCount(rc);
                     }
 
+                    InternalLogger.Debug($"OnPreDraw(formsId: {blurView._formsId}) => blurView.Blur()");
                     blurView.Blur(blurView.mBitmapToBlur, blurView.mBlurredBitmap);
 
                     if (redrawBitmap || blurView.mDifferentRoot)
                     {
+                        InternalLogger.Debug(
+                            $"OnPreDraw(formsId: {blurView._formsId}, redrawBitmap: {redrawBitmap}, differentRoot: {blurView.mDifferentRoot}) => blurView.Invalidate()");
                         blurView.Invalidate();
                     }
                 }
@@ -370,30 +524,29 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
 
         protected override void OnAttachedToWindow()
         {
+            InternalLogger.Debug(_formsId, $"OnAttachedToWindow()");
             base.OnAttachedToWindow();
-            mDecorView = GetActivityDecorView();
-            if (mDecorView != null)
+
+            var mDecorView = GetRootView();
+            if (mDecorView == null)
             {
-                mDecorView.ViewTreeObserver.AddOnPreDrawListener(preDrawListener);
-                mDifferentRoot = mDecorView.RootView != RootView;
-                if (mDifferentRoot)
-                {
-                    mDecorView.PostInvalidate();
-                }
+                SetRootView(GetActivityDecorView());
             }
             else
             {
-                mDifferentRoot = false;
+                OnAttached(mDecorView);
             }
         }
 
         protected override void OnDetachedFromWindow()
         {
+            var mDecorView = GetRootView();
             if (mDecorView != null)
             {
                 mDecorView.ViewTreeObserver.RemoveOnPreDrawListener(preDrawListener);
             }
 
+            InternalLogger.Debug(_formsId, $"OnDetachedFromWindow()");
             Release();
             base.OnDetachedFromWindow();
         }
@@ -402,21 +555,26 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
         {
             if (mIsRendering)
             {
-                InternalLogger.Info("Draw( throwing stop exception )");
+                InternalLogger.Debug(_formsId, $"Draw() => throwing stop exception");
 
                 // Quit here, don't draw views above me
-                throw STOP_EXCEPTION;
+                if (AndroidMaterialFrameRenderer.ThrowStopExceptionOnDraw)
+                {
+                    throw STOP_EXCEPTION;
+                }
+
+                return;
             }
 
             if (RENDERING_COUNT > 0)
             {
-                InternalLogger.Info("Draw( Doesn't support blurview overlap on another blurview )");
+                InternalLogger.Debug(_formsId, $"Draw() => Doesn't support blurview overlap on another blurview");
 
                 // Doesn't support blurview overlap on another blurview
             }
             else
             {
-                InternalLogger.Info("Draw( calling base draw )");
+                InternalLogger.Debug(_formsId, $"Draw() => calling base draw");
                 base.Draw(canvas);
             }
         }
@@ -424,7 +582,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
         protected override void OnDraw(Canvas canvas)
         {
             base.OnDraw(canvas);
-            DrawBlurredBitmap(canvas, mBlurredBitmap, mOverlayColor);
+
+            InternalLogger.Debug(_formsId, $"OnDraw(formsId: {_formsId})");
+            DrawRoundedBlurredBitmap(canvas, mBlurredBitmap, mOverlayColor);
+
+            // DrawBlurredBitmap(canvas, mBlurredBitmap, mOverlayColor);
         }
 
         /**
@@ -447,6 +609,30 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.MaterialFrame.RealtimeBlu
 
             mPaint.Color = new Color(overlayColor);
             canvas.DrawRect(mRectDst, mPaint);
+        }
+
+        private void DrawRoundedBlurredBitmap(Canvas canvas, Bitmap blurredBitmap, int overlayColor) {
+            if (blurredBitmap != null)
+            {
+                InternalLogger.Debug(
+                    _formsId, $"DrawRoundedBlurredBitmap( mCornerRadius: {mCornerRadius}, mOverlayColor: {mOverlayColor} )");
+
+                var mRectF = new RectF { Right = Width, Bottom = Height };
+
+                mPaint.Reset();
+                mPaint.AntiAlias = true;
+                BitmapShader shader = new BitmapShader(blurredBitmap, Shader.TileMode.Clamp, Shader.TileMode.Clamp);
+                Matrix matrix = new Matrix();
+                matrix.PostScale(mRectF.Width() / blurredBitmap.Width, mRectF.Height() / blurredBitmap.Height);
+                shader.SetLocalMatrix(matrix);
+                mPaint.SetShader(shader);
+                canvas.DrawRoundRect(mRectF, mCornerRadius, mCornerRadius, mPaint);
+
+                mPaint.Reset();
+                mPaint.AntiAlias = true;
+                mPaint.Color = new Color(overlayColor);
+                canvas.DrawRoundRect(mRectF, mCornerRadius, mCornerRadius, mPaint);
+            }
         }
 
         private class StopException : Exception
