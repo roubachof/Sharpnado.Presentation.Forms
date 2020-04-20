@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 using CoreAnimation;
 
@@ -10,6 +11,7 @@ using Foundation;
 
 using Sharpnado.Presentation.Forms.iOS.Renderers;
 using Sharpnado.Presentation.Forms.RenderedViews;
+using Sharpnado.Tasks;
 
 using UIKit;
 
@@ -78,6 +80,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
                 _intermediateLayer?.RemoveFromSuperLayer();
                 _intermediateLayer?.Dispose();
                 _intermediateLayer = null;
+
+                _blurView?.RemoveFromSuperview();
+                _blurView?.Dispose();
+                _blurView = null;
             }
         }
 
@@ -262,13 +268,12 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
 
             DisableBlur();
 
-            LayoutIfNeeded();
+            SetNeedsDisplay();
         }
 
         private void SetAcrylicBlurTheme()
         {
             _intermediateLayer.BackgroundColor = Color.Transparent.ToCGColor();
-
             Layer.BackgroundColor = Color.Transparent.ToCGColor();
 
             EnableBlur();
@@ -276,7 +281,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
             UpdateCornerRadius();
             UpdateElevation();
 
-            LayoutIfNeeded();
+            LayoutSubviews();
         }
 
         private void UpdateMaterialBlurStyle()
@@ -291,15 +296,17 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers
         {
             if (_blurView == null)
             {
-                _blurView = new UIVisualEffectView() { ClipsToBounds = true };
+                _blurView = new UIVisualEffectView() { ClipsToBounds = true, BackgroundColor = UIColor.Clear };
             }
+
+            UpdateMaterialBlurStyle();
 
             if (Subviews.Length > 0 && ReferenceEquals(Subviews[0], _blurView))
             {
                 return;
             }
 
-            UpdateMaterialBlurStyle();
+            _blurView.Frame = new CGRect(0, 0, Bounds.Width, Bounds.Height);
             InsertSubview(_blurView, 0);
         }
 
