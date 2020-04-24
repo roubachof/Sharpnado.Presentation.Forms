@@ -38,7 +38,7 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             nameof(IsDraggable),
             typeof(bool),
             typeof(DraggableViewCell),
-            defaultValue: false);
+            defaultValue: true);
 
         public static readonly BindableProperty IsDragAndDroppingProperty = BindableProperty.Create(
             nameof(IsDragAndDropping),

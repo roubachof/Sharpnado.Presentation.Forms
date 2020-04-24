@@ -10,6 +10,22 @@
 | Android  | [![Build status](https://build.appcenter.ms/v0.1/apps/23f44cf3-7656-4932-9d82-f654db6afc82/branches/master/badge)](https://appcenter.ms) |
 | iOS      | [![Build status](https://build.appcenter.ms/v0.1/apps/ddd14409-1f42-4521-ae8d-6f9891de2714/branches/master/badge)](https://appcenter.ms) |
 
+
+## Sample App: the Silly! app
+
+All the following components are presented in the Silly! app in the following repository:
+
+https://github.com/roubachof/Xamarin-Forms-Practices
+
+If you want to know how to use the components, it's the best place to start.
+
+## Initialization
+
+**IMPORTANT:** On platform projects, call `SharpnadoInitializer.Initialize()` after `Xamarin.Forms.Forms.Init()` and before `LoadApplication(new App())`.
+
+
+## Featured Components 
+
 Xamarin Forms custom components and renderers starring:
 
 ### ["Pure" ```Xamarin.Forms``` Tabs (no renderers)](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Pure-Xamarin.Forms-tabs)
@@ -58,11 +74,28 @@ Xamarin Forms custom components and renderers starring:
 
 ### [``MaterialFrame``](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/MaterialFrame)
 
-  * 3 built-in themes: Light/Acrylic/Dark
+  * 4 built-in themes: AcrylicBlur/Acrylic/Dark/Light
+  * 3 Blur Styles: Light/ExtraLight/Dark
+  * Based on `RealtimeBlurView` on Android and `UIVisualEffectView` on iOS
   * Dark elevation
   * LightBackground color
   * CornerRadius
   * Performance
+
+<table>
+  <thead>
+    <tr>
+      <th>AcrylicBlur Light style</th>
+      <th>AcrylicBlur Dark style</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/blur_light.png" width="300" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/blur_dark.png" width="300" /></td>
+    </tr>
+  </tbody>
+</table>
 
 <table>
   <thead>
@@ -73,7 +106,7 @@ Xamarin Forms custom components and renderers starring:
   </thead>
   <tbody>
     <tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/3-modes.gif" width="300" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dynamic_themes.gif" width="300" /></td>
       <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/acrylic_ios.png" width="300" /></td>
     </tr>
   </tbody>

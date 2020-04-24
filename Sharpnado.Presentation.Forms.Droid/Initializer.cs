@@ -8,8 +8,7 @@ namespace Sharpnado.Presentation.Forms.Droid
     {
         public static void Initialize(bool enableInternalLogger = false, bool enableInternalDebugLogger = false)
         {
-            InternalLogger.EnableLogging = enableInternalLogger;
-            InternalLogger.EnableDebug = enableInternalDebugLogger;
+            InternalLogger.EnableLogger(enableInternalLogger, enableInternalDebugLogger);
             PlatformHelper.InitializeSingleton(new AndroidPlatformHelper());
             AndroidHorizontalListViewRenderer.Initialize();
         }

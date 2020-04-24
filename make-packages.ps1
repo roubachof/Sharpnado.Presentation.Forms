@@ -1,4 +1,4 @@
-$formsVersion = "3.4.0.33328"
+$formsVersion = "3.4.0.1008975"
 
 echo "  <<<< WARNING >>>>> You need to launch 2 times this script to make sure Xamarin.Forms version was correctly resolved..."
 

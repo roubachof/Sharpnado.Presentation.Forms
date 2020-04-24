@@ -1,14 +1,22 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 
 namespace Sharpnado.Presentation.Forms
 {
     public static class InternalLogger
     {
-        public static bool EnableLogging { get; set; } = false;
+        public static bool EnableLogging { get; private set; }
 
-        public static bool EnableDebug { get; set; } = false;
+        public static bool EnableDebug { get; private set; }
+
+        public static void EnableLogger(bool enableGlobalLogging, bool enableDebugLevel)
+        {
+            EnableLogging = enableGlobalLogging;
+            EnableDebug = enableDebugLevel;
+
+            MaterialFrame.InternalLogger.EnableLogging = enableGlobalLogging;
+            MaterialFrame.InternalLogger.EnableDebug = enableDebugLevel;
+        }
 
         public static void Debug(string tag, string format, params object[] parameters)
         {
