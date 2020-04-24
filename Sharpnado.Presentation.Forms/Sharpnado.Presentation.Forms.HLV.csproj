@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Sharpnado.Presentation.Forms</AssemblyName>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\StyleCopRules.ruleset</CodeAnalysisRuleSet>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);CustomViews\**;Converters\*;Behaviors\*</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\HLVDebug</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\HLVRelease</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="InternalLogger.cs" />
+    <Compile Remove="Behaviors\*" />
+    <Compile Remove="Converters\*" />
+    <Compile Remove="CustomViews\**" />
+    <Compile Remove="RenderedViews\ShadowBoxView.cs" />
+    <Compile Remove="ViewModels\*" />
+    <EmbeddedResource Remove="CustomViews\**" />
+    <None Remove="CustomViews\**" />
+    <None Remove="RenderedViews\ShadowBoxView.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSBuildTasks">
+      <Version>1.5.0.235</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms">
+      <Version>4.5.0.495</Version>
+    </PackageReference>
+    <PackageReference Include="Sharpnado.TaskMonitor" Version="1.0.0" />
+  </ItemGroup>
+
+  <Import Project="..\AssemblyInfo.targets" />
+
+</Project>
+
+
+
+
+
+
+
