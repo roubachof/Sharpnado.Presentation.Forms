@@ -13,11 +13,13 @@
       <icon>images\sharpnado.png</icon>
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
       <repository url="https://github.com/roubachof/Sharpnado.Presentation.Forms" />
-      <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView) and TaskLoaderView (mvvm async loading view)</summary>
-      <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview mvvm async</tags>
-      <releaseNotes>Fix AndroidX support.</releaseNotes>
+      <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView), TaskLoaderView (mvvm async loading view), Tabs, and MaterialFrame (Acrylic, AcrylicBlur)</summary>
+      <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview mvvm async materialframe blur blurview UIVisualEffectView</tags>
+      <releaseNotes>Add new MaterialFrame with blur to the package.</releaseNotes>
       <description>
 Collection of Xamarin.Forms components.
+
+IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
 
 Pure Xamarin.Forms tabs:
   * Fixed tabs (android tabs style)
@@ -28,11 +30,14 @@ Pure Xamarin.Forms tabs:
   * Independent ViewSwitcher
 
 MaterialFrame:
+  * AcrylicBlur mode
+  * 3 Blur styles: Light, ExtraLight, Dark (UIVisualEffectView styles)
+  * Acrylic mode
   * Dark mode
   * Light mode
-  * Acrylic mode
   * Change modes dynamically
   * Performance (CALayer on ios, LayerDrawable on android)
+  * Android: RealtimeBlurView from Tu Yimin (mmin18)
 
 The TaskLoaderView 2.0 handles all your task loading states:
   * Handles error with custom messages and icons
@@ -59,8 +64,6 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
   * Padding and item spacing
   * Handles NotifyCollectionChangedAction Add Remove and Reset actions
   * View recycling
-
-IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
       </description>
 
       <dependencies>
