@@ -72,7 +72,7 @@ Xamarin Forms custom components and renderers starring:
   </tbody>
 </table>
 
-### [``MaterialFrame``](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/MaterialFrame)
+### [``MaterialFrame``](https://github.com/roubachof/Sharpnado.MaterialFrame)
 
   * 4 built-in themes: AcrylicBlur/Acrylic/Dark/Light
   * 3 Blur Styles: Light/ExtraLight/Dark
@@ -91,8 +91,8 @@ Xamarin Forms custom components and renderers starring:
   </thead>
   <tbody>
     <tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/blur_light.png" width="300" /></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/blur_dark.png" width="300" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/android_lightblur.png" width="300" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/ios_darkblur.png" width="300" /></td>
     </tr>
   </tbody>
 </table>
