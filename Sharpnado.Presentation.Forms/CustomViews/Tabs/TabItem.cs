@@ -13,7 +13,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         public static readonly BindableProperty SelectedTabColorProperty = BindableProperty.Create(
             nameof(SelectedTabColor),
             typeof(Color),
-            typeof(TabTextItem));
+            typeof(TabTextItem),
+            Color.Default);
 
         public bool IsSelected
         {

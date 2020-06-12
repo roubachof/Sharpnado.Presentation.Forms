@@ -20,12 +20,14 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         public static readonly BindableProperty LabelSizeProperty = BindableProperty.Create(
             nameof(LabelSize),
             typeof(double),
-            typeof(TabTextItem));
+            typeof(TabTextItem),
+            15d);
 
         public static readonly BindableProperty UnselectedLabelColorProperty = BindableProperty.Create(
             nameof(UnselectedLabelColor),
             typeof(Color),
-            typeof(TabTextItem));
+            typeof(TabTextItem),
+            Color.Default);
 
         public string Label
         {

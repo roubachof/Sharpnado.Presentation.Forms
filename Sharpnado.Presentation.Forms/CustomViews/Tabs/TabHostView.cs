@@ -8,7 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Sharpnado.Presentation.Forms.Commands;
 using Sharpnado.Presentation.Forms.Effects;
-using Sharpnado.Presentation.Forms.RenderedViews;
+using Sharpnado.Shades;
+
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
@@ -20,13 +21,26 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
     }
 
     [ContentProperty("TabHostContent")]
-    public class TabHostView : ContentView
+    public class TabHostView : Shadows
     {
         public static readonly BindableProperty TabsProperty = BindableProperty.Create(
             nameof(Tabs),
             typeof(ObservableCollection<TabItem>),
             typeof(TabHostView),
             defaultValueCreator: _ => new ObservableCollection<TabItem>());
+
+        public static readonly BindableProperty IsSegmentedProperty = BindableProperty.Create(
+            nameof(IsSegmented),
+            typeof(bool),
+            typeof(TabHostView),
+            defaultValue: false,
+            defaultBindingMode: BindingMode.OneWayToSource);
+
+        public static readonly BindableProperty SegmentedOutlineColorProperty = BindableProperty.Create(
+            nameof(SegmentedOutlineColor),
+            typeof(Color),
+            typeof(TabHostView),
+            defaultValue: Color.Default);
 
         public static readonly BindableProperty TabTypeProperty = BindableProperty.Create(
             nameof(TabType),
@@ -42,39 +56,37 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             defaultValue: -1,
             propertyChanged: SelectedIndexPropertyChanged);
 
-        public static readonly BindableProperty ShadowTypeProperty = BindableProperty.Create(
-            nameof(ShadowType),
-            typeof(ShadowType),
-            typeof(TabHostView));
-
         public static readonly new BindableProperty BackgroundColorProperty = BindableProperty.Create(
             nameof(BackgroundColor),
             typeof(Color),
             typeof(TabHostView),
             Color.Transparent);
 
-        private const int ShadowHeight = 6;
-        private const int AcrylicTopHeight = 2;
-
         private readonly Grid _grid;
+        private readonly Frame _frame;
         private readonly List<TabItem> _selectableTabs = new List<TabItem>();
 
         private int _childRow = 0;
 
         private ScrollView _scrollView;
-        private BoxView _contentBackgroundView;
-        private ShadowBoxView _shadow;
-        private RowDefinition _shadowRowDefinition;
 
         private ColumnDefinition _lastFillingColumn;
-
-        private int _lastShadowHeight;
 
         public TabHostView()
         {
             TabItemTappedCommand = new TapCommand(OnTabItemTapped);
 
             Tabs.CollectionChanged += OnTabsCollectionChanged;
+
+            _frame = new Frame
+            {
+                Padding = 0,
+                HasShadow = false,
+                IsClippedToBounds = true,
+                CornerRadius = this.CornerRadius,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.Fill,
+            };
 
             _grid = new Grid
             {
@@ -85,6 +97,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             };
 
             UpdateTabType();
+
+            Shades = new List<Shade>();
         }
 
         public event EventHandler<SelectedPositionChangedEventArgs> SelectedTabIndexChanged;
@@ -93,6 +107,21 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             get => (ObservableCollection<TabItem>)GetValue(TabsProperty);
             set => SetValue(TabsProperty, value);
+        }
+
+        public bool IsSegmented
+        {
+            get => (bool)GetValue(IsSegmentedProperty);
+            set => SetValue(IsSegmentedProperty, value);
+        }
+
+        /// <summary>
+        /// Only available if IsSegmented is true.
+        /// </summary>
+        public Color SegmentedOutlineColor
+        {
+            get => (Color)GetValue(SegmentedOutlineColorProperty);
+            set => SetValue(SegmentedOutlineColorProperty, value);
         }
 
         public TabType TabType
@@ -105,12 +134,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             get => (int)GetValue(SelectedIndexProperty);
             set => SetValue(SelectedIndexProperty, value);
-        }
-
-        public ShadowType ShadowType
-        {
-            get => (ShadowType)GetValue(ShadowTypeProperty);
-            set => SetValue(ShadowTypeProperty, value);
         }
 
         public new Color BackgroundColor
@@ -144,18 +167,29 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
             switch (propertyName)
             {
-                case nameof(TabType):
-                    UpdateTabType();
-                    break;
-                case nameof(ShadowType):
-                    UpdateShadow();
-                    break;
                 case nameof(BackgroundColor):
                     UpdateBackgroundColor();
+                    break;
+                case nameof(CornerRadius):
+                    UpdateCornerRadius();
+                    break;
+                case nameof(IsSegmented):
+                case nameof(TabType):
+                    UpdateTabType();
                     break;
                 case nameof(Tabs):
                     throw new NotSupportedException("Updating Tabs collection reference is not supported");
             }
+        }
+
+        private void UpdateBackgroundColor()
+        {
+            _grid.BackgroundColor = BackgroundColor;
+        }
+
+        private void UpdateCornerRadius()
+        {
+            _frame.CornerRadius = CornerRadius;
         }
 
         private static void SelectedIndexPropertyChanged(BindableObject bindable, object oldvalue, object newvalue)
@@ -200,113 +234,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             RaiseSelectedTabIndexChanged(new SelectedPositionChangedEventArgs(selectedIndex));
         }
 
-        private void UpdateBackgroundColor()
-        {
-            if ((ShadowType == ShadowType.None && _shadow == null) || Device.RuntimePlatform == Device.UWP)
-            {
-                _grid.BackgroundColor = BackgroundColor;
-                return;
-            }
-
-            _grid.BackgroundColor = Color.Transparent;
-            _contentBackgroundView.BackgroundColor = BackgroundColor;
-        }
-
-        private void UpdateShadow()
-        {
-            if ((ShadowType == ShadowType.None && _shadow == null) || Device.RuntimePlatform == Device.UWP)
-            {
-                return;
-            }
-
-            if (_shadow != null)
-            {
-                // _shadow has already be computed
-                if (ShadowType == ShadowType.None)
-                {
-                    // restore margins according to previous shadow positioning
-                    if (Grid.GetRow(_shadow) == 0)
-                    {
-                        // Shadow top
-                        Margin = new Thickness(Margin.Left, Margin.Top + _lastShadowHeight, Margin.Right, Margin.Bottom);
-                    }
-                    else
-                    {
-                        // Shadow bottom
-                        Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom + _lastShadowHeight);
-                    }
-
-                    _lastShadowHeight = 0;
-                    _shadowRowDefinition.Height = 0;
-
-                    return;
-                }
-
-                var shadowHeight = ShadowType == ShadowType.AcrylicTop ? AcrylicTopHeight : ShadowHeight;
-                _shadowRowDefinition.Height = shadowHeight;
-                _shadow.ShadowType = ShadowType;
-
-                if (ShadowType == ShadowType.Top || ShadowType == ShadowType.AcrylicTop)
-                {
-                    Margin = new Thickness(Margin.Left, Margin.Top + _lastShadowHeight - shadowHeight, Margin.Right, Margin.Bottom);
-                }
-
-                if (ShadowType == ShadowType.Bottom)
-                {
-                    Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom + _lastShadowHeight - shadowHeight);
-                }
-
-                _lastShadowHeight = shadowHeight;
-
-                return;
-            }
-
-            // compute and layout _shadow
-            _shadow = new ShadowBoxView { ShadowType = ShadowType };
-            _lastShadowHeight = ShadowType == ShadowType.AcrylicTop ? AcrylicTopHeight : ShadowHeight;
-            _shadowRowDefinition = new RowDefinition { Height = _lastShadowHeight };
-
-            if (ShadowType == ShadowType.Top || ShadowType == ShadowType.AcrylicTop)
-            {
-                Margin = new Thickness(Margin.Left, Margin.Top - _lastShadowHeight, Margin.Right, Margin.Bottom);
-                _grid.RowDefinitions.Add(_shadowRowDefinition);
-                Grid.SetRow(_shadow, 0);
-                _childRow = 1;
-            }
-
-            _grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
-
-            if (ShadowType == ShadowType.Bottom)
-            {
-                Margin = new Thickness(Margin.Left, Margin.Top, Margin.Right, Margin.Bottom - _lastShadowHeight);
-                _grid.RowDefinitions.Add(_shadowRowDefinition);
-                _childRow = 0;
-                Grid.SetRow(_shadow, 1);
-            }
-
-            _contentBackgroundView = new BoxView { BackgroundColor = BackgroundColor };
-            Grid.SetRow(_contentBackgroundView, _childRow);
-
-            foreach (var element in _grid.Children)
-            {
-                if (element is TabItem tabItem)
-                {
-                    Grid.SetRow(tabItem, _childRow);
-                }
-            }
-
-            if (_grid.ColumnDefinitions.Count > 0)
-            {
-                Grid.SetColumnSpan(_shadow, _grid.ColumnDefinitions.Count);
-                Grid.SetColumnSpan(_contentBackgroundView, _grid.ColumnDefinitions.Count);
-            }
-
-            _grid.Children.Add(_shadow);
-            _grid.Children.Insert(0, _contentBackgroundView);
-
-            RaiseTabButtons();
-        }
-
         private void UpdateTabType()
         {
             if (TabType == TabType.Scrollable)
@@ -319,7 +246,16 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                             ShowScrollbar ? ScrollBarVisibility.Always : ScrollBarVisibility.Never,
                     });
 
-                _scrollView.Content = _grid;
+                if (IsSegmented)
+                {
+                    _frame.Content = _grid;
+                    _scrollView.Content = _frame;
+                }
+                else
+                {
+                    _scrollView.Content = _grid;
+                }
+
                 foreach (var definition in _grid.ColumnDefinitions)
                 {
                     definition.Width = GridLength.Auto;
@@ -327,7 +263,16 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             }
             else
             {
-                base.Content = _grid;
+                if (IsSegmented)
+                {
+                    _frame.Content = _grid;
+                    base.Content = _frame;
+                }
+                else
+                {
+                    base.Content = _grid;
+                }
+
                 foreach (var definition in _grid.ColumnDefinitions)
                 {
                     definition.Width = GridLength.Star;
@@ -417,12 +362,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             {
                 tabItem.PropertyChanged += OnTabItemPropertyChanged;
                 UpdateTabVisibility(tabItem);
-            }
-
-            if (_shadow != null)
-            {
-                Grid.SetColumnSpan(_shadow, _grid.ColumnDefinitions.Count);
-                Grid.SetColumnSpan(_contentBackgroundView, _grid.ColumnDefinitions.Count);
             }
 
             UpdateSelectedIndex(SelectedIndex);
