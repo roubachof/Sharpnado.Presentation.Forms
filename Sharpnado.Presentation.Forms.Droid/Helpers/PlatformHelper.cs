@@ -34,14 +34,14 @@ namespace Sharpnado.Presentation.Forms.Droid.Helpers
         {
             var renderer = Platform.GetRenderer(formsView);
             Platform.SetRenderer(formsView, renderer);
-            return renderer.View.DumpHierarchy(verbose);
+            return renderer?.View.DumpHierarchy(verbose) ?? "null renderer";
         }
 
         public override string DumpNativeViewInfo(View formsView)
         {
             var renderer = Platform.GetRenderer(formsView);
             Platform.SetRenderer(formsView, renderer);
-            return renderer.View.DumpInfo();
+            return renderer?.View.DumpInfo() ?? "null renderer";
         }
     }
 }

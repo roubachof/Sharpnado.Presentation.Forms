@@ -15,7 +15,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         public SegmentedTabItem()
         {
-            Content = new Label { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
+            _label = new Label { VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center };
+            Content = _label;
             UpdateLabel();
         }
 

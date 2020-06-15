@@ -25,6 +25,7 @@ namespace Sharpnado.Presentation.Forms.Helpers
             if (element is ContentView contentView)
             {
                 Visit(contentView.Content, action, currentDepth + 1);
+                return;
             }
 
             var elementType = element.GetType();

@@ -14,7 +14,6 @@
     <RootNamespace>Sharpnado.Presentation.Forms.Droid</RootNamespace>
     <AssemblyName>Sharpnado.Presentation.Forms.Droid</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <CodeAnalysisRuleSet>..\StyleCopRules.ruleset</CodeAnalysisRuleSet>
@@ -69,7 +68,6 @@
     <Compile Include="Helpers\JniWeakReference.cs" />
     <Compile Include="Helpers\PlatformHelper.cs" />
     <Compile Include="Initializer.cs" />
-    <Compile Include="Renderers\AndroidShadowBoxViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.DragAnDropItemTouchHelperCallback.cs" />
     <Compile Include="Renderers\HorizontalList\AndroidHorizontalListViewRenderer.OnControlScrollChangedListener.cs" />
@@ -82,7 +80,6 @@
     <Compile Include="Renderers\HorizontalList\SlowRecyclerView.cs" />
     <Compile Include="Renderers\HorizontalList\StartSnapHelper.cs" />
     <Compile Include="Renderers\HorizontalList\ViewHolderQueue.cs" />
-    <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Choose>
@@ -146,10 +143,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\top_shadow.xml" />
-    <AndroidResource Include="Resources\drawable\bottom_shadow.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj">

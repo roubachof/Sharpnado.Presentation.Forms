@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Sharpnado.Presentation.Forms.Commands;
 using Sharpnado.Presentation.Forms.Effects;
+using Sharpnado.Presentation.Forms.Helpers;
+using Sharpnado.Presentation.Forms.RenderedViews;
 using Sharpnado.Shades;
 
 using Xamarin.Forms;
@@ -42,6 +44,13 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             typeof(TabHostView),
             defaultValue: Color.Default);
 
+        public static readonly BindableProperty SegmentedHasSeparatorProperty = BindableProperty.Create(
+            nameof(SegmentedHasSeparator),
+            typeof(bool),
+            typeof(TabHostView),
+            defaultValue: false,
+            propertyChanged: OnSegmentedHasSeparatorChanged);
+
         public static readonly BindableProperty TabTypeProperty = BindableProperty.Create(
             nameof(TabType),
             typeof(TabType),
@@ -66,8 +75,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         private readonly Frame _frame;
         private readonly List<TabItem> _selectableTabs = new List<TabItem>();
 
-        private int _childRow = 0;
-
         private ScrollView _scrollView;
 
         private ColumnDefinition _lastFillingColumn;
@@ -78,15 +85,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
             Tabs.CollectionChanged += OnTabsCollectionChanged;
 
-            _frame = new Frame
-            {
-                Padding = 0,
-                HasShadow = false,
-                IsClippedToBounds = true,
-                CornerRadius = this.CornerRadius,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.Fill,
-            };
+            base.BackgroundColor = Color.Transparent;
 
             _grid = new Grid
             {
@@ -94,6 +93,19 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                 ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.Fill,
+                BackgroundColor = this.BackgroundColor,
+            };
+
+            _frame = new Frame
+            {
+                Padding = 0,
+                HasShadow = false,
+                IsClippedToBounds = true,
+                CornerRadius = this.CornerRadius,
+                BackgroundColor = Color.Transparent,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.Fill,
+                BorderColor = SegmentedOutlineColor,
             };
 
             UpdateTabType();
@@ -122,6 +134,15 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
         {
             get => (Color)GetValue(SegmentedOutlineColorProperty);
             set => SetValue(SegmentedOutlineColorProperty, value);
+        }
+
+        /// <summary>
+        /// Only available if IsSegmented is true.
+        /// </summary>
+        public bool SegmentedHasSeparator
+        {
+            get => (bool)GetValue(SegmentedHasSeparatorProperty);
+            set => SetValue(SegmentedHasSeparatorProperty, value);
         }
 
         public TabType TabType
@@ -170,6 +191,9 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                 case nameof(BackgroundColor):
                     UpdateBackgroundColor();
                     break;
+                case nameof(SegmentedOutlineColor):
+                    UpdateSegmentedOutlineColor();
+                    break;
                 case nameof(CornerRadius):
                     UpdateCornerRadius();
                     break;
@@ -182,14 +206,67 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             }
         }
 
+        private void UpdateSegmentedOutlineColor()
+        {
+            if (_frame == null)
+            {
+                return;
+            }
+
+            _frame.BorderColor = SegmentedOutlineColor;
+            foreach (var separator in _grid.Children.Where(c => c is BoxView))
+            {
+                separator.BackgroundColor = SegmentedOutlineColor;
+            }
+        }
+
         private void UpdateBackgroundColor()
         {
+            if (IsSegmented)
+            {
+                if (_frame == null)
+                {
+                    return;
+                }
+
+                _frame.BackgroundColor = BackgroundColor;
+            }
+
+            if (_grid == null)
+            {
+                return;
+            }
+
             _grid.BackgroundColor = BackgroundColor;
         }
 
         private void UpdateCornerRadius()
         {
+            if (_frame == null)
+            {
+                return;
+            }
+
             _frame.CornerRadius = CornerRadius;
+        }
+
+        private static void OnSegmentedHasSeparatorChanged(BindableObject bindable, object oldvalue, object newvalue)
+        {
+            var tabHost = (TabHostView)bindable;
+            if (!tabHost.IsSegmented)
+            {
+                return;
+            }
+
+            if (!(bool)oldvalue && (bool)newvalue)
+            {
+                tabHost.AddSeparators();
+            }
+
+            if ((bool)oldvalue && !(bool)newvalue)
+            {
+                tabHost.RemoveSeparators();
+            }
         }
 
         private static void SelectedIndexPropertyChanged(BindableObject bindable, object oldvalue, object newvalue)
@@ -205,6 +282,29 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             tabHostView.UpdateSelectedIndex(selectedIndex);
             tabHostView.RaiseSelectedTabIndexChanged(new SelectedPositionChangedEventArgs(selectedIndex));
         }
+
+        private void AddSeparators()
+        {
+            for (int i = 0; i < _grid.Children.Count - 1; i++)
+            {
+                var currentItem = _grid.Children[i];
+                var nextItem = _grid.Children[i + 1];
+                if (currentItem is TabItem && nextItem is TabItem)
+                {
+                    _grid.Children.Insert(i + 1, CreateSeparator());
+                }
+            }
+        }
+
+        private void RemoveSeparators()
+        {
+            foreach (var separator in _grid.Children.Where(c => c is BoxView).ToArray())
+            {
+                _grid.Children.Remove(separator);
+            }
+        }
+
+        private BoxView CreateSeparator() => new BoxView { BackgroundColor = SegmentedOutlineColor, WidthRequest = 1 };
 
         private void UpdateSelectedIndex(int selectedIndex)
         {
@@ -236,6 +336,21 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private void UpdateTabType()
         {
+            BatchBegin();
+
+            if (IsSegmented)
+            {
+                _frame.Content = _grid;
+                _frame.BackgroundColor = BackgroundColor;
+                _grid.BackgroundColor = Color.Transparent;
+            }
+            else
+            {
+                _frame.Content = null;
+                _frame.BackgroundColor = Color.Transparent;
+                _grid.BackgroundColor = BackgroundColor;
+            }
+
             if (TabType == TabType.Scrollable)
             {
                 base.Content = _scrollView
@@ -248,7 +363,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
                 if (IsSegmented)
                 {
-                    _frame.Content = _grid;
                     _scrollView.Content = _frame;
                 }
                 else
@@ -265,7 +379,6 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
             {
                 if (IsSegmented)
                 {
-                    _frame.Content = _grid;
                     base.Content = _frame;
                 }
                 else
@@ -278,6 +391,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                     definition.Width = GridLength.Star;
                 }
             }
+
+            BatchCommit();
         }
 
         private void OnTabsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -328,6 +443,20 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private void OnChildAdded(TabItem tabItem)
         {
+            bool previousItemIsTab = _grid.Children.LastOrDefault() is TabItem;
+            int lastTabIndex = _grid.Children.Count;
+
+            if (previousItemIsTab && IsSegmented && SegmentedHasSeparator)
+            {
+                var separator = CreateSeparator();
+                _grid.Children.Add(separator);
+
+                _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = separator.WidthRequest });
+
+                Grid.SetColumn(separator, lastTabIndex++);
+                Grid.SetRow(separator, 0);
+            }
+
             _grid.Children.Add(tabItem);
 
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = TabType == TabType.Fixed ? GridLength.Star : GridLength.Auto });
@@ -347,8 +476,8 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                 }
             }
 
-            Grid.SetColumn(tabItem, Tabs.Count - 1);
-            Grid.SetRow(tabItem, _childRow);
+            Grid.SetColumn(tabItem, lastTabIndex);
+            Grid.SetRow(tabItem, 0);
 
             RaiseTabButtons();
 
@@ -387,9 +516,16 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                 _selectableTabs.Remove(tabItem);
             }
 
-            _grid.Children.Remove(tabItem);
+            int tabItemIndex = _grid.Children.IndexOf(tabItem);
 
-            _grid.ColumnDefinitions.RemoveAt(_grid.ColumnDefinitions.Count - 1);
+            if (tabItemIndex > 1 && _grid.Children[tabItemIndex - 1] is BoxView)
+            {
+                _grid.Children.RemoveAt(tabItemIndex - 1);
+                _grid.ColumnDefinitions.RemoveAt(tabItemIndex - 1);
+            }
+
+            _grid.Children.RemoveAt(tabItemIndex);
+            _grid.ColumnDefinitions.RemoveAt(tabItemIndex);
 
             tabItem.PropertyChanged -= OnTabItemPropertyChanged;
 
