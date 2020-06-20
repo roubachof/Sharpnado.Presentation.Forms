@@ -2,6 +2,7 @@
 using Sharpnado.Presentation.Forms.iOS.Helpers;
 using Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList;
 using Sharpnado.Presentation.Forms.RenderedViews;
+using Sharpnado.Shades.iOS;
 
 namespace Sharpnado.Presentation.Forms.iOS
 {
@@ -13,6 +14,7 @@ namespace Sharpnado.Presentation.Forms.iOS
             PlatformHelper.InitializeSingleton(new iOSPlatformHelper());
             iOSMaterialFrameRenderer.Init();
             iOSHorizontalListViewRenderer.Initialize();
+            iOSShadowsRenderer.Initialize();
         }
     }
 }
