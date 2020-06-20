@@ -229,6 +229,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                     return;
                 }
 
+                _grid.BackgroundColor = Color.Transparent;
                 _frame.BackgroundColor = BackgroundColor;
             }
 
@@ -237,6 +238,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
                 return;
             }
 
+            _frame.BackgroundColor = Color.Transparent;
             _grid.BackgroundColor = BackgroundColor;
         }
 

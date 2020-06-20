@@ -16,9 +16,9 @@
       <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView), TaskLoaderView (mvvm async loading view), Tabs, MaterialFrame (Acrylic, AcrylicBlur) and Shadows.</summary>
       <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview mvvm async materialframe blur blurview UIVisualEffectView shadows</tags>
       <releaseNotes>
-        Add new MaterialFrame with blur to the package. 
-        Add Segmented control. 
-        Add Shadows.
+        MaterialFrame with blur.
+        Segmented control style for TabHostView.
+        Sharpnado.Shadows.
       </releaseNotes>
       <description>
 Collection of Xamarin.Forms components.
@@ -33,6 +33,13 @@ Pure Xamarin.Forms tabs:
   * Bottom bar tabs (ios tabs style)
   * Custom tabs (be creative just implement TabItem)
   * Independent ViewSwitcher
+
+Sharpnado.Shadows:
+  * Add as many custom shadows as you like to any view (Android, iOS, UWP)
+  * You can specify each shadow Color, Opacity, BlurRadius, and Offset
+  * Simply implement Neumorphism
+  * You can add one shadow, 3 shadows, 99 shadows, to any Xamarin.Forms element
+  * Animate any of these property and make the shadows dance around your elements
 
 MaterialFrame:
   * AcrylicBlur mode
@@ -78,21 +85,21 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
           <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.0" />
+          <dependency id="Sharpnado.Shadows" version="1.0.1" />
         </group>
 
         <group targetFramework="Xamarin.iOS10">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.0" />
+          <dependency id="Sharpnado.Shadows" version="1.0.1" />
         </group>
 
         <group targetFramework="MonoAndroid10">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.0" />
+          <dependency id="Sharpnado.Shadows" version="1.0.1" />
         </group>
 
         <group targetFramework="MonoAndroid10.0">
@@ -106,7 +113,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
           <dependency id="Xamarin.AndroidX.MediaRouter" version="1.1.0" />
           <dependency id="Xamarin.Google.Android.Material" version="1.0.0" />
         </group>
-        
+
       </dependencies>
 
     </metadata>
