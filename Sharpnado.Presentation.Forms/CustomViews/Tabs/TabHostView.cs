@@ -231,6 +231,7 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
                 _grid.BackgroundColor = Color.Transparent;
                 _frame.BackgroundColor = BackgroundColor;
+                return;
             }
 
             if (_grid == null)

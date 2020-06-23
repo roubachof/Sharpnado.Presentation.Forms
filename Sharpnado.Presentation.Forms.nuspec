@@ -29,6 +29,7 @@ Pure Xamarin.Forms tabs:
   * Fixed tabs (android tabs style)
   * Scrollable tabs
   * Segmented tabs
+  * Custom shadows (neumorphism ready)
   * Circle button in tab bar
   * Bottom bar tabs (ios tabs style)
   * Custom tabs (be creative just implement TabItem)
@@ -85,28 +86,28 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
           <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.1" />
+          <dependency id="Sharpnado.Shadows" version="1.0.2" />
         </group>
 
         <group targetFramework="Xamarin.iOS10">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.1" />
+          <dependency id="Sharpnado.Shadows" version="1.0.2" />
         </group>
 
         <group targetFramework="MonoAndroid10">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.1" />
+          <dependency id="Sharpnado.Shadows" version="1.0.2" />
         </group>
 
         <group targetFramework="MonoAndroid10.0">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.0" />
+          <dependency id="Sharpnado.Shadows" version="1.0.2" />
           <dependency id="Xamarin.AndroidX.Browser" version="1.0.0" />
           <dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
           <dependency id="Xamarin.AndroidX.Lifecycle.LiveData" version="2.1.0" />
