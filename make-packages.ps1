@@ -1,4 +1,4 @@
-$formsVersion = "3.4.0.1008975"
+$formsVersion = "3.6.0.220655"
 
 echo "  <<<< WARNING >>>>> You need to launch 2 times this script to make sure AssemblyInfo.cs is correctly generated..."
 
@@ -12,8 +12,8 @@ $iosHLVProject = ".\Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Form
 
 echo "  Setting Xamarin.Forms version to $formsVersion"
 
-$findXFVersion = '(Xamarin.Forms">\s+<Version>)(.+)(</Version>)'
-$replaceString = "`$1$formsVersion`$3"
+$findXFVersion = '(Xamarin.Forms">\s+<Version>)(.+)(<\/Version>)'
+$replaceString = "`$1 $formsVersion `$3"
 
 (Get-Content $netstandardProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $netstandardProject
 (Get-Content $droidProject -Raw)  -replace $findXFVersion, "$replaceString" | Out-File $droidProject
@@ -29,6 +29,10 @@ echo "##################################"
 echo "# Sharpnado.Presentation.Forms"
 echo "##################################"
 
+
+echo "  restoring nuget packages"
+msbuild .\Sharpnado.Presentation.Forms.sln /t:Restore
+
 echo "  building Sharpnado.Presentation.Forms solution -- normal mode"
 msbuild .\Sharpnado.Presentation.Forms.sln /t:Clean,Restore,Build /p:Configuration=Release > build.txt
 
@@ -38,7 +42,7 @@ msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.
 $version = (Get-Item Sharpnado.Presentation.Forms\bin\Release\netstandard2.0\Sharpnado.Presentation.Forms.dll).VersionInfo.FileVersion
 
 echo "  packaging Sharpnado.Presentation.Forms.nuspec (v$version)"
-nuget pack .\Sharpnado.Presentation.Forms.nuspec -Version $version
+nuget pack Sharpnado.Presentation.Forms.nuspec -Version $version
 
 
 echo "########################################"
