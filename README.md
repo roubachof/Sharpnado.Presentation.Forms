@@ -33,6 +33,7 @@ Xamarin Forms custom components and renderers starring:
 * Stylable
 * Component oriented architecture
 * Layout your tabs and ```ViewSwitcher``` as you want
+* Shadows included in `TabHost`
 
 <table>
 	<thead>
@@ -56,6 +57,25 @@ Xamarin Forms custom components and renderers starring:
 <table>
 	<thead>
 		<tr>			
+      <th>Segmented tabs</th>
+      <th>Neumorphic tabs</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/android_segmented_light_carrel.png" width="300" /></td>
+      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/ios_segmented_neu.png" width="300" /></td>
+		</tr>
+    <tr>
+      <td>TabType.Scrollable</td>
+      <td>inherit from TabItem</td>
+    </tr>   
+  </tbody>
+</table>
+
+<table>
+	<thead>
+		<tr>			
       <th>Scrollable tabs</th>
       <th>Custom tabs</th>
 		</tr>
@@ -71,6 +91,17 @@ Xamarin Forms custom components and renderers starring:
     </tr>   
   </tbody>
 </table>
+
+### [``Shadows``](https://github.com/roubachof/Sharpnado.Shadows)
+
+* Add as **many** **custom** shadows as you like to any `Xamarin.Forms` view (`Android`, `iOS`, `UWP`). 
+* You can specify each shadow `Color`, `Opacity`, `BlurRadius`, and `Offset`
+* Simply implement `Neumorphism`
+* You can add one shadow, 3 shadows, 99 shadows, to any `Xamarin.Forms` element
+* Animate any of these property and make the shadows dance around your elements
+* No `AndroidX` or `SkiaSharp` dependency required, only `Xamarin.Forms`
+
+![Presentation](https://raw.githubusercontent.com/roubachof/Sharpnado.Shadows/master/Docs/github_banner.png)
 
 ### [``MaterialFrame``](https://github.com/roubachof/Sharpnado.MaterialFrame)
 
