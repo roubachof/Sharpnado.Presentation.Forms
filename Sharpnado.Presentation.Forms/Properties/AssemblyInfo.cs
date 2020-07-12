@@ -13,7 +13,7 @@
 [assembly: System.Reflection.AssemblyDescription("Xamarin Forms custom components and renderers")]
 [assembly: System.Reflection.AssemblyProduct("Sharpnado Toolkit")]
 [assembly: System.Reflection.AssemblyCopyright("Copyright © Sharpnado 2020")]
-[assembly: System.Reflection.AssemblyVersion("1.7.0")]
-[assembly: System.Reflection.AssemblyFileVersion("1.7.0")]
+[assembly: System.Reflection.AssemblyVersion("1.7.1")]
+[assembly: System.Reflection.AssemblyFileVersion("1.7.1")]
 
 

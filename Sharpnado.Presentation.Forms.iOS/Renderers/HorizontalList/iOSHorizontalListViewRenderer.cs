@@ -183,7 +183,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             var layout = BuildListLayout();
 
             // Otherwise the UICollectionView doesn't seem to take enough space
-            if (Element.ItemHeight > 0)
+            if (Element.ListLayout != HorizontalListViewLayout.Grid && Element.ItemHeight > 0)
             {
                 Element.HeightRequest = Element.ItemHeight
                     + Element.CollectionPadding.VerticalThickness

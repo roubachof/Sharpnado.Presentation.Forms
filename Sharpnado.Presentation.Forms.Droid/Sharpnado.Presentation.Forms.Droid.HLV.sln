@@ -1,0 +1,20 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Forms.Droid.HLV", "Sharpnado.Presentation.Forms.Droid.HLV.csproj", "{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		ReleaseAndroid9.0|Any CPU = ReleaseAndroid9.0|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.ReleaseAndroid9.0|Any CPU.ActiveCfg = ReleaseAndroid9.0|Any CPU
+		{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}.ReleaseAndroid9.0|Any CPU.Build.0 = ReleaseAndroid9.0|Any CPU
+	EndGlobalSection
+EndGlobal

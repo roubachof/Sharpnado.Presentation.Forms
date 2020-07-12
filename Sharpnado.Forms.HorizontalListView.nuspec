@@ -4,7 +4,7 @@
 
     	<id>Sharpnado.Forms.HorizontalListView</id>
       <version>$version$</version>
-      <copyright>Sharpnado 2019</copyright>
+      <copyright>Sharpnado 2020</copyright>
       <title>HorizontalListView (CollectionView) on steroids for Xamarin Forms</title>
       <authors>Jean-Marie Alfonsi</authors>
       <owners></owners>
@@ -14,7 +14,7 @@
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
       <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
       <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview drag drop</tags>
-      <releaseNotes>Fix IsDraggable=true by default. MaterialFrame is no longer included in the package.</releaseNotes>
+      <releaseNotes>Fix bad HeightRequest in Grid mode for iOS.</releaseNotes>
       <description>
 Initialization: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
 
