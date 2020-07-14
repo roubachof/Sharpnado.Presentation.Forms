@@ -43,7 +43,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>4.5.0.495</Version>
+      <Version>4.6.0.847</Version>
     </PackageReference>
     <PackageReference Include="Sharpnado.TaskMonitor" Version="1.0.0" />
   </ItemGroup>
@@ -51,6 +51,7 @@
   <Import Project="..\AssemblyInfo.targets" />
 
 </Project>
+
 
 
 

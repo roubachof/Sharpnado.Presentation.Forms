@@ -86,7 +86,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
           <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.2" />
+          <dependency id="Sharpnado.Shadows" version="1.1.0" />
         </group>
 
         <group targetFramework="Xamarin.iOS10">
@@ -94,7 +94,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
           <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.2" />
+          <dependency id="Sharpnado.Shadows" version="1.1.0" />
         </group>
 
         <group targetFramework="MonoAndroid10">
@@ -102,7 +102,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
           <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.2" />
+          <dependency id="Sharpnado.Shadows" version="1.1.0" />
         </group>
 
         <group targetFramework="MonoAndroid10.0">
@@ -110,7 +110,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
           <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.0.2" />
+          <dependency id="Sharpnado.Shadows" version="1.1.0" />
           <dependency id="Xamarin.AndroidX.Browser" version="1.0.0" />
           <dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
           <dependency id="Xamarin.AndroidX.Lifecycle.LiveData" version="2.1.0" />

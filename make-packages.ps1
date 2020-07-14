@@ -1,7 +1,5 @@
 $formsVersion = "3.6.0.220655"
 
-echo "  <<<< WARNING >>>>> You need to launch 2 times this script to make sure AssemblyInfo.cs is correctly generated..."
-
 $netstandardProject = ".\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj"
 $droidProject = ".\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj"
 $iosProject = ".\Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Forms.iOS.csproj"
@@ -9,6 +7,9 @@ $iosProject = ".\Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Forms.i
 $hlvProject = ".\Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.HLV.csproj"
 $droidHLVProject = ".\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.HLV.csproj"
 $iosHLVProject = ".\Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Forms.iOS.HLV.csproj"
+
+
+rm *.txt
 
 echo "  Setting Xamarin.Forms version to $formsVersion"
 
@@ -29,15 +30,41 @@ echo "##################################"
 echo "# Sharpnado.Presentation.Forms"
 echo "##################################"
 
+echo "  cleaning Sharpnado.Presentation.Forms solution"
+$errorCode = msbuild .\Sharpnado.Presentation.Forms.sln /t:Clean /p:Configuration=Release > clean.txt
+if ($errorCode -gt 0)
+{
+    echo "  Error while cleaning solution, see clean.txt for infos"
+    return 1
+}
+
 
 echo "  restoring nuget packages"
-msbuild .\Sharpnado.Presentation.Forms.sln /t:Restore
+$errorCode = msbuild .\Sharpnado.Presentation.Forms.sln /t:Restore > restore.txt
+if ($errorCode -gt 0)
+{
+    echo "  Error while restoring packages, see restore.txt for infos"
+    return 2
+}
 
-echo "  building Sharpnado.Presentation.Forms solution -- normal mode"
-msbuild .\Sharpnado.Presentation.Forms.sln /t:Clean,Restore,Build /p:Configuration=Release > build.txt
 
-echo "  building Android9"
-msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj /t:Clean,Restore,Build /p:Configuration=ReleaseAndroid9.0 > build.Android9.txt
+echo "  building Sharpnado.Presentation.Forms solution"
+$errorCode = msbuild .\Sharpnado.Presentation.Forms.sln /t:Build /p:Configuration=Release > build.txt
+if ($errorCode -gt 0)
+{
+    echo "  Error while building solution, see build.txt for infos"
+    return 3
+}
+
+
+echo "  building Android9 version"
+$errorCode = msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj /t:Clean,Restore,Build /p:Configuration=ReleaseAndroid9.0 > build.Android9.txt
+if ($errorCode -gt 0)
+{
+    echo "  Error while building Android9 version, see build.Android9.txt for infos"
+    return 4
+}
+
 
 $version = (Get-Item Sharpnado.Presentation.Forms\bin\Release\netstandard2.0\Sharpnado.Presentation.Forms.dll).VersionInfo.FileVersion
 
@@ -45,15 +72,28 @@ echo "  packaging Sharpnado.Presentation.Forms.nuspec (v$version)"
 nuget pack Sharpnado.Presentation.Forms.nuspec -Version $version
 
 
+
 echo "########################################"
 echo "# Sharpnado.Forms.HorizontalListView"
 echo "########################################"
 
 echo "  building Sharpnado.Presentation.Forms.HLV solution -- only HorizontalListView"
-msbuild .\Sharpnado.Presentation.Forms.HLV.sln /t:Clean,Restore,Build /p:Configuration=Release > build.HLV.txt
+$errorCode = msbuild .\Sharpnado.Presentation.Forms.HLV.sln /t:Clean,Restore,Build /p:Configuration=Release > build.HLV.txt
+if ($errorCode -gt 0)
+{
+    echo "  Error while building HorizontalListView version, see build.HLV.txt for infos"
+    return 5
+}
+
 
 echo "  building Android9 -- only HorizontalListView"
-msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.HLV.csproj /t:Clean,Restore,Build /p:Configuration=ReleaseAndroid9.0 > build.Android9.HLV.txt
+$errorCode = msbuild .\Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.HLV.csproj /t:Clean,Restore,Build /p:Configuration=ReleaseAndroid9.0 > build.Android9.HLV.txt
+if ($errorCode -gt 0)
+{
+    echo "  Error while building Android9 HorizontalListView version, see build.Android9.HLV.txt for infos"
+    return 6
+}
+
 
 $version = (Get-Item Sharpnado.Presentation.Forms\bin\HLVRelease\netstandard2.0\Sharpnado.Presentation.Forms.dll).VersionInfo.FileVersion
 
