@@ -91,6 +91,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
 
         <group targetFramework="Xamarin.iOS10">
           <dependency id="Xamarin.Forms" version="3.6.0.220655" exclude="Build,Analyzers"/>
+          <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
           <dependency id="Sharpnado.Shadows" version="1.0.2" />
@@ -98,6 +99,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
 
         <group targetFramework="MonoAndroid10">
           <dependency id="Xamarin.Forms" version="3.6.0.220655" exclude="Build,Analyzers"/>
+          <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
           <dependency id="Sharpnado.Shadows" version="1.0.2" />
@@ -105,6 +107,7 @@ Grid ListView (HorizontalListView with ListLayout set to Grid):
 
         <group targetFramework="MonoAndroid10.0">
           <dependency id="Xamarin.Forms" version="3.6.0.220655" exclude="Build,Analyzers"/>
+          <dependency id="Sharpnado.TaskLoaderView" version="2.0.0" />
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
           <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
           <dependency id="Sharpnado.Shadows" version="1.0.2" />
