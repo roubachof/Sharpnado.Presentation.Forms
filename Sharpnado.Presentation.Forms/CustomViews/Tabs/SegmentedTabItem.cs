@@ -46,6 +46,11 @@ namespace Sharpnado.Presentation.Forms.CustomViews.Tabs
 
         private void UpdateLabel()
         {
+            if (_label == null)
+            {
+                return;
+            }
+
             if (FontFamily != null)
             {
                 _label.FontFamily = FontFamily;
