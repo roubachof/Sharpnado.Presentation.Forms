@@ -114,7 +114,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             private bool _collectionChangedBackfire;
 
             private bool _isDisposed;
-
+            
             public RecycleViewAdapter(IntPtr javaReference, JniHandleOwnership transfer)
                 : base(javaReference, transfer)
             {
@@ -253,7 +253,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                         });
                 }
             }
-
+            
             protected override void Dispose(bool disposing)
             {
                 _isDisposed = true;

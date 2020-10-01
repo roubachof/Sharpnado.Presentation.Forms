@@ -369,7 +369,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 _dragHelper?.AttachToRecyclerView(null);
 
                 _dragHelper = new ItemTouchHelper(
-                    new DragAnDropItemTouchHelperCallback(Element, adapter, Element.DragAndDropEndedCommand));
+                    new DragAnDropItemTouchHelperCallback(Element, adapter, 
+                        Element.DragAndDropStartCommand, Element.DragAndDropEndedCommand));
                 _dragHelper.AttachToRecyclerView(Control);
             }
 
