@@ -28,7 +28,7 @@ If you want to know how to use the components, it's the best place to start.
 
 Xamarin Forms custom components and renderers starring:
 
-### ["Pure" ```Xamarin.Forms``` Tabs (no renderers)](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Pure-Xamarin.Forms-tabs)
+### [``Sharpnado.Tabs``](https://github.com/roubachof/Sharpnado.Tabs)
 * Fully customizable
 * Stylable
 * Component oriented architecture
@@ -92,7 +92,7 @@ Xamarin Forms custom components and renderers starring:
   </tbody>
 </table>
 
-### [``Shadows``](https://github.com/roubachof/Sharpnado.Shadows)
+### [``Sharpnado.Shadows``](https://github.com/roubachof/Sharpnado.Shadows)
 
 * Add as **many** **custom** shadows as you like to any `Xamarin.Forms` view (`Android`, `iOS`, `UWP`). 
 * You can specify each shadow `Color`, `Opacity`, `BlurRadius`, and `Offset`
@@ -103,7 +103,7 @@ Xamarin Forms custom components and renderers starring:
 
 ![Presentation](https://raw.githubusercontent.com/roubachof/Sharpnado.Shadows/master/Docs/github_banner.png)
 
-### [``MaterialFrame``](https://github.com/roubachof/Sharpnado.MaterialFrame)
+### [``Sharpnado.MaterialFrame``](https://github.com/roubachof/Sharpnado.MaterialFrame)
 
   * 4 built-in themes: AcrylicBlur/Acrylic/Dark/Light
   * 3 Blur Styles: Light/ExtraLight/Dark
@@ -174,7 +174,7 @@ Xamarin Forms custom components and renderers starring:
 </p>
 
 
-### [```TaskLoaderView 2.0``` handles all your task loading states](https://github.com/roubachof/Sharpnado.TaskLoaderView)
+### [```Sharpnado.TaskLoaderView 2.0``` handles all your task loading states](https://github.com/roubachof/Sharpnado.TaskLoaderView)
   * Handles error with custom messages and icons
   * Handles empty states
   * Show snackbar errors for refresh scenarios (if data is already shown)
