@@ -7,6 +7,7 @@
 
     <Grid>
         <sharpnado:HorizontalListView
+            x:Name="HorizontalListView"
             EnableDragAndDrop="True"
             ColumnCount="3"
             ListLayout="Grid"
@@ -21,7 +22,7 @@
                 <DataTemplate>
                     <sharpnado:DraggableViewCell>
                         <ContentView>
-                            <Frame Padding="0">
+                            <Frame Padding="0" HasShadow="False" BorderColor="Black">
                                 <StackLayout Orientation="Vertical"
                                              HorizontalOptions="Center"
                                              VerticalOptions="Center">
