@@ -293,6 +293,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             set => SetValue(IsDragAndDroppingProperty, value);
         }
 
+        public Action<ViewCell> PreAnimation { get; set; }
+
+        public Action<ViewCell> Animation { get; set; }
+        
+        public Action<ViewCell> PostAnimation { get; set; }
+
         public int ViewCacheSize { get; set; } = 0;
 
         public bool EnableDragAndDrop { get; set; } = false;

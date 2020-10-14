@@ -286,7 +286,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 {
                     viewCell = (ViewCell)_dataTemplates[itemViewType].CreateContent();
                 }
-
+                
+                _element.PreAnimation?.Invoke(viewCell);
+                _element.Animation?.Invoke(viewCell);
+                _element.PostAnimation?.Invoke(viewCell);
+                
                 _formsViews.Add(new WeakReference<ViewCell>(viewCell));
                 var view = viewCell.View;
 
