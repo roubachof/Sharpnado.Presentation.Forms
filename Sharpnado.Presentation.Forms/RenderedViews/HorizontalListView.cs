@@ -46,6 +46,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             typeof(DraggableViewCell),
             defaultValue: false);
 
+        public static readonly BindableProperty PositionProperty = BindableProperty.Create(
+            nameof(PositionProperty),
+            typeof(int),
+            typeof(DraggableViewCell),
+            defaultValue:-1);
+        
         public bool IsDraggable
         {
             get => (bool)GetValue(IsDraggableProperty);
@@ -56,6 +62,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             get => (bool)GetValue(IsDragAndDroppingProperty);
             set => SetValue(IsDragAndDroppingProperty, value);
+        }
+
+        public int Position
+        {
+            get => (int) GetValue(PositionProperty);
+            set => SetValue(PositionProperty, value);
         }
     }
 
@@ -127,6 +139,11 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
 
         public static readonly BindableProperty ScrollEndedCommandProperty = BindableProperty.Create(
             nameof(ScrollEndedCommand),
+            typeof(ICommand),
+            typeof(HorizontalListView));
+
+        public static readonly BindableProperty DragAndDropStartCommandProperty = BindableProperty.Create(
+            nameof(DragAndDropStartCommand),
             typeof(ICommand),
             typeof(HorizontalListView));
 
@@ -250,6 +267,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         {
             get => (ICommand)GetValue(ScrollEndedCommandProperty);
             set => SetValue(ScrollEndedCommandProperty, value);
+        }
+
+        public ICommand DragAndDropStartCommand
+        {
+            get => (ICommand) GetValue(DragAndDropStartCommandProperty);
+            set => SetValue(DragAndDropStartCommandProperty, value);
         }
 
         public ICommand DragAndDropEndedCommand

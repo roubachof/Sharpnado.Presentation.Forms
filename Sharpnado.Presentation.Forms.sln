@@ -9,6 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Form
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Forms.iOS", "Sharpnado.Presentation.Forms.iOS\Sharpnado.Presentation.Forms.iOS.csproj", "{E71F3053-056C-4381-9638-048ED73BDFF6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{8CB48033-BE95-414B-9B59-16038B284788}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.DragAndDropCollection.Sample", "Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample.csproj", "{55F41B9B-D1D7-42A3-8E77-A12A42E8A808}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.DragAndDropCollection.Sample.Android", "Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample.Android\Sharpnado.DragAndDropCollection.Sample.Android.csproj", "{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.DragAndDropCollection.Sample.iOS", "Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample.iOS\Sharpnado.DragAndDropCollection.Sample.iOS.csproj", "{57551E87-1A59-4AF0-8012-BA65C96BA8DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,11 +35,28 @@ Global
 		{E71F3053-056C-4381-9638-048ED73BDFF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E71F3053-056C-4381-9638-048ED73BDFF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E71F3053-056C-4381-9638-048ED73BDFF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55F41B9B-D1D7-42A3-8E77-A12A42E8A808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55F41B9B-D1D7-42A3-8E77-A12A42E8A808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55F41B9B-D1D7-42A3-8E77-A12A42E8A808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55F41B9B-D1D7-42A3-8E77-A12A42E8A808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57551E87-1A59-4AF0-8012-BA65C96BA8DC}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{57551E87-1A59-4AF0-8012-BA65C96BA8DC}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{57551E87-1A59-4AF0-8012-BA65C96BA8DC}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
+		{57551E87-1A59-4AF0-8012-BA65C96BA8DC}.Release|Any CPU.Build.0 = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {340B55C9-6E96-411A-8AB4-12C8D3EBCD7B}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{55F41B9B-D1D7-42A3-8E77-A12A42E8A808} = {8CB48033-BE95-414B-9B59-16038B284788}
+		{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001} = {8CB48033-BE95-414B-9B59-16038B284788}
+		{57551E87-1A59-4AF0-8012-BA65C96BA8DC} = {8CB48033-BE95-414B-9B59-16038B284788}
 	EndGlobalSection
 EndGlobal

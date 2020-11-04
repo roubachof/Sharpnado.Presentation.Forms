@@ -3,6 +3,7 @@
 using Foundation;
 
 using Sharpnado.Presentation.Forms.RenderedViews;
+using Sharpnado.Presentation.Forms.ViewModels;
 using UIKit;
 
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
@@ -41,6 +42,13 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                                 from = (int)selectedIndexPath.Item;
                                 Control.BeginInteractiveMovementForItem(selectedIndexPath);
                                 Element.IsDragAndDropping = true;
+                                
+                                Element.DragAndDropStartCommand?.Execute(new DragAndDropInfo()
+                                {
+                                    From = from,
+                                    To = -1,
+                                    Content = Element.BindingContext
+                                });
                             }
 
                             break;
@@ -97,12 +105,18 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                                     var item = itemsSourceList[from];
                                     itemsSourceList.RemoveAt(from);
                                     itemsSourceList.Insert((int)pathTo.Item, item);
+                                    var to = itemsSourceList.IndexOf(item);
                                     Element.IsDragAndDropping = false;
 
                                     if (draggedViewCell?.FormsCell is DraggableViewCell draggableViewCell)
                                     {
                                         draggableViewCell.IsDragAndDropping = false;
-                                        Element.DragAndDropEndedCommand?.Execute(null);
+                                        Element.DragAndDropEndedCommand?.Execute(new DragAndDropInfo()
+                                        {
+                                            From = from,
+                                            To = to,
+                                            Content = draggableViewCell.BindingContext 
+                                        });
                                     }
 
                                     draggedViewCell = null;

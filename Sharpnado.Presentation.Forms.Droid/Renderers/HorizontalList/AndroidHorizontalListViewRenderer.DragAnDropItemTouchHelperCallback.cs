@@ -11,7 +11,7 @@ using Android.Support.V7.Widget.Helper;
 #endif
 
 using Sharpnado.Presentation.Forms.RenderedViews;
-
+using Sharpnado.Presentation.Forms.ViewModels;
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
@@ -24,6 +24,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             private readonly RecycleViewAdapter _recycleViewAdapter;
             private readonly ICommand _onDragAndDropdEnded;
+            private readonly ICommand _onDragAndDropStart;
 
             private int _from = -1;
             private int _to = -1;
@@ -37,10 +38,11 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             {
             }
 
-            public DragAnDropItemTouchHelperCallback(HorizontalListView horizontalList, RecycleViewAdapter recycleViewAdapter, ICommand onDragAndDropdEnded = null)
+            public DragAnDropItemTouchHelperCallback(HorizontalListView horizontalList, RecycleViewAdapter recycleViewAdapter, ICommand onDragAndDropStart = null, ICommand onDragAndDropdEnded = null)
             {
                 _horizontalList = horizontalList;
                 _recycleViewAdapter = recycleViewAdapter;
+                _onDragAndDropStart = onDragAndDropStart;
                 _onDragAndDropdEnded = onDragAndDropdEnded;
             }
 
@@ -114,6 +116,13 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
                 // System.Diagnostics.Debug.WriteLine($">>>>> OnMove( from: {viewHolder.AdapterPosition}, to: {target.AdapterPosition} )");
                 _recycleViewAdapter.OnItemMoving(viewHolder.AdapterPosition, target.AdapterPosition);
+                
+                _onDragAndDropStart?.Execute(new DragAndDropInfo()
+                {
+                    From = _from,
+                    To = _to,
+                    Content = (viewHolder as ViewHolder).BindingContext
+                });
 
                 return true;
             }
@@ -150,7 +159,12 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 if (_from > -1 && _to > -1)
                 {
                     _recycleViewAdapter.OnItemMoved(_from, _to);
-                    _onDragAndDropdEnded?.Execute(null);
+                    _onDragAndDropdEnded?.Execute(new DragAndDropInfo()
+                    {
+                        From = _from,
+                        To = _to,
+                        Content = (viewHolder as ViewHolder).BindingContext
+                    });
                     _from = _to = -1;
                 }
             }
