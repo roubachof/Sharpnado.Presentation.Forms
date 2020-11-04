@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Sharpnado.DragAndDropCollection.Sample"
+             x:Class="Sharpnado.DragAndDropCollection.Sample.MainPage"
+             xmlns:sharpnado="clr-namespace:Sharpnado.Presentation.Forms.RenderedViews;assembly=Sharpnado.Presentation.Forms">
+
+    <Grid>
+        <sharpnado:HorizontalListView
+            x:Name="HorizontalListView"
+            EnableDragAndDrop="True"
+            ColumnCount="3"
+            ListLayout="Grid"
+            ItemSpacing="8"
+            ItemWidth="80"
+            ItemHeight="80"
+            ItemsSource="{Binding Data}"
+            DragAndDropStartCommand="{Binding StartDragCommand}"
+            DragAndDropEndedCommand="{Binding EndDragCommand}">
+            
+            <sharpnado:HorizontalListView.ItemTemplate>
+                <DataTemplate>
+                    <sharpnado:DraggableViewCell>
+                        <ContentView>
+                            <Frame Padding="0" HasShadow="False" BorderColor="Black">
+                                <StackLayout Orientation="Vertical"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center">
+                                    <Label Text="{Binding Order}"/>
+                                    <Label Text="{Binding Title}"/>
+                                </StackLayout>
+                            </Frame>
+                        </ContentView>
+                    </sharpnado:DraggableViewCell>
+                </DataTemplate>
+            </sharpnado:HorizontalListView.ItemTemplate>
+            
+        </sharpnado:HorizontalListView>
+    </Grid>
+
+</ContentPage>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Foundation;
 using Sharpnado.Presentation.Forms.iOS.Helpers;
@@ -99,7 +100,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             FormsCell = null;
         }
 
-        public void Initialize(ViewCell formsCell, UIView view)
+        public async void Initialize(ViewCell formsCell, UIView view, HorizontalListView parent)
         {
             FormsCell = formsCell;
 
@@ -108,6 +109,11 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
             view.Tag = InnerViewTag;
             ContentView.AddSubview(view);
+
+            
+            parent.PreAnimation?.Invoke(formsCell);
+            parent.Animation?.Invoke(formsCell);
+            parent.PostAnimation?.Invoke(formsCell);
         }
 
         public void Bind(object dataContext, HorizontalListView parent)
@@ -230,7 +236,10 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                     return nativeCell;
                 }
 
-                nativeCell.Initialize(holder.FormsCell, holder.CellContent);
+                if (_weakElement.TryGetTarget(out var p))
+                {
+                    nativeCell.Initialize(holder.FormsCell, holder.CellContent, p);    
+                }
             }
 
             if (_weakElement.TryGetTarget(out var parent))
