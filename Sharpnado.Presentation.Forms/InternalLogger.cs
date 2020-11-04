@@ -13,9 +13,6 @@ namespace Sharpnado.Presentation.Forms
         {
             EnableLogging = enableGlobalLogging;
             EnableDebug = enableDebugLevel;
-
-            MaterialFrame.InternalLogger.EnableLogging = enableGlobalLogging;
-            MaterialFrame.InternalLogger.EnableDebug = enableDebugLevel;
         }
 
         public static void Debug(string tag, string format, params object[] parameters)

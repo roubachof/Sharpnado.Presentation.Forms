@@ -11,6 +11,19 @@
 | iOS      | [![Build status](https://build.appcenter.ms/v0.1/apps/ddd14409-1f42-4521-ae8d-6f9891de2714/branches/master/badge)](https://appcenter.ms) |
 
 
+## MUST READ: Big refactoring ?
+
+The big sharpnado refactoring is over.
+
+Each sharpnado's component has now its own repo.
+
+* Sharpnado.Tabs have now their own repo
+* The Sharpnado.Presentation.Forms repo now only contains the source code for the HorizontalListView
+
+Latest version of Sharpnado.Presentation.Forms (v1.7.1) doesn't have all the sharpnado nugets up to date.
+
+Preferred way of using packages is now to install only the one needed.
+
 ## Sample App: the Silly! app
 
 All the following components are presented in the Silly! app in the following repository:
@@ -28,71 +41,23 @@ If you want to know how to use the components, it's the best place to start.
 
 Xamarin Forms custom components and renderers starring:
 
-### ["Pure" ```Xamarin.Forms``` Tabs (no renderers)](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Pure-Xamarin.Forms-tabs)
+### [``Sharpnado.Tabs``](https://github.com/roubachof/Sharpnado.Tabs)
+
+<img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/Tabs/logo_2_1.png" width="200" />
+
 * Fully customizable
-* Stylable
+* Underlined tabs, bottom tabs, Segmented control, scrollable tabs
+* BadgeView
 * Component oriented architecture
 * Layout your tabs and ```ViewSwitcher``` as you want
 * Shadows included in `TabHost`
+* Bindable
 
-<table>
-	<thead>
-		<tr>
-			<th>Bottom bar tabs</th>
-      <th>Fixed tabs</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_bottom_tabs.gif" width="300" /></td>
-  		<td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_fixed_tabs.gif" width="300" /></td>
-		</tr>
-    <tr>
-      <td>BottomTabItem</td>
-			<td>UnderlinedTabItem</td>
-    </tr>   
-  </tbody>
-</table>
+![banner](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/Tabs/github_banner.jpg)
 
-<table>
-	<thead>
-		<tr>			
-      <th>Segmented tabs</th>
-      <th>Neumorphic tabs</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/android_segmented_light_carrel.png" width="300" /></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/ios_segmented_neu.png" width="300" /></td>
-		</tr>
-    <tr>
-      <td>TabType.Scrollable</td>
-      <td>inherit from TabItem</td>
-    </tr>   
-  </tbody>
-</table>
+### [``Sharpnado.Shadows``](https://github.com/roubachof/Sharpnado.Shadows)
 
-<table>
-	<thead>
-		<tr>			
-      <th>Scrollable tabs</th>
-      <th>Custom tabs</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_scrollable_tabs.gif" width="300" /></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_spam_tabs.gif" width="300" /></td>
-		</tr>
-    <tr>
-      <td>TabType.Scrollable</td>
-      <td>inherit from TabItem</td>
-    </tr>   
-  </tbody>
-</table>
-
-### [``Shadows``](https://github.com/roubachof/Sharpnado.Shadows)
+<img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/Shadows/shadows.png" width="200" />
 
 * Add as **many** **custom** shadows as you like to any `Xamarin.Forms` view (`Android`, `iOS`, `UWP`). 
 * You can specify each shadow `Color`, `Opacity`, `BlurRadius`, and `Offset`
@@ -103,7 +68,9 @@ Xamarin Forms custom components and renderers starring:
 
 ![Presentation](https://raw.githubusercontent.com/roubachof/Sharpnado.Shadows/master/Docs/github_banner.png)
 
-### [``MaterialFrame``](https://github.com/roubachof/Sharpnado.MaterialFrame)
+### [``Sharpnado.MaterialFrame``](https://github.com/roubachof/Sharpnado.MaterialFrame)
+
+<img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/MaterialFrame/material_frame.png" width="200" />
 
   * 4 built-in themes: AcrylicBlur/Acrylic/Dark/Light
   * 3 Blur Styles: Light/ExtraLight/Dark
@@ -113,35 +80,8 @@ Xamarin Forms custom components and renderers starring:
   * CornerRadius
   * Performance
 
-<table>
-  <thead>
-    <tr>
-      <th>AcrylicBlur Light style</th>
-      <th>AcrylicBlur Dark style</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/android_lightblur.png" width="300" /></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/ios_darkblur.png" width="300" /></td>
-    </tr>
-  </tbody>
-</table>
+![banner](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/MaterialFrame/github_banner.png)
 
-<table>
-  <thead>
-    <tr>
-      <th>Dynamic theming</th>
-      <th>Acrylic theme</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dynamic_themes.gif" width="300" /></td>
-      <td><img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/acrylic_ios.png" width="300" /></td>
-    </tr>
-  </tbody>
-</table>
 
 ### [```HorizontalListView``` for Xamarin Forms](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/HorizontalListView-Grid-And-Carousel)
   * Carousel layout
@@ -174,7 +114,10 @@ Xamarin Forms custom components and renderers starring:
 </p>
 
 
-### [```TaskLoaderView 2.0``` handles all your task loading states](https://github.com/roubachof/Sharpnado.TaskLoaderView)
+### [```Sharpnado.TaskLoaderView 2.0``` handles all your task loading states](https://github.com/roubachof/Sharpnado.TaskLoaderView)
+
+<img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/TaskLoaderView/tlv_icon_tos.png" width="150" />
+
   * Handles error with custom messages and icons
   * Handles empty states
   * Show snackbar errors for refresh scenarios (if data is already shown)
@@ -186,12 +129,6 @@ Xamarin Forms custom components and renderers starring:
   <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/tlv_skeleton.gif" width="320" hspace="20"/>
   <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/tlv_user_views.gif" width="320" hspace="20"/>
 </p>
-
-
-It's available in 2 Nuget flavors:
-
-* **Sharpnado.Presentation.Forms** (which include several others components like the increeeedible ```TaskLoaderView```)
-* **Sharpnado.Forms.HorizontalListView** (```HorizontalListView``` only with only ```TapCommand``` and ```MaterialFrame```)
 
 **IMPORTANT:** On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
 

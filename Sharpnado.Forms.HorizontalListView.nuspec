@@ -44,21 +44,25 @@ Warning: the MaterialFrame is no longer included in the package, you have to ins
         <group targetFramework=".NETStandard2.0">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+          <dependency id="Sharpnado.Tabs" version="2.0.0" />
         </group>
 
         <group targetFramework="Xamarin.iOS10">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+          <dependency id="Sharpnado.Tabs" version="2.0.0" />
         </group>
 
         <group targetFramework="MonoAndroid10">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+          <dependency id="Sharpnado.Tabs" version="2.0.0" />
         </group>
 
         <group targetFramework="MonoAndroid10.0">
           <dependency id="Xamarin.Forms" version="3.4.0.1008975" exclude="Build,Analyzers"/>
           <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
+          <dependency id="Sharpnado.Tabs" version="2.0.0" />
           <dependency id="Xamarin.AndroidX.Browser" version="1.0.0" />
           <dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
           <dependency id="Xamarin.AndroidX.Lifecycle.LiveData" version="2.1.0" />
