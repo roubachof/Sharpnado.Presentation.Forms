@@ -14,7 +14,7 @@
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
       <summary>HorizontalListView (CollectionView) on steroids for Xamarin Forms</summary>
       <tags>xamarin.forms android ios netstandard horizontallistview collectionview  gridview carouselview drag drop</tags>
-      <releaseNotes>Fix bad HeightRequest in Grid mode for iOS.</releaseNotes>
+      <releaseNotes>Add cell animations and drag and drop improvements.</releaseNotes>
       <description>
 Initialization: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
 

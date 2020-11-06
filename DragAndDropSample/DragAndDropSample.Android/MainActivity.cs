@@ -1,13 +1,10 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
+
 using Sharpnado.Presentation.Forms.Droid;
 
-namespace Sharpnado.DragAndDropCollection.Sample.Android
+namespace DragAndDropSample.Android
 {
     [Activity(Label = "Sharpnado.DragAndDropCollection.Sample", Theme = "@style/MainTheme", MainLauncher = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]

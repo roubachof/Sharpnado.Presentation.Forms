@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2042
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Forms", "Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj", "{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharpnado.Presentation.Forms", "Sharpnado.Presentation.Forms\Sharpnado.Presentation.Forms.csproj", "{76625DCB-B2F9-4E7E-AE80-B657AE9D2566}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Forms.Droid", "Sharpnado.Presentation.Forms.Droid\Sharpnado.Presentation.Forms.Droid.csproj", "{5C880A51-9E8A-42A9-9FA5-10BC7D3E9FFC}"
 EndProject
@@ -11,11 +11,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.Presentation.Form
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{8CB48033-BE95-414B-9B59-16038B284788}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.DragAndDropCollection.Sample", "Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample.csproj", "{55F41B9B-D1D7-42A3-8E77-A12A42E8A808}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragAndDropSample", "DragAndDropSample\DragAndDropSample\DragAndDropSample.csproj", "{55F41B9B-D1D7-42A3-8E77-A12A42E8A808}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.DragAndDropCollection.Sample.Android", "Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample.Android\Sharpnado.DragAndDropCollection.Sample.Android.csproj", "{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragAndDropSample.Android", "DragAndDropSample\DragAndDropSample.Android\DragAndDropSample.Android.csproj", "{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharpnado.DragAndDropCollection.Sample.iOS", "Sharpnado.DragAndDropCollection.Sample\Sharpnado.DragAndDropCollection.Sample.iOS\Sharpnado.DragAndDropCollection.Sample.iOS.csproj", "{57551E87-1A59-4AF0-8012-BA65C96BA8DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragAndDropSample.iOS", "DragAndDropSample\DragAndDropSample.iOS\DragAndDropSample.iOS.csproj", "{57551E87-1A59-4AF0-8012-BA65C96BA8DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{5BE3FB50-251F-4E15-833D-CA80196607DB}"
+	ProjectSection(SolutionItems) = preProject
+		AssemblyInfo.targets = AssemblyInfo.targets
+		make-hlv-packages.ps1 = make-hlv-packages.ps1
+		Sharpnado.Forms.HorizontalListView.nuspec = Sharpnado.Forms.HorizontalListView.nuspec
+		StyleCopRules.ruleset = StyleCopRules.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,12 +59,12 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {340B55C9-6E96-411A-8AB4-12C8D3EBCD7B}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{55F41B9B-D1D7-42A3-8E77-A12A42E8A808} = {8CB48033-BE95-414B-9B59-16038B284788}
 		{A07EEB14-ECD1-4D9F-8819-FC1B1FC06001} = {8CB48033-BE95-414B-9B59-16038B284788}
 		{57551E87-1A59-4AF0-8012-BA65C96BA8DC} = {8CB48033-BE95-414B-9B59-16038B284788}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {340B55C9-6E96-411A-8AB4-12C8D3EBCD7B}
 	EndGlobalSection
 EndGlobal
