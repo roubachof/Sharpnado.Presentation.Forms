@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using Xamarin.Forms;
 
@@ -29,8 +30,15 @@ namespace DragAndDropSample
                 await Task.Delay(250);
             };
         }
-
+        
         protected override void OnAppearing()
             => (this.BindingContext as MainViewModel).OnStartCommand.Execute(null);
+
+        private void EnableDyD(object sender, EventArgs e)
+        {
+            HorizontalListView.EnableDragAndDrop = !HorizontalListView.EnableDragAndDrop;
+            LabelDragAndDrop.Text = HorizontalListView.EnableDragAndDrop.ToString();
+        } 
+    
     }
 }

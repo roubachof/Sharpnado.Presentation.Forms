@@ -83,9 +83,12 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 case nameof(HorizontalListView.ListLayout):
                     UpdateListLayout();
                     break;
+                case nameof(HorizontalListView.EnableDragAndDrop):
+                    UpdateDragAndDrop();
+                    break;
             }
         }
-
+        
         protected override void OnElementChanged(ElementChangedEventArgs<HorizontalListView> e)
         {
             base.OnElementChanged(e);
@@ -100,6 +103,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
                     Control.DraggingEnded -= OnDraggingEnded;
                     Control.DecelerationEnded -= OnDecelerationEnded;
+                    
                 }
 
                 if (_collectionView != null)
@@ -115,11 +119,25 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 }
 
                 _registeredDataTemplates.Clear();
+
+                ((HorizontalListView) e.OldElement).OnScrollRequest -= OnScrollRequested;
             }
 
             if (e.NewElement != null)
             {
                 CreateView();
+            }
+        }
+        
+        private void UpdateDragAndDrop()
+        {
+            if (Element.EnableDragAndDrop)
+            {
+                EnableDragAndDrop();
+            }
+            else
+            {
+                DisableDragAndDrop();
             }
         }
 
@@ -201,6 +219,8 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 ShowsHorizontalScrollIndicator = false,
                 ContentInset = new UIEdgeInsets(0, 0, 0, 0),
             };
+            
+            ((HorizontalListView) Element).OnScrollRequest += OnScrollRequested;
         }
 
         private void SetCollectionView(UICollectionView collectionView)

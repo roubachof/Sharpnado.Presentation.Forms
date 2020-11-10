@@ -10,6 +10,17 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
     public partial class iOSHorizontalListViewRenderer
     {
+        private UILongPressGestureRecognizer _dragAndDropGesture;
+        
+        private void DisableDragAndDrop()
+        {
+            if (_dragAndDropGesture != null)
+            {
+                Control.RemoveGestureRecognizer(_dragAndDropGesture);
+                _dragAndDropGesture = null;
+            }
+        }
+        
         private void EnableDragAndDrop()
         {
             int from = -1;
@@ -17,7 +28,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
             iOSViewCell draggedViewCell = null;
 
             // Create a custom gesture recognizer
-            var longPressGesture = new UILongPressGestureRecognizer(
+            _dragAndDropGesture = new UILongPressGestureRecognizer(
                 gesture =>
                 {
                     // Take action based on state
@@ -136,7 +147,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 });
 
             // Add the custom recognizer to the collection view
-            Control.AddGestureRecognizer(longPressGesture);
+            Control.AddGestureRecognizer(_dragAndDropGesture);
         }
     }
 }

@@ -13,8 +13,11 @@ namespace DragAndDropSample
             StartDragCommand = new Command(StartDragHandler);
             EndDragCommand = new Command(EndDragHandler);
             OnStartCommand = new Command(OnStartHandler);
+            ScrollCurrentCommand = new Command(CurrentScrollHandler);
         }
+
         
+
         private ObservableCollection<DummyData> _data;
 
         public ObservableCollection<DummyData> Data
@@ -27,6 +30,17 @@ namespace DragAndDropSample
             }
         }
 
+        private int _currentIndex;
+
+        public int CurrentIndex
+        {
+            get => _currentIndex;
+            set
+            {
+                _currentIndex = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         public ICommand StartDragCommand
@@ -47,6 +61,12 @@ namespace DragAndDropSample
             private set;
         }
 
+        public ICommand ScrollCurrentCommand
+        {
+            get;
+            private set;
+        }
+
         
         private void StartDragHandler(object obj)
         {
@@ -61,10 +81,15 @@ namespace DragAndDropSample
         private void OnStartHandler(object obj)
             => Data = new ObservableCollection<DummyData>(CreateDummyData());
         
+        private void CurrentScrollHandler(object obj)
+        {
+            CurrentIndex = (int) obj;
+        }
+        
         private IEnumerable<DummyData> CreateDummyData()
         {
             var data = new List<DummyData>();
-            for (var i = 0; i < 25; i++)
+            for (var i = 0; i < 100; i++)
             {
                 data.Add(new DummyData()
                 {

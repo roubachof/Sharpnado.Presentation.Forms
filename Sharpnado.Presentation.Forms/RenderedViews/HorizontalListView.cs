@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Sharpnado.Presentation.Forms.Paging;
+using Sharpnado.Presentation.Forms.ViewModels;
 using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.RenderedViews
@@ -137,6 +139,11 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             typeof(ICommand),
             typeof(HorizontalListView));
 
+        public static readonly BindableProperty ScrollCurrentCommandProperty = BindableProperty.Create(
+            nameof(ScrollCurrentCommand),
+            typeof(ICommand),
+            typeof(HorizontalListView));
+
         public static readonly BindableProperty ScrollEndedCommandProperty = BindableProperty.Create(
             nameof(ScrollEndedCommand),
             typeof(ICommand),
@@ -263,6 +270,12 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             set => SetValue(ScrollBeganCommandProperty, value);
         }
 
+        public ICommand ScrollCurrentCommand
+        {
+            get => (ICommand) GetValue(ScrollCurrentCommandProperty);
+            set => SetValue(ScrollCurrentCommandProperty, value);
+        }
+
         public ICommand ScrollEndedCommand
         {
             get => (ICommand)GetValue(ScrollEndedCommandProperty);
@@ -299,9 +312,18 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
         
         public Action<ViewCell> PostAnimation { get; set; }
 
+        public event EventHandler<ScrollToRequestEventArgs> OnScrollRequest;
+
         public int ViewCacheSize { get; set; } = 0;
 
-        public bool EnableDragAndDrop { get; set; } = false;
+        public static readonly BindableProperty EnableDragAndDropProperty =
+            BindableProperty.Create(nameof(EnableDragAndDrop), typeof(bool), typeof(HorizontalListView), false);
+
+        public bool EnableDragAndDrop
+        {
+            get => (bool) GetValue(EnableDragAndDropProperty);
+            set => SetValue(EnableDragAndDropProperty, value);
+        }
 
         public HorizontalListViewLayout ListLayout
         {
@@ -388,6 +410,13 @@ namespace Sharpnado.Presentation.Forms.RenderedViews
             double spaceHeightLeft = availableHeight - totalHeightSpacing;
 
             return PlatformHelper.Instance.PixelsToDp(spaceHeightLeft);
+        }
+
+        public Task ScrollToAsync(int index, bool animated)
+        {
+            var args = new ScrollToRequestEventArgs(index, 0, ScrollToPosition.Center, animated);
+            OnScrollRequest(this, args);
+            return Task.CompletedTask;
         }
 
         private static void OnListLayoutChanged(BindableObject bindable, object oldvalue, object newvalue)

@@ -5,9 +5,24 @@
              xmlns:sharpnado="clr-namespace:Sharpnado.Presentation.Forms.RenderedViews;assembly=Sharpnado.Presentation.Forms">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="9*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Label x:Name="LabelDragAndDrop" Grid.Column="0" />
+            <Button Clicked="EnableDyD" Grid.Column="1" BackgroundColor="Gray"/>
+        </Grid>
+        
         <sharpnado:HorizontalListView
+            Grid.Row="1"
             x:Name="HorizontalListView"
-            EnableDragAndDrop="True"
+            EnableDragAndDrop="False"
             ColumnCount="3"
             ListLayout="Grid"
             ItemSpacing="8"
@@ -15,7 +30,8 @@
             ItemHeight="80"
             ItemsSource="{Binding Data}"
             DragAndDropStartCommand="{Binding StartDragCommand}"
-            DragAndDropEndedCommand="{Binding EndDragCommand}">
+            DragAndDropEndedCommand="{Binding EndDragCommand}"
+            ScrollCurrentCommand="{Binding ScrollCurrentCommand}">
             
             <sharpnado:HorizontalListView.ItemTemplate>
                 <DataTemplate>

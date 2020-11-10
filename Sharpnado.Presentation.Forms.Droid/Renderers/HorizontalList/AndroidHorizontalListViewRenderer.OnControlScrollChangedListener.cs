@@ -60,6 +60,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 _lastVisibleItemIndex = lastVisibleItem;
 
                 // InternalLogger.Info($"OnScrolled( lastVisibleItem: {lastVisibleItem} )");
+                _element.ScrollCurrentCommand.Execute(lastVisibleItem);
                 infiniteListLoader.OnScroll(lastVisibleItem);
             }
 

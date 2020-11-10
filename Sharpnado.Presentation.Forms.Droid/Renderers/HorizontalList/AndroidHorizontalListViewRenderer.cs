@@ -33,6 +33,7 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
         private IEnumerable _itemsSource;
         private ItemTouchHelper _dragHelper;
         private SpaceItemDecoration _itemDecoration;
+        private RecycleViewAdapter _adapter;
 
         public AndroidHorizontalListViewRenderer(Context context)
             : base(context)
@@ -67,6 +68,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     _dragHelper = null;
                 }
 
+                ((HorizontalListView) e.OldElement).OnScrollRequest -= OnScrollRequested;
+
                 if (!Control.IsNullOrDisposed())
                 {
                     Control.ClearOnScrollListeners();
@@ -92,6 +95,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             }
         }
 
+        
+
         protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -107,6 +112,9 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                     break;
                 case nameof(HorizontalListView.ListLayout):
                     UpdateListLayout();
+                    break;
+                case nameof(HorizontalListView.EnableDragAndDrop):
+                    UpdateDragAndDrop();
                     break;
             }
         }
@@ -217,6 +225,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 {
                     ScrollToCurrentItem();
                 }
+
+                ((HorizontalListView) Element).OnScrollRequest += OnScrollRequested;
             }
 
             Control.ViewTreeObserver.PreDraw += OnPreDraw;
@@ -339,7 +349,10 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
 
             LinearLayoutManager?.ScrollToPositionWithOffset(Element.CurrentIndex, offset);
         }
-
+        
+        private void OnScrollRequested(object sender, ScrollToRequestEventArgs e)
+            => LinearLayoutManager?.ScrollToPosition(e.Index);
+        
         private void UpdateItemsSource()
         {
             InternalLogger.Info($"UpdateItemsSource()");
@@ -354,8 +367,8 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
             _itemsSource = Element.ItemsSource;
 
             Control.GetRecycledViewPool().Clear();
-            var adapter = new RecycleViewAdapter(Element, Control, Context);
-            Control.SetAdapter(adapter);
+            _adapter = new RecycleViewAdapter(Element, Control, Context);
+            Control.SetAdapter(_adapter);
 
             oldAdapter?.Dispose();
 
@@ -364,17 +377,25 @@ namespace Sharpnado.Presentation.Forms.Droid.Renderers.HorizontalList
                 newNotifyCollection.CollectionChanged += OnCollectionChanged;
             }
 
+            UpdateDragAndDrop();
+            ScrollToCurrentItem();
+        }
+
+        private void UpdateDragAndDrop()
+        {
             if (Element.EnableDragAndDrop)
             {
                 _dragHelper?.AttachToRecyclerView(null);
 
                 _dragHelper = new ItemTouchHelper(
-                    new DragAnDropItemTouchHelperCallback(Element, adapter, 
+                    new DragAnDropItemTouchHelperCallback(Element, _adapter, 
                         Element.DragAndDropStartCommand, Element.DragAndDropEndedCommand));
                 _dragHelper.AttachToRecyclerView(Control);
             }
-
-            ScrollToCurrentItem();
+            else
+            {
+                _dragHelper?.AttachToRecyclerView(null);
+            }
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

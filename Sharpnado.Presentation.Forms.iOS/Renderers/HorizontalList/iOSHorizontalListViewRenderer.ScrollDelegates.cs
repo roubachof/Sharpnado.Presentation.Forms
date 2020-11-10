@@ -5,6 +5,7 @@ using CoreGraphics;
 using Foundation;
 
 using UIKit;
+using Xamarin.Forms;
 
 namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 {
@@ -197,6 +198,7 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
 
                 InternalLogger.Info($"OnScrolled( lastVisibleItem: {lastVisibleIndex} )");
                 infiniteListLoader.OnScroll(lastVisibleIndex);
+                Element.ScrollCurrentCommand.Execute(lastVisibleIndex);
             }
 
             if (_isInternalScroll)
@@ -239,5 +241,9 @@ namespace Sharpnado.Presentation.Forms.iOS.Renderers.HorizontalList
                 _isCurrentIndexUpdateBackfire = false;
             }
         }
+
+        private void OnScrollRequested(object sender, ScrollToRequestEventArgs e)
+            => Control.ScrollToItem(NSIndexPath.FromIndex((nuint)e.Index), UICollectionViewScrollPosition.CenteredHorizontally, true);
+        
     }
 }

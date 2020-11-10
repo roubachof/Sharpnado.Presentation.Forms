@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Xamarin.AndroidX.Migration" Version="1.0.8" />
     <PackageReference Include="Xamarin.Forms" Version="4.7.0.1351" />
   </ItemGroup>
   <ItemGroup>
