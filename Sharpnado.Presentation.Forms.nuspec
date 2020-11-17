@@ -3,7 +3,7 @@
     <metadata>
 
       <id>Sharpnado.Presentation.Forms</id>
-      <version>$version$</version>
+      <version>1.8</version>
       <copyright>Sharpnado 2020</copyright>
       <title>A Collection of Xamarin.Forms components including HorizontalListView, Tabs, MaterialFrame, Shadows and TaskLoaderView</title>
       <authors>Jean-Marie Alfonsi</authors>
@@ -16,14 +16,12 @@
       <summary>Collection of Xamarin.Forms components including HorizontalListView (CollectionView), TaskLoaderView (mvvm async loading view), Tabs, MaterialFrame (Acrylic, AcrylicBlur) and Shadows.</summary>
       <tags>xamarin.forms android ios netstandard horizontallistview taskloaderview collectionview gridview carouselview mvvm async materialframe blur blurview UIVisualEffectView shadows</tags>
       <releaseNotes>
-        MaterialFrame with blur.
-        Segmented control style for TabHostView.
-        Sharpnado.Shadows.
+        Version 1.8 with shadows performance, tabs badges, and horizontal list view reveal animations.
       </releaseNotes>
       <description>
 Collection of Xamarin.Forms components.
 
-IMPORTANT: On platform projects, call SharpnadoInitializer.Initialize() after Xamarin.Forms.Forms.Init() and before LoadApplication(new App()).
+No initialization requested.
 
 Pure Xamarin.Forms tabs:
   * Fixed tabs (android tabs style)
@@ -61,61 +59,49 @@ The TaskLoaderView 2.0 handles all your task loading states:
   * Can override any state views with your own custom ones
 
 HorizontalListView for Xamarin.Forms (close to a CollectionView):
-  * Carousel layout
+  * Horizontal, Grid, Carousel or Vertical layout
+  * Reveal custom animations
+  * Drag and Drop feature
   * Column count
+  * Infinite loading with ```Paginator``` component
   * Snapping on first or middle element
   * Padding and item spacing
-  * Handles NotifyCollectionChangedAction Add Remove and Reset actions
+  * Handles ```NotifyCollectionChangedAction``` Add, Remove and Reset actions
   * View recycling
-  * RecyclerView on Android
-  * UICollectionView on iOS
-
-Grid ListView (HorizontalListView with ListLayout set to Grid):
-  * Column count
-  * Drag And Drop
-  * RefreshView support
-  * Padding and item spacing
-  * Handles NotifyCollectionChangedAction Add Remove and Reset actions
-  * View recycling
+  * ```RecyclerView``` on Android
+  * ```UICollectionView``` on iOS
       </description>
 
       <dependencies>
 
         <group targetFramework=".NETStandard2.0">
           <dependency id="Xamarin.Forms" version="3.6.0.220655" exclude="Build,Analyzers"/>
-          <dependency id="Sharpnado.TaskLoaderView" version="2.0.1" />
-          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
-          <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.1.0" />
+          <dependency id="Sharpnado.Forms.HorizontalListView" version="1.8.0" />
+          <dependency id="Sharpnado.TaskLoaderView" version="2.1.1" />
+          <dependency id="Sharpnado.TaskMonitor" version="1.0.1" />
+          <dependency id="Sharpnado.MaterialFrame" version="1.1.3" />
+          <dependency id="Sharpnado.Shadows" version="1.2.0" />
+          <dependency id="Sharpnado.Tabs" version="2.0.1" />
         </group>
 
         <group targetFramework="Xamarin.iOS10">
           <dependency id="Xamarin.Forms" version="3.6.0.220655" exclude="Build,Analyzers"/>
-          <dependency id="Sharpnado.TaskLoaderView" version="2.0.1" />
-          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
-          <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.1.0" />
+          <dependency id="Sharpnado.Forms.HorizontalListView" version="1.8.0" />
+          <dependency id="Sharpnado.TaskLoaderView" version="2.1.1" />
+          <dependency id="Sharpnado.TaskMonitor" version="1.0.1" />
+          <dependency id="Sharpnado.MaterialFrame" version="1.1.3" />
+          <dependency id="Sharpnado.Shadows" version="1.2.0" />
+          <dependency id="Sharpnado.Tabs" version="2.0.1" />
         </group>
 
         <group targetFramework="MonoAndroid10">
           <dependency id="Xamarin.Forms" version="3.6.0.220655" exclude="Build,Analyzers"/>
-          <dependency id="Sharpnado.TaskLoaderView" version="2.0.1" />
-          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
-          <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.1.0" />
-        </group>
-
-        <group targetFramework="MonoAndroid10.0">
-          <dependency id="Xamarin.Forms" version="3.6.0.220655" exclude="Build,Analyzers"/>
-          <dependency id="Sharpnado.TaskLoaderView" version="2.0.1" />
-          <dependency id="Sharpnado.TaskMonitor" version="1.0.0" />
-          <dependency id="Sharpnado.MaterialFrame" version="1.1.1" />
-          <dependency id="Sharpnado.Shadows" version="1.1.0" />
-          <dependency id="Xamarin.AndroidX.Browser" version="1.0.0" />
-          <dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
-          <dependency id="Xamarin.AndroidX.Lifecycle.LiveData" version="2.1.0" />
-          <dependency id="Xamarin.AndroidX.MediaRouter" version="1.1.0" />
-          <dependency id="Xamarin.Google.Android.Material" version="1.0.0" />
+          <dependency id="Sharpnado.Forms.HorizontalListView" version="1.8.0" />
+          <dependency id="Sharpnado.TaskLoaderView" version="2.1.1" />
+          <dependency id="Sharpnado.TaskMonitor" version="1.0.1" />
+          <dependency id="Sharpnado.MaterialFrame" version="1.1.3" />
+          <dependency id="Sharpnado.Shadows" version="1.2.0" />
+          <dependency id="Sharpnado.Tabs" version="2.0.1" />
         </group>
 
       </dependencies>

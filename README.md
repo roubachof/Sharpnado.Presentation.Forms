@@ -3,13 +3,6 @@
 | Lib | Version                                                                                                                             |
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Sharpnado.Presentation.Forms  | ![Sharpnado.Presentation.Forms](https://img.shields.io/nuget/v/Sharpnado.Presentation.Forms.svg) |
-| Sharpnado.Forms.HorizontalListView      | ![Sharpnado.Forms.HorizontalListView](https://img.shields.io/nuget/v/Sharpnado.Forms.HorizontalListView.svg) |
-
-| Platform | Build Status                                                                                                                             |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Android  | [![Build status](https://build.appcenter.ms/v0.1/apps/23f44cf3-7656-4932-9d82-f654db6afc82/branches/master/badge)](https://appcenter.ms) |
-| iOS      | [![Build status](https://build.appcenter.ms/v0.1/apps/ddd14409-1f42-4521-ae8d-6f9891de2714/branches/master/badge)](https://appcenter.ms) |
-
 
 ## MUST READ: Big refactoring ?
 
@@ -17,10 +10,13 @@ The big sharpnado refactoring is over.
 
 Each sharpnado's component has now its own repo.
 
-* Sharpnado.Tabs have now their own repo
-* The Sharpnado.Presentation.Forms repo now only contains the source code for the HorizontalListView
+* `Sharpnado.Tabs` have now [their own repo](https://github.com/roubachof/Sharpnado.Tabs)
+* `Sharpnado.HorizontalListView` have now [its own repo](https://github.com/roubachof/Sharpnado.HorizontalListView)
+* The `Sharpnado.Presentation.Forms` repo now is now only a Home page for all the Sharpnado's component.
 
 Latest version of Sharpnado.Presentation.Forms (v1.7.1) doesn't have all the sharpnado nugets up to date.
+
+Version 1.8 will include latest components and won't require initialization code.
 
 Preferred way of using packages is now to install only the one needed.
 
@@ -43,7 +39,7 @@ Xamarin Forms custom components and renderers starring:
 
 ### [``Sharpnado.Tabs``](https://github.com/roubachof/Sharpnado.Tabs)
 
-<img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/Tabs/logo_2_1.png" width="200" />
+<img src="Docs/tabs.png" width="200" />
 
 * Fully customizable
 * Underlined tabs, bottom tabs, Segmented control, scrollable tabs
@@ -53,11 +49,11 @@ Xamarin Forms custom components and renderers starring:
 * Shadows included in `TabHost`
 * Bindable
 
-![banner](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/Tabs/github_banner.jpg)
+![banner](Docs/github_tabs_banner.jpg)
 
 ### [``Sharpnado.Shadows``](https://github.com/roubachof/Sharpnado.Shadows)
 
-<img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/Shadows/shadows.png" width="200" />
+<img src="Docs/shadows.png" width="200" />
 
 * Add as **many** **custom** shadows as you like to any `Xamarin.Forms` view (`Android`, `iOS`, `UWP`). 
 * You can specify each shadow `Color`, `Opacity`, `BlurRadius`, and `Offset`
@@ -66,11 +62,11 @@ Xamarin Forms custom components and renderers starring:
 * Animate any of these property and make the shadows dance around your elements
 * No `AndroidX` or `SkiaSharp` dependency required, only `Xamarin.Forms`
 
-![Presentation](https://raw.githubusercontent.com/roubachof/Sharpnado.Shadows/master/Docs/github_banner.png)
+![Presentation](Docs/github_shadows_banner.png)
 
 ### [``Sharpnado.MaterialFrame``](https://github.com/roubachof/Sharpnado.MaterialFrame)
 
-<img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/MaterialFrame/material_frame.png" width="200" />
+<img src="Docs/material_frame.png" width="200" />
 
   * 4 built-in themes: AcrylicBlur/Acrylic/Dark/Light
   * 3 Blur Styles: Light/ExtraLight/Dark
@@ -80,11 +76,16 @@ Xamarin Forms custom components and renderers starring:
   * CornerRadius
   * Performance
 
-![banner](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/MaterialFrame/github_banner.png)
+![banner](Docs/github_mf_banner.png)
 
 
-### [```HorizontalListView``` for Xamarin Forms](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/HorizontalListView-Grid-And-Carousel)
-  * Carousel layout
+### [```HorizontalListView``` for Xamarin Forms](https://github.com/roubachof/Sharpnado.HorizontalListView)
+
+<img src="Docs/hlv.png" width="200" />
+
+  * Horizontal, Grid, Carousel or Vertical layout
+  * Reveal custom animations
+  * Drag and Drop feature
   * Column count
   * Infinite loading with ```Paginator``` component
   * Snapping on first or middle element
@@ -93,26 +94,8 @@ Xamarin Forms custom components and renderers starring:
   * View recycling
   * ```RecyclerView``` on Android
   * ```UICollectionView``` on iOS
-  * This implementation is in fact very close in terms of philosophy and implementation to what will provide the future Xamarin ```CollectionView```.
 
-<p float="left" align="middle">
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_hlv.gif" width="320" hspace="20"/>
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_hlv_carousel.gif" width="320" hspace="20"/>
-</p>
-
-### [```Grid``` collection view (```ListLayout``` = ```Grid```)](https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/HorizontalListView-Grid-And-Carousel#grid-layout)
-  * Column count (if equal to 1 then you have a classic ```ListView``` ;)
-  * Infinite loading with ```Paginator``` component
-  * Drag and Drop
-  * Padding and item spacing
-  * Handles ```NotifyCollectionChangedAction``` Add, Remove and Reset actions
-  * View recycling
-
-<p float="left" align="middle">
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/android_list.gif" width="320" hspace="20"/>
-  <img src="https://github.com/roubachof/Sharpnado.Presentation.Forms/wiki/Images/dark/ios_grid.gif" width="320" hspace="20"/>
-</p>
-
+![banner](Docs/github_hlv_banner.jpg)
 
 ### [```Sharpnado.TaskLoaderView 2.0``` handles all your task loading states](https://github.com/roubachof/Sharpnado.TaskLoaderView)
 
