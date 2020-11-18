@@ -21,8 +21,6 @@
       <description>
 Collection of Xamarin.Forms components.
 
-No initialization requested.
-
 Pure Xamarin.Forms tabs:
   * Fixed tabs (android tabs style)
   * Scrollable tabs
@@ -70,6 +68,21 @@ HorizontalListView for Xamarin.Forms (close to a CollectionView):
   * View recycling
   * ```RecyclerView``` on Android
   * ```UICollectionView``` on iOS
+
+
+Installation:
+
+  On UWP with release config, you need to pass all the renderer assemblies: 
+  
+  var rendererAssemblies = new[] 
+  {
+     typeof(UWPShadowsRenderer).GetTypeInfo().Assembly ,
+     typeof(UWPMaterialFrameRenderer).GetTypeInfo().Assembly,
+     typeof(UwpTintableImageEffect).GetTypeInfo().Assembly,
+  };
+  
+  Xamarin.Forms.Forms.Init(e, rendererAssemblies);
+
       </description>
 
       <dependencies>

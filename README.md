@@ -1,8 +1,8 @@
 # Sharpnado.Presentation.Forms
 
-| Lib | Version                                                                                                                             |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Sharpnado.Presentation.Forms  | ![Sharpnado.Presentation.Forms](https://img.shields.io/nuget/v/Sharpnado.Presentation.Forms.svg) |
+|Logo| Library name | Version                                                                                                                             |
+| -- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="sharpnado.png" width="50" /> | Sharpnado.Presentation.Forms  | ![Sharpnado.Presentation.Forms](https://img.shields.io/nuget/v/Sharpnado.Presentation.Forms.svg) |
 
 ## MUST READ: Big refactoring ?
 
@@ -12,7 +12,7 @@ Each sharpnado's component has now its own repo.
 
 * `Sharpnado.Tabs` have now [their own repo](https://github.com/roubachof/Sharpnado.Tabs)
 * `Sharpnado.HorizontalListView` have now [its own repo](https://github.com/roubachof/Sharpnado.HorizontalListView)
-* The `Sharpnado.Presentation.Forms` repo now is now only a Home page for all the Sharpnado's component.
+* The `Sharpnado.Presentation.Forms` repo is now only a Home page for all the Sharpnado's component.
 
 Latest version of Sharpnado.Presentation.Forms (v1.7.1) doesn't have all the sharpnado nugets up to date.
 
