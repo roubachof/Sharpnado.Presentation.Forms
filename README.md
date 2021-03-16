@@ -4,6 +4,10 @@
 | -- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | <img src="sharpnado.png" width="50" /> | Sharpnado.Presentation.Forms  | ![Sharpnado.Presentation.Forms](https://img.shields.io/nuget/v/Sharpnado.Presentation.Forms.svg) |
 
+Latest version of Sharpnado.Presentation.Forms (v1.7.1) **doesn't have all the sharpnado nugets up to date**.
+
+The preferred way of using packages is now to **install only the one needed individually**.
+
 ## MUST READ: Big refactoring ?
 
 The big sharpnado refactoring is over.
